@@ -40,13 +40,22 @@ RECIPE_ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_ROOT = RECIPE_ROOT.parent
 
 
-def _make_http_server(thunderagent: dict | None = None) -> DynamoThunderAgentHttpServer:
+def _make_http_server(
+    thunderagent: dict | None = None,
+    *,
+    session_aware: dict | None = None,
+    router_mode: str | None = None,
+) -> DynamoThunderAgentHttpServer:
     server = object.__new__(DynamoThunderAgentHttpServer)
-    server.config = SimpleNamespace(engine_kwargs={"dynamo": {"thunderagent": thunderagent or {"enabled": True}}})
+    thunderagent = {"enabled": True} if thunderagent is None else thunderagent
+    dynamo_config = {"thunderagent": thunderagent}
+    if session_aware is not None:
+        dynamo_config["session_aware"] = session_aware
+    server.config = SimpleNamespace(engine_kwargs={"dynamo": dynamo_config})
     server.model_config = SimpleNamespace(local_path="/models/test-model")
     server._namespace = "verl_dynamo"
     server._served_model_name = "test-model"
-    server._router_mode = "round-robin"
+    server._router_mode = router_mode or ("round-robin" if thunderagent.get("enabled") else "kv")
     server.replica_rank = 0
     server._frontend_process = None
     server._thunderagent_process = None
@@ -69,8 +78,10 @@ class _FakeServer:
     def __init__(self):
         self.generate_calls = []
         self.finalize_calls = []
+        self.session_aware_finalize_calls = []
         self.generate = _RemoteMethod(self._generate)
         self.finalize_program = _RemoteMethod(self._finalize_program)
+        self.finalize_session_aware = _RemoteMethod(self._finalize_session_aware)
 
     def _generate(self, **kwargs):
         self.generate_calls.append(kwargs)
@@ -78,6 +89,9 @@ class _FakeServer:
 
     def _finalize_program(self, session_id: str) -> None:
         self.finalize_calls.append(session_id)
+
+    def _finalize_session_aware(self, session_id: str) -> None:
+        self.session_aware_finalize_calls.append(session_id)
 
 
 def _generate_kwargs(prompt_id: int) -> dict:
@@ -101,6 +115,23 @@ async def test_client_reuses_program_id_for_all_turns_and_finalizes_once() -> No
     assert session_id
     assert second["thunderagent_session_id"] == session_id
     assert server.finalize_calls == [session_id]
+    assert server.session_aware_finalize_calls == []
+
+
+@pytest.mark.asyncio
+async def test_native_client_reuses_session_id_and_finalizes_once() -> None:
+    server = _FakeServer()
+    manager = DynamoServerManager([("frontend:8000", server)], session_aware_enabled=True)
+
+    async with manager.program_scope():
+        first = await manager.generate(**_generate_kwargs(1))
+        second = await manager.generate(**_generate_kwargs(2))
+
+    session_id = first["session_aware_session_id"]
+    assert session_id
+    assert second["session_aware_session_id"] == session_id
+    assert server.finalize_calls == []
+    assert server.session_aware_finalize_calls == [session_id]
 
 
 @pytest.mark.asyncio
@@ -116,6 +147,59 @@ async def test_client_isolates_concurrent_programs() -> None:
     first_id, second_id = await asyncio.gather(run(1), run(2))
     assert first_id != second_id
     assert sorted(server.finalize_calls) == sorted([first_id, second_id])
+    assert server.session_aware_finalize_calls == []
+
+
+@pytest.mark.asyncio
+async def test_native_client_isolates_concurrent_sessions() -> None:
+    server = _FakeServer()
+    manager = DynamoServerManager([("frontend:8000", server)], session_aware_enabled=True)
+
+    async def run(prompt_id: int) -> str:
+        async with manager.program_scope():
+            output = await manager.generate(**_generate_kwargs(prompt_id))
+            return output["session_aware_session_id"]
+
+    first_id, second_id = await asyncio.gather(run(1), run(2))
+    assert first_id != second_id
+    assert server.finalize_calls == []
+    assert sorted(server.session_aware_finalize_calls) == sorted([first_id, second_id])
+
+
+@pytest.mark.asyncio
+async def test_native_client_finalizes_after_program_error() -> None:
+    server = _FakeServer()
+    manager = DynamoServerManager([("frontend:8000", server)], session_aware_enabled=True)
+
+    with pytest.raises(ValueError, match="agent failed"):
+        async with manager.program_scope():
+            output = await manager.generate(**_generate_kwargs(1))
+            raise ValueError("agent failed")
+
+    assert server.session_aware_finalize_calls == [output["session_aware_session_id"]]
+
+
+@pytest.mark.asyncio
+async def test_native_client_finalizes_when_program_is_cancelled() -> None:
+    server = _FakeServer()
+    manager = DynamoServerManager([("frontend:8000", server)], session_aware_enabled=True)
+    entered = asyncio.Event()
+
+    async def run() -> str:
+        async with manager.program_scope():
+            output = await manager.generate(**_generate_kwargs(1))
+            entered.set()
+            await asyncio.Event().wait()
+            return output["session_aware_session_id"]
+
+    task = asyncio.create_task(run())
+    await entered.wait()
+    session_id = server.generate_calls[0]["session_aware_session_id"]
+    task.cancel()
+
+    with pytest.raises(asyncio.CancelledError):
+        await task
+    assert server.session_aware_finalize_calls == [session_id]
 
 
 @pytest.mark.asyncio
@@ -124,6 +208,23 @@ async def test_enabled_client_fails_closed_without_program_scope() -> None:
 
     with pytest.raises(RuntimeError, match="active ThunderAgent program"):
         await manager.generate(**_generate_kwargs(1))
+
+
+@pytest.mark.asyncio
+async def test_native_client_fails_closed_without_program_scope() -> None:
+    manager = DynamoServerManager([("frontend:8000", _FakeServer())], session_aware_enabled=True)
+
+    with pytest.raises(RuntimeError, match="active native SessionAware program"):
+        await manager.generate(**_generate_kwargs(1))
+
+
+def test_client_rejects_overlapping_program_routing_modes() -> None:
+    with pytest.raises(ValueError, match="mutually exclusive"):
+        DynamoServerManager(
+            [("frontend:8000", _FakeServer())],
+            thunderagent_enabled=True,
+            session_aware_enabled=True,
+        )
 
 
 @pytest.mark.asyncio
@@ -136,6 +237,7 @@ async def test_disabled_client_preserves_pr110_request_path() -> None:
 
     assert "thunderagent_session_id" not in server.generate_calls[0]
     assert server.finalize_calls == []
+    assert server.session_aware_finalize_calls == []
 
 
 @pytest.mark.asyncio
@@ -239,7 +341,28 @@ async def test_server_manager_returns_direct_thunderagent_client() -> None:
 
     assert isinstance(client, DynamoServerManager)
     assert client.thunderagent_enabled is True
+    assert client.session_aware_enabled is False
     assert not hasattr(manager, "global_load_balancer")
+
+
+@pytest.mark.asyncio
+async def test_server_manager_returns_native_session_aware_client() -> None:
+    manager = object.__new__(DynamoLLMServerManager)
+    manager.server_addresses = ["frontend:8000"]
+    manager.server_handles = [_FakeServer()]
+    manager.rollout_config = SimpleNamespace(
+        engine_kwargs={
+            "dynamo": {
+                "thunderagent": {"enabled": False},
+                "session_aware": {"enabled": True},
+            }
+        }
+    )
+
+    client = manager.get_client()
+
+    assert client.thunderagent_enabled is False
+    assert client.session_aware_enabled is True
 
 
 def test_thunderagent_command_derives_endpoint_model_and_block_size() -> None:
@@ -320,6 +443,53 @@ def test_frontend_start_starts_thunderagent_first(monkeypatch) -> None:
     assert events == ["thunderagent", "frontend"]
 
 
+def test_native_frontend_uses_policy_without_starting_python_router(monkeypatch) -> None:
+    server = _make_http_server(
+        {"enabled": False},
+        session_aware={"enabled": True},
+    )
+    events = []
+    monkeypatch.setattr(server, "_start_thunderagent", lambda: events.append("thunderagent"))
+    monkeypatch.setattr(DynamoHttpServer, "_start_frontend", lambda _self: events.append("frontend"))
+
+    server._start_frontend()
+
+    assert events == ["frontend"]
+
+
+def test_native_frontend_args_include_shipped_policy(monkeypatch) -> None:
+    server = _make_http_server(
+        {"enabled": False},
+        session_aware={"enabled": True},
+    )
+    monkeypatch.setattr(DynamoHttpServer, "_frontend_router_args", lambda _self: ["--base-router-arg"])
+
+    args = server._frontend_router_args()
+
+    policy_index = args.index("--router-policy-config")
+    policy_path = Path(args[policy_index + 1])
+    assert args[0] == "--base-router-arg"
+    assert policy_path == RECIPE_ROOT / "config" / "session_aware_policy.yaml"
+    assert policy_path.is_file()
+
+
+def test_legacy_frontend_args_do_not_include_native_policy(monkeypatch) -> None:
+    server = _make_http_server()
+    monkeypatch.setattr(DynamoHttpServer, "_frontend_router_args", lambda _self: [])
+
+    assert "--router-policy-config" not in server._frontend_router_args()
+
+
+def test_http_server_rejects_overlapping_program_routing_modes() -> None:
+    server = _make_http_server(
+        {"enabled": True},
+        session_aware={"enabled": True},
+    )
+
+    with pytest.raises(ValueError, match="mutually exclusive"):
+        server._validate_program_routing_modes()
+
+
 @pytest.mark.asyncio
 async def test_generation_adds_program_header(monkeypatch) -> None:
     server = _make_http_server()
@@ -344,6 +514,33 @@ async def test_generation_adds_program_header(monkeypatch) -> None:
 
 
 @pytest.mark.asyncio
+async def test_native_generation_adds_session_header_without_final(monkeypatch) -> None:
+    server = _make_http_server(
+        {"enabled": False},
+        session_aware={"enabled": True},
+    )
+    monkeypatch.setattr(server, "_use_direct_generate", lambda: False)
+
+    async def base_generate(self, *_args, **_kwargs):
+        return self._frontend_headers("request-a")
+
+    monkeypatch.setattr(DynamoHttpServer, "generate", base_generate)
+
+    headers = await server.generate(
+        prompt_ids=[1],
+        sampling_params={"max_tokens": 1},
+        request_id="request-a",
+        session_aware_session_id="session-a",
+    )
+
+    assert headers == {
+        "X-Request-Id": "request-a",
+        "X-Dynamo-Session-ID": "session-a",
+    }
+    assert "X-Dynamo-Session-Final" not in headers
+
+
+@pytest.mark.asyncio
 async def test_generation_requires_program_and_rejects_direct_bypass(monkeypatch) -> None:
     server = _make_http_server()
 
@@ -357,6 +554,26 @@ async def test_generation_requires_program_and_rejects_direct_bypass(monkeypatch
             sampling_params={},
             request_id="request-a",
             thunderagent_session_id="program-a",
+        )
+
+
+@pytest.mark.asyncio
+async def test_native_generation_requires_session_and_rejects_direct_bypass(monkeypatch) -> None:
+    server = _make_http_server(
+        {"enabled": False},
+        session_aware={"enabled": True},
+    )
+
+    with pytest.raises(RuntimeError, match="session ID"):
+        await server.generate(prompt_ids=[1], sampling_params={}, request_id="request-a")
+
+    monkeypatch.setattr(server, "_use_direct_generate", lambda: True)
+    with pytest.raises(RuntimeError, match="direct_generate"):
+        await server.generate(
+            prompt_ids=[1],
+            sampling_params={},
+            request_id="request-a",
+            session_aware_session_id="session-a",
         )
 
 
@@ -396,6 +613,56 @@ async def test_finalize_rejects_nonempty_choices_as_router_bypass(monkeypatch) -
 
     with pytest.raises(RuntimeError, match="bypassed"):
         await server.finalize_program("program-a")
+
+
+@pytest.mark.asyncio
+async def test_native_finalize_retries_and_accepts_forwarded_completion(monkeypatch) -> None:
+    server = _make_http_server(
+        {"enabled": False},
+        session_aware={
+            "enabled": True,
+            "finalize_max_attempts": 2,
+            "finalize_retry_delay_s": 0,
+        },
+    )
+    responses = [
+        (503, "temporarily unavailable"),
+        (200, json.dumps({"choices": [{"text": "forwarded terminal request"}]})),
+    ]
+    calls = []
+
+    async def frontend_post(payload, request_id):
+        calls.append((payload, server._frontend_headers(request_id)))
+        return responses.pop(0)
+
+    monkeypatch.setattr(server, "_frontend_post", frontend_post)
+
+    await server.finalize_session_aware("session-a")
+
+    assert len(calls) == 2
+    assert calls[-1][0]["max_tokens"] == 1
+    assert calls[-1][1]["X-Dynamo-Session-ID"] == "session-a"
+    assert calls[-1][1]["X-Dynamo-Session-Final"] == "true"
+
+
+@pytest.mark.asyncio
+async def test_native_finalize_fails_fast_for_nonretryable_response(monkeypatch) -> None:
+    server = _make_http_server(
+        {"enabled": False},
+        session_aware={"enabled": True, "finalize_max_attempts": 3},
+    )
+    calls = 0
+
+    async def frontend_post(_payload, _request_id):
+        nonlocal calls
+        calls += 1
+        return 400, "invalid request"
+
+    monkeypatch.setattr(server, "_frontend_post", frontend_post)
+
+    with pytest.raises(RuntimeError, match="status=400"):
+        await server.finalize_session_aware("session-a")
+    assert calls == 1
 
 
 def test_watchdog_detects_thunderagent_exit(monkeypatch) -> None:
@@ -482,6 +749,39 @@ def test_recipe_config_enables_thunderagent_agent_loop() -> None:
         "enabled": True,
         "router_block_size": 16,
     }
+    assert rollout["engine_kwargs"]["dynamo"]["session_aware"] == {
+        "enabled": False,
+        "finalize_max_attempts": 3,
+        "finalize_retry_delay_s": 0.1,
+    }
+
+
+def test_native_policy_uses_fcfs_session_aware_admission() -> None:
+    policy = yaml.safe_load((RECIPE_ROOT / "config" / "session_aware_policy.yaml").read_text())
+
+    assert policy["default_policy_family"] == "standard"
+    assert policy["uncached_isl_buckets"] == [{"min_tokens": 0, "bucket": "all"}]
+    assert policy["policy_classes"] == [
+        {
+            "name": "agents",
+            "policy_family": "standard",
+            "cache_bucket": "all",
+            "queue_policy": "fcfs",
+            "admission": {
+                "type": "session_aware",
+                "pause_threshold": 0.95,
+                "pause_target": 0.80,
+                "resume_hysteresis": 0.10,
+                "resume_timeout_seconds": 1800,
+                "session_retention_seconds": 1800,
+                "scheduler_interval_seconds": 5,
+                "acting_token_weight": 1.0,
+                "acting_decay_tau_seconds": 1.0,
+                "buffer_per_program": 100,
+            },
+            "quantum": 1,
+        }
+    ]
 
 
 def test_recipe_pins_tested_verl_and_dynamo_revisions() -> None:
@@ -491,7 +791,7 @@ def test_recipe_pins_tested_verl_and_dynamo_revisions() -> None:
 
     assert "MODE=pinned_commit" in required_verl
     assert "COMMIT=d82d2777b5dc3e96a8a45168d02660312707ab98" in required_verl
-    assert "48632da9c77c5a7647b50cf1ba2a729dcdca7aea" in readme
+    assert "1c41eaf9cf5274b5c7ae61ad0bf63732ce09419c" in readme
     assert "dynamo/REQUIRED_VERL.txt" in repository_readme
 
 

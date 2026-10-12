@@ -22,7 +22,9 @@ import os
 import subprocess
 import sys
 import time
+from collections.abc import Mapping
 from contextvars import ContextVar
+from pathlib import Path
 from typing import Any, Optional
 from uuid import uuid4
 
@@ -39,18 +41,21 @@ _REQUEST_PROGRAM: ContextVar[tuple[str, bool] | None] = ContextVar(
 
 
 class DynamoThunderAgentHttpServer(DynamoHttpServer):
-    """Add program-aware routing while preserving PR #110's server stack."""
+    """Add optional program-aware routing while preserving PR #110's server stack."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._thunderagent_process: Optional[subprocess.Popen] = None
         self._thunderagent_log_fp = None
+        self._validate_program_routing_modes()
         if self._thunderagent_enabled():
             self._router_mode = "round-robin"
+        elif self._session_aware_enabled() and self._router_mode != "kv":
+            raise ValueError("native SessionAware admission control requires dynamo.router_mode=kv")
 
-    def _thunderagent_config(self) -> dict[str, Any]:
+    def _thunderagent_config(self) -> Mapping[str, Any]:
         config = self._dynamo_cfg().get("thunderagent", {}) or {}
-        if not isinstance(config, dict):
+        if not isinstance(config, Mapping):
             raise TypeError("rollout.engine_kwargs.dynamo.thunderagent must be a mapping")
         return config
 
@@ -59,6 +64,35 @@ class DynamoThunderAgentHttpServer(DynamoHttpServer):
         if not isinstance(value, bool):
             raise TypeError("rollout.engine_kwargs.dynamo.thunderagent.enabled must be a boolean")
         return value
+
+    def _session_aware_config(self) -> Mapping[str, Any]:
+        config = self._dynamo_cfg().get("session_aware", {}) or {}
+        if not isinstance(config, Mapping):
+            raise TypeError("rollout.engine_kwargs.dynamo.session_aware must be a mapping")
+        return config
+
+    def _session_aware_enabled(self) -> bool:
+        value = self._session_aware_config().get("enabled", False)
+        if not isinstance(value, bool):
+            raise TypeError("rollout.engine_kwargs.dynamo.session_aware.enabled must be a boolean")
+        return value
+
+    def _validate_program_routing_modes(self) -> None:
+        if self._thunderagent_enabled() and self._session_aware_enabled():
+            raise ValueError("ThunderAgent and native SessionAware admission control are mutually exclusive")
+
+    def _session_aware_policy_config_path(self) -> str:
+        configured = self._session_aware_config().get("policy_config_path")
+        if configured in (None, ""):
+            path = Path(__file__).resolve().parent / "config" / "session_aware_policy.yaml"
+        else:
+            path = Path(str(configured)).expanduser()
+            if not path.is_absolute():
+                raise ValueError("dynamo.session_aware.policy_config_path must be an absolute path")
+        path = path.resolve()
+        if not path.is_file():
+            raise FileNotFoundError(f"SessionAware router policy config does not exist: {path}")
+        return str(path)
 
     def _thunderagent_router_block_size(self) -> int:
         value = int(self._thunderagent_config().get("router_block_size", 16))
@@ -119,6 +153,13 @@ class DynamoThunderAgentHttpServer(DynamoHttpServer):
         args = super()._frontend_router_args()
         if self._thunderagent_enabled() and "--router-reset-states" not in args:
             args.append("--router-reset-states")
+        if self._session_aware_enabled():
+            if any(arg == "--router-policy-config" or arg.startswith("--router-policy-config=") for arg in args):
+                raise ValueError(
+                    "configure the native policy through dynamo.session_aware.policy_config_path, "
+                    "not dynamo.frontend_extra_args"
+                )
+            args.extend(["--router-policy-config", self._session_aware_policy_config_path()])
         return args
 
     def _start_thunderagent(self) -> None:
@@ -186,15 +227,27 @@ class DynamoThunderAgentHttpServer(DynamoHttpServer):
         ) as response:
             return response.status, await response.text()
 
-    async def generate(self, *args, thunderagent_session_id: Optional[str] = None, **kwargs):
-        if not self._thunderagent_enabled():
+    async def generate(
+        self,
+        *args,
+        thunderagent_session_id: Optional[str] = None,
+        session_aware_session_id: Optional[str] = None,
+        **kwargs,
+    ):
+        if self._thunderagent_enabled():
+            session_id = thunderagent_session_id
+            mode_name = "ThunderAgent"
+        elif self._session_aware_enabled():
+            session_id = session_aware_session_id
+            mode_name = "native SessionAware"
+        else:
             return await super().generate(*args, **kwargs)
-        if not thunderagent_session_id:
-            raise RuntimeError("ThunderAgent generation requires a non-empty session ID")
+        if not session_id:
+            raise RuntimeError(f"{mode_name} generation requires a non-empty session ID")
         if self._use_direct_generate():
-            raise RuntimeError("direct_generate bypasses ThunderAgent and cannot be enabled")
+            raise RuntimeError(f"direct_generate bypasses {mode_name} and cannot be enabled")
 
-        token = _REQUEST_PROGRAM.set((thunderagent_session_id, False))
+        token = _REQUEST_PROGRAM.set((session_id, False))
         try:
             return await super().generate(*args, **kwargs)
         finally:
@@ -252,6 +305,57 @@ class DynamoThunderAgentHttpServer(DynamoHttpServer):
                 if attempt < attempts:
                     await asyncio.sleep(self._finalize_retry_delay())
             raise RuntimeError(f"ThunderAgent final request failed after {attempts} attempts") from last_error
+        finally:
+            _REQUEST_PROGRAM.reset(token)
+
+    def _session_aware_finalize_max_attempts(self) -> int:
+        attempts = int(self._session_aware_config().get("finalize_max_attempts", 3))
+        if attempts <= 0:
+            raise ValueError("session_aware.finalize_max_attempts must be positive")
+        return attempts
+
+    def _session_aware_finalize_retry_delay(self) -> float:
+        delay = float(self._session_aware_config().get("finalize_retry_delay_s", 0.1))
+        if delay < 0:
+            raise ValueError("session_aware.finalize_retry_delay_s must be non-negative")
+        return delay
+
+    @staticmethod
+    def _validate_session_aware_final_response(status: int, body: str) -> None:
+        if not 200 <= status < 300:
+            raise RuntimeError(f"SessionAware final request failed status={status} body={body[:2000]!r}")
+
+    async def finalize_session_aware(self, session_id: str) -> None:
+        """Release native SessionAware state and discard the forwarded completion."""
+        if not self._session_aware_enabled():
+            return
+        if not session_id:
+            raise ValueError("session_id must be non-empty")
+
+        request_id = f"session-aware-final-{uuid4().hex}"
+        payload = {
+            "model": self._served_model_name or self.model_config.local_path,
+            "prompt": [0],
+            "max_tokens": 1,
+            "stream": False,
+        }
+        token = _REQUEST_PROGRAM.set((session_id, True))
+        try:
+            last_error = None
+            attempts = self._session_aware_finalize_max_attempts()
+            for attempt in range(1, attempts + 1):
+                try:
+                    status, body = await self._frontend_post(payload, request_id)
+                except Exception as error:
+                    last_error = error
+                else:
+                    if status not in {408, 429} and status < 500:
+                        self._validate_session_aware_final_response(status, body)
+                        return
+                    last_error = RuntimeError(f"SessionAware final request failed status={status} body={body[:2000]!r}")
+                if attempt < attempts:
+                    await asyncio.sleep(self._session_aware_finalize_retry_delay())
+            raise RuntimeError(f"SessionAware final request failed after {attempts} attempts") from last_error
         finally:
             _REQUEST_PROGRAM.reset(token)
 
