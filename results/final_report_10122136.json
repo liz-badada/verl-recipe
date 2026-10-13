@@ -1,0 +1,137 @@
+[
+ {
+  "run": "ta-native-h20sub-10122136",
+  "summary": {
+   "run": "ta-native-h20sub-10122136",
+   "peak_concurrent_sessions": 274,
+   "sessions_scored": 512,
+   "sessions_done": 462,
+   "expected": 512,
+   "trajectories": 462,
+   "subagent_trajectories": 0,
+   "sessions_with_subagents": 0,
+   "wall_s": 7968.0,
+   "model_tokens": 2363288,
+   "context_tokens": 14271592,
+   "model_tokens_per_s": 296.5973895582329,
+   "context_tokens_per_s": 1791.113453815261,
+   "turns_mean": 57.484848484848484,
+   "response_len_mean": 30890.891774891774,
+   "finished_trajectories": 288,
+   "reward_mean": 0.3354978354978355,
+   "session_latency_mean_s": 2462.6082251082253,
+   "notes": [
+    "ARM=ta-native RUN_NAME=ta-native-h20sub-10122136 BATCH=32 N=16 CONCURRENCY=256 MAX_PROMPT=8192 MAX_RESP=65536 GPU_MEM=0.75 MAX_NUM_SEQS=256 TP=4 KV_BYTES=64424509440 TA_PARAMS={scheduler_interval_seco",
+    "ROLLOUT_DONE_EPOCH=1791822265 sessions=401"
+   ]
+  },
+  "claude_outcomes": {
+   "finished_ok": 399,
+   "exit1_max_turns": 237,
+   "timed_out": 22
+  },
+  "subagents": {
+   "sessions": 599,
+   "sessions_dispatching_subagents": 412,
+   "subagent_dispatches": 1273,
+   "dispatches_per_dispatching_session": 3.0898058252427183,
+   "tool_calls_total": 16087
+  },
+  "ta_forced_resumes": 541,
+  "vllm": {
+   "samples": 1672,
+   "gen_tok_s_mean_per_engine": 600.9725478468899,
+   "kv_usage_mean_pct": 35.04551435406699,
+   "prefix_hit_mean_pct": 94.42505980861245,
+   "running_reqs_mean": 36.98863636363637
+  }
+ },
+ {
+  "run": "global-h20sub-10122136",
+  "summary": {
+   "run": "global-h20sub-10122136",
+   "peak_concurrent_sessions": 256,
+   "sessions_scored": 512,
+   "sessions_done": 301,
+   "expected": 512,
+   "trajectories": 301,
+   "subagent_trajectories": 0,
+   "sessions_with_subagents": 0,
+   "wall_s": 10127.0,
+   "model_tokens": 806320,
+   "context_tokens": 8398484,
+   "model_tokens_per_s": 79.6208156413548,
+   "context_tokens_per_s": 829.3160857114644,
+   "turns_mean": 41.31229235880399,
+   "response_len_mean": 27901.94019933555,
+   "finished_trajectories": 43,
+   "reward_mean": 0.19601328903654486,
+   "session_latency_mean_s": 5161.548172757475,
+   "notes": [
+    "ARM=global RUN_NAME=global-h20sub-10122136 BATCH=32 N=16 CONCURRENCY=256 MAX_PROMPT=8192 MAX_RESP=65536 GPU_MEM=0.75 MAX_NUM_SEQS=256 TP=4 KV_BYTES=64424509440 TA_PARAMS={scheduler_interval_seconds: 1",
+    "ROLLOUT_DONE_EPOCH=1791833303 sessions=300"
+   ]
+  },
+  "claude_outcomes": {
+   "finished_ok": 43,
+   "exit1_max_turns": 31,
+   "timed_out": 227
+  },
+  "subagents": {
+   "sessions": 301,
+   "sessions_dispatching_subagents": 78,
+   "subagent_dispatches": 216,
+   "dispatches_per_dispatching_session": 2.769230769230769,
+   "tool_calls_total": 5881
+  },
+  "ta_forced_resumes": 0,
+  "vllm": {
+   "samples": 1995,
+   "gen_tok_s_mean_per_engine": 182.071679197995,
+   "kv_usage_mean_pct": 96.45944862155389,
+   "prefix_hit_mean_pct": 40.22275689223058,
+   "running_reqs_mean": 119.39298245614034
+  }
+ },
+ {
+  "run": "kv-h20sub-kv-10130401",
+  "summary": {
+   "run": "kv-h20sub-kv-10130401",
+   "peak_concurrent_sessions": 256,
+   "sessions_scored": 512,
+   "sessions_done": 267,
+   "expected": 512,
+   "trajectories": 267,
+   "subagent_trajectories": 0,
+   "sessions_with_subagents": 0,
+   "wall_s": 10132.0,
+   "model_tokens": 586666,
+   "context_tokens": 7460216,
+   "model_tokens_per_s": 57.90228977497039,
+   "context_tokens_per_s": 736.3024082116068,
+   "turns_mean": 36.857677902621724,
+   "response_len_mean": 27940.883895131086,
+   "finished_trajectories": 1,
+   "reward_mean": 0.17228464419475656,
+   "session_latency_mean_s": 5485.419475655431,
+   "notes": [
+    "ARM=kv RUN_NAME=kv-h20sub-kv-10130401 BATCH=32 N=16 CONCURRENCY=256 MAX_PROMPT=8192 MAX_RESP=65536 GPU_MEM=0.75 MAX_NUM_SEQS=256 TP=4 KV_BYTES=64424509440 TA_PARAMS={scheduler_interval_seconds: 1, res",
+    "ROLLOUT_DONE_EPOCH=1791846125 sessions=267"
+   ]
+  },
+  "claude_outcomes": {
+   "finished_ok": 1,
+   "exit1_max_turns": 15,
+   "timed_out": 253
+  },
+  "subagents": null,
+  "ta_forced_resumes": 0,
+  "vllm": {
+   "samples": 2068,
+   "gen_tok_s_mean_per_engine": 140.87785299806578,
+   "kv_usage_mean_pct": 95.39651837524178,
+   "prefix_hit_mean_pct": 34.074709864603484,
+   "running_reqs_mean": 117.69825918762089
+  }
+ }
+]

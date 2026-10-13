@@ -1,0 +1,5 @@
+[07:06:55] arm ta-native start
+[09:38:41] arm ta-native done: "sessions_done":358,"subagent_trajectories":0,"wall_s":5785.0,"model_tokens_per_s":239.53154710458082,
+[09:40:11] arm global start
+[11:47:18] arm global done: "sessions_done":510,"subagent_trajectories":0,"wall_s":5985.0,"model_tokens_per_s":141.93400167084377,
+[11:48:48] ALL DONE

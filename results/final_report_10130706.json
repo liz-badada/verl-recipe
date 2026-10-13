@@ -1,0 +1,95 @@
+[
+ {
+  "run": "ta-native-h20cc512-10130706",
+  "summary": {
+   "run": "ta-native-h20cc512-10130706",
+   "peak_concurrent_sessions": 512,
+   "sessions_scored": 512,
+   "sessions_done": 358,
+   "expected": 512,
+   "trajectories": 358,
+   "subagent_trajectories": 0,
+   "sessions_with_subagents": 0,
+   "wall_s": 5785.0,
+   "model_tokens": 1385690,
+   "context_tokens": 10371290,
+   "model_tokens_per_s": 239.53154710458082,
+   "context_tokens_per_s": 1792.7899740708729,
+   "turns_mean": 52.212290502793294,
+   "response_len_mean": 28970.083798882682,
+   "finished_trajectories": 191,
+   "reward_mean": 0.4441340782122905,
+   "session_latency_mean_s": 2600.036312849162,
+   "notes": [
+    "ARM=ta-native RUN_NAME=ta-native-h20cc512-10130706 BATCH=32 N=16 CONCURRENCY=512 MAX_PROMPT=8192 MAX_RESP=65536 GPU_MEM=0.75 MAX_NUM_SEQS=256 TP=4 KV_BYTES=64424509440 TA_PARAMS={scheduler_interval_se"
+   ]
+  },
+  "claude_outcomes": {
+   "finished_ok": 348,
+   "exit1_max_turns": 366,
+   "timed_out": 131
+  },
+  "subagents": {
+   "sessions": 596,
+   "sessions_dispatching_subagents": 210,
+   "subagent_dispatches": 316,
+   "dispatches_per_dispatching_session": 1.5047619047619047,
+   "tool_calls_total": 14677
+  },
+  "ta_forced_resumes": 729,
+  "vllm": {
+   "samples": 1144,
+   "gen_tok_s_mean_per_engine": 589.5604895104896,
+   "kv_usage_mean_pct": 31.2861013986014,
+   "prefix_hit_mean_pct": 93.8159965034965,
+   "running_reqs_mean": 37.32692307692308
+  }
+ },
+ {
+  "run": "global-h20cc512-10130706",
+  "summary": {
+   "run": "global-h20cc512-10130706",
+   "peak_concurrent_sessions": 512,
+   "sessions_scored": 512,
+   "sessions_done": 510,
+   "expected": 512,
+   "trajectories": 510,
+   "subagent_trajectories": 0,
+   "sessions_with_subagents": 0,
+   "wall_s": 5985.0,
+   "model_tokens": 849475,
+   "context_tokens": 13930615,
+   "model_tokens_per_s": 141.93400167084377,
+   "context_tokens_per_s": 2327.5881370091897,
+   "turns_mean": 33.627450980392155,
+   "response_len_mean": 27314.93137254902,
+   "finished_trajectories": 10,
+   "reward_mean": 0.2196078431372549,
+   "session_latency_mean_s": 5467.011764705882,
+   "notes": [
+    "ARM=global RUN_NAME=global-h20cc512-10130706 BATCH=32 N=16 CONCURRENCY=512 MAX_PROMPT=8192 MAX_RESP=65536 GPU_MEM=0.75 MAX_NUM_SEQS=256 TP=4 KV_BYTES=64424509440 TA_PARAMS={scheduler_interval_seconds:",
+    "ROLLOUT_DONE_EPOCH=1791862996 sessions_first512_done=510"
+   ]
+  },
+  "claude_outcomes": {
+   "finished_ok": 13,
+   "exit1_max_turns": 37,
+   "timed_out": 486
+  },
+  "subagents": {
+   "sessions": 536,
+   "sessions_dispatching_subagents": 79,
+   "subagent_dispatches": 86,
+   "dispatches_per_dispatching_session": 1.0886075949367089,
+   "tool_calls_total": 8448
+  },
+  "ta_forced_resumes": 0,
+  "vllm": {
+   "samples": 1293,
+   "gen_tok_s_mean_per_engine": 146.05058004640372,
+   "kv_usage_mean_pct": 96.25290023201856,
+   "prefix_hit_mean_pct": 43.163109048723896,
+   "running_reqs_mean": 130.37432327919566
+  }
+ }
+]

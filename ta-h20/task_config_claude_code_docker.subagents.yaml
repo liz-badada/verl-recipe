@@ -1,0 +1,27 @@
+# Same as task_config_claude_code_docker.yaml, but the task prompt asks Claude Code to fan out
+# Explore subagents first, so every rollout exercises the subagent program tree.
+- name: swe_bench
+  eval_timeout: 600
+  sandbox:
+    provider: docker
+    runtime_timeout: 7200
+    executable_paths:
+      claude: /opt/claude-code/claude
+    sandbox_kwargs:
+      pull_policy: never
+      start_timeout: 600
+      run_args: ["-v", "/lustre/raplab/client/jinyanc/.local/share/claude/versions/2.1.296:/opt/claude-code/claude:ro", "--memory", "16g", "--cpus", "4"]
+  agent:
+    name: claude_code
+    max_turns: 30
+    run_timeout: 5400
+    enable_subagents: true
+  prompt_template:
+    - role: user
+      content: |-
+        Read the following task description and resolve the issue in the current directory.
+
+        Task description:
+        {problem_statement}
+
+        Work in two phases. Phase 1: use the Agent tool to dispatch three subagents in parallel, each exploring a different part of the repository relevant to this issue (the failing code path, the tests that cover it, and related callers), and have each report the exact files, functions and line ranges involved. Phase 2: using their reports, make the minimal correct changes yourself and verify the result with appropriate tests or checks. Do not modify tests or commit changes. When finished, briefly summarize what changed and how it was verified.

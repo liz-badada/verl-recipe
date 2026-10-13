@@ -1,0 +1,9 @@
+[16:43:09] smoke: dynamo frontend + native TA + vLLM 0.24 worker on GPU 7
+[16:44:05] dynamo smoke ok: 6 completions; TA lines: 1
+[16:44:05] smoke: tiny ta-native full stack (2 prompts x 2)
+[17:03:28] full-stack smoke ok: "sessions_done":5,"subagent_trajectories":0,"wall_s":338.0,
+[17:03:28] arm ta-native start
+grep: /lustre/raplab/client/jinyanc/workspace/jinyanc/ci/ta-h20/runs/ta-native-h20-10121643/summary.txt: No such file or directory
+[19:22:03] arm ta-native done: 
+[19:23:33] arm global start
+[21:35:27] arm global done: "sessions_done":509,"subagent_trajectories":0,"wall_s":6885.0,"model_tokens_per_s":335.00450254175746,

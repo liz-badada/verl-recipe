@@ -1,0 +1,6 @@
+# dynamo-nightly-ci plus the vLLM engine the nightly ai-dynamo wheel pins (vllm 0.31.0, CUDA 13 wheels),
+# for running the subagent benchmark against real engines on a GPU node.
+FROM dynamo-nightly-ci:20261009
+ARG AI_DYNAMO_VERSION=1.6.0.dev20261009
+RUN pip install -q "ai-dynamo[vllm]==${AI_DYNAMO_VERSION}" 2>&1 | tail -3 \
+    && python -c "import vllm, torch; print('vllm', vllm.__version__, 'torch', torch.__version__, 'cuda', torch.version.cuda)"
