@@ -17,11 +17,16 @@ for cc in ${CCS:-256 384 128 64}; do
   for arm in ${ARMS:-ta-native global}; do
     name=$arm-h20cc$cc-$TAG
     if grep -q '"sessions_done": [1-9]' $H/runs/$name/summary.txt 2>/dev/null; then log "skip $name (done)"; continue; fi
-    [ -d $H/runs/$name ] && mv $H/runs/$name $H/runs/$name-failed-$(date +%H%M)
-    wait_free; sleep 60; wait_free
-    log "arm $arm cc=$cc n=$n start ($name)"
-    BATCH=32 N=$n CONCURRENCY=$cc RAY_NUM_CPUS=$cpus bash $H/run_arm.sh $arm $name > /dev/null 2>&1
-    log "arm $arm cc=$cc done: $(grep -E 'sessions_done|wall_s|model_tokens_per_s' $H/runs/$name/summary.txt 2>/dev/null | tr -d ' \n')"
+    # An arm whose engines never started (another job grabbed the GPUs while we were loading) is retried, not skipped.
+    for attempt in 1 2 3 4 5 6; do
+      [ -d $H/runs/$name ] && mv $H/runs/$name $H/runs/$name-failed-$(date +%H%M)
+      wait_free; sleep 60; wait_free
+      log "arm $arm cc=$cc n=$n start ($name, attempt $attempt)"
+      BATCH=32 N=$n CONCURRENCY=$cc RAY_NUM_CPUS=$cpus bash $H/run_arm.sh $arm $name > /dev/null 2>&1
+      log "arm $arm cc=$cc done: $(grep -E 'sessions_done|wall_s|model_tokens_per_s' $H/runs/$name/summary.txt 2>/dev/null | tr -d ' \n')"
+      grep -q '"sessions_done": [1-9]' $H/runs/$name/summary.txt 2>/dev/null && break
+      log "arm $arm cc=$cc produced no sessions (GPUs taken during startup?); will retry"
+    done
     docker ps -q --filter name=uni-agent- | xargs -r docker rm -f >/dev/null 2>&1; sleep 90
   done
 done
