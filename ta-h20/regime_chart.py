@@ -81,7 +81,7 @@ def main():
         g = next((x for x in p["default"]["global"] if x["cc"] == d["cc"]), None)
         if g and d["cc"] >= 384: d["ann"] = f' (+{(d["v"]/g["v"]-1)*100:.0f}% vs global)'
     block = '<!-- regime-chart -->\n<figure style="margin:28px 0 8px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--surface)">' + svg(p) + \
-            '<figcaption style="padding:10px 16px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line)">参考 PyTorch blog 的 regime 图：横轴并发，纵轴模型生成 tok/s。实线为默认 prompt；CC 64/128/384（及 256 的 global 臂）的默认 prompt 点由 <code>sweep_cc.sh</code> 补跑中，完成后更新。数据：<code>regime_points.json</code>。</figcaption></figure>\n<!-- /regime-chart -->'
+            '<figcaption style="padding:10px 16px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line)">参考 PyTorch blog 的 regime 图：横轴并发，纵轴模型生成 tok/s。实线为默认 prompt；CC 64/128/384 的默认 prompt 点由 <code>sweep_cc.sh</code> 补跑中，完成后更新。数据：<code>regime_points.json</code>。</figcaption></figure>\n<!-- /regime-chart -->'
     if len(sys.argv) > 2:
         html = open(sys.argv[2]).read()
         if '<!-- regime-chart -->' in html:
