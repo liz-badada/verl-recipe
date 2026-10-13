@@ -1,0 +1,15 @@
+{
+  "note": "model tok/s over the scored window; default Claude Code prompt unless flagged",
+  "default": {
+    "global":    [{"cc": 95,  "v": 335.0, "run": "global-h20-10121643",        "label": "≈95*"},
+                  {"cc": 512, "v": 143.5, "run": "global-h20cc512-10130706"}],
+    "ta-native": [{"cc": 95,  "v": 354.6, "run": "ta-native-h20-10121643",     "label": "≈95*"},
+                  {"cc": 512, "v": 347.7, "run": "ta-native-h20cc512-10130706"}]
+  },
+  "subagent_prompt": {
+    "global":    [{"cc": 256, "v": 91.6,  "run": "global-h20sub-10122136"}],
+    "ta-native": [{"cc": 256, "v": 296.6, "run": "ta-native-h20sub-10122136"}],
+    "kv":        [{"cc": 256, "v": 71.5,  "run": "kv-h20sub-kv-10130401"}]
+  },
+  "pending": [64, 128, 256, 384]
+}
