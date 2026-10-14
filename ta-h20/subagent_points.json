@@ -14,20 +14,20 @@
   "duration_with": 2053,
   "duration_without": 1622
  },
- "global-h20cc128-10131520": {
+ "global-h20cc128-10141340": {
   "regime": "default",
   "arm": "global",
   "cc": 128,
-  "tok_s": 1300,
+  "tok_s": 1305,
   "peak_programs": null,
   "pre_fix": false,
-  "sessions": 250,
-  "with_sub": 95,
-  "dispatches": 146,
-  "finished_rate_with": 0.547,
-  "finished_rate_without": 0.477,
-  "duration_with": 1320,
-  "duration_without": 922
+  "sessions": 253,
+  "with_sub": 98,
+  "dispatches": 156,
+  "finished_rate_with": 0.561,
+  "finished_rate_without": 0.497,
+  "duration_with": 1496,
+  "duration_without": 897
  },
  "global-h20cc256-10131520": {
   "regime": "default",
@@ -119,20 +119,20 @@
   "duration_with": 662,
   "duration_without": 413
  },
- "ta-native-h20cc128-10131520": {
+ "ta-native-h20cc128-10141340": {
   "regime": "default",
   "arm": "ta-native",
   "cc": 128,
-  "tok_s": 1279,
-  "peak_programs": 195,
+  "tok_s": 1301,
+  "peak_programs": 201,
   "pre_fix": false,
-  "sessions": 230,
-  "with_sub": 87,
-  "dispatches": 131,
-  "finished_rate_with": 0.667,
-  "finished_rate_without": 0.545,
-  "duration_with": 973,
-  "duration_without": 759
+  "sessions": 234,
+  "with_sub": 101,
+  "dispatches": 153,
+  "finished_rate_with": 0.594,
+  "finished_rate_without": 0.534,
+  "duration_with": 993,
+  "duration_without": 734
  },
  "ta-native-h20cc256-10141340": {
   "regime": "default",

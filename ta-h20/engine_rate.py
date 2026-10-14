@@ -1,7 +1,8 @@
 """engine_rate.py <run>...: engine-side throughput from the vLLM scheduler stats each engine logs every ~10 s.
 
 Counts every generated token (sessions that later timed out or were still running at the stop included),
-so it is independent of how many sessions finished. Window = first to last stats line with Running > 0.
+so it is independent of how many sessions finished. Window = sampled time between the first and last stats line
+with Running > 0, gaps capped at 30 s (a stray late stats line does not stretch it).
 """
 import glob, os, re, sys
 from datetime import datetime
@@ -51,15 +52,21 @@ def main():
         eng = samples(run)
         if not eng: print(run, "no stats"); continue
         starts, ends, gen, pre, kv, hit, runn, n = [], [], 0.0, 0.0, 0.0, 0.0, 0.0, 0
+        spans = []
         for e, s in eng.items():
             s.sort(); act = [x for x in s if x[3] > 0]
             if not act: continue
             starts.append(act[0][0]); ends.append(act[-1][0])
+            span = 0.0
             for i in range(1, len(s)):
                 dt = min(s[i][0] - s[i-1][0], 30)
                 gen += s[i][2] * dt; pre += s[i][1] * dt
+                if act[0][0] <= s[i][0] <= act[-1][0]: span += dt
+            spans.append(span)
             for x in act: kv += x[5]; hit += x[6]; runn += x[3]; n += 1
-        w = max(ends) - min(starts)
+        # Window = sampled time between the first and last active stats line, each gap capped at 30 s
+        # like the token sum above, so a stray stats line long after the run cannot stretch the denominator.
+        w = max(spans)
         b = [g for _, g in buckets(run) if g > 0][1:-1]; b.sort(); steady = b[len(b)//2] if b else 0
         print(f"{os.path.basename(run):40s} {len(eng):7d} {w:8.0f} {gen/w:9.1f} {steady:9d} {pre/w:13.0f} {kv/n:5.0f} {hit/n:5.0f} {runn/n:7.0f}")
 main()
