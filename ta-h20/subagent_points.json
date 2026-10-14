@@ -149,20 +149,20 @@
   "duration_with": 1716,
   "duration_without": 1753
  },
- "ta-native-h20cc384-10131520": {
+ "ta-native-h20cc384-10141340": {
   "regime": "default",
   "arm": "ta-native",
   "cc": 384,
-  "tok_s": 1231,
-  "peak_programs": 520,
-  "pre_fix": true,
-  "sessions": 450,
-  "with_sub": 172,
-  "dispatches": 271,
-  "finished_rate_with": 0.634,
-  "finished_rate_without": 0.446,
-  "duration_with": 2362,
-  "duration_without": 2235
+  "tok_s": 1219,
+  "peak_programs": 516,
+  "pre_fix": false,
+  "sessions": 509,
+  "with_sub": 236,
+  "dispatches": 371,
+  "finished_rate_with": 0.606,
+  "finished_rate_without": 0.527,
+  "duration_with": 2527,
+  "duration_without": 2127
  },
  "ta-native-h20cc512-10141340": {
   "regime": "default",

@@ -30,7 +30,7 @@ TXT = {
         "<code>trajectory_selection=longest</code> 还会丢掉 subagent 自己的链），再除以窗口时长。global 在 CC 256/384 撞到 3 小时上限时还有 104 / 75 个 session 没结束，"
         "它们几个小时里生成的 token 全部不计数，而时间照算；到 CC 512，几乎所有 session 都在窗口内被 90 分钟超时切断而“结束”，token 就都算进去了。"
         "于是出现了 105 → 86 → 144 这条假的 V 形。换成引擎侧计数后，global 是单调的 1282 → 1300 → 313 → 284 → 284，和 blog 的形状一致；"
-        "TA 在 64 到 512 全程 1229 到 1279，是一条水平线。TA 在 384 的全程均值（797，†修复前）偏低，是修复 9f32e49 之前 session 关闭时泄漏的 program 在末尾造成的停滞；CC 512 用修复后代码复测，全程均值从 827 回到 1196，稳态不变（1255 → 1229）。"
+        "TA 在 64 到 512 全程 1219 到 1279，是一条水平线。修复 9f32e49 之前 TA 在 384/512 的全程均值只有 797 / 827：session 关闭时泄漏的 program 在末尾造成停滞；用修复后代码（804b377）复测后回到 1210 / 1196，稳态几乎不变（1231 → 1219、1255 → 1229），256/384/512 三个 TA 点都已换成复测值。"
         "两套口径都保留在表里；session 口径的数字仍是 trainer 真正拿到的训练数据的速度，对比第三、四、五节。")),
  "en": dict(h2="3 · Concurrency scan: the blog-style regime chart", lead=(
    "Following the blog, concurrency is swept from 64 to 512 (default prompt, 60 GiB KV per GPU, otherwise the sweep-3 configuration). CC 256/384/512 run the full 32×16=512 sessions, "
@@ -42,8 +42,8 @@ TXT = {
    why=("Versions 6 to 13 of this page plotted the \"model tok/s\" from <code>summarize_run.py</code>: only trajectories kept from sessions that <em>ended</em> inside the scored window count "
         "(<code>trajectory_selection=longest</code> also drops the subagents' own chains), divided by the window length. When global hit the 3-hour cap at CC 256/384 it still had 104 / 75 sessions running; "
         "every token they generated over hours was dropped while their time counted. At CC 512 nearly every session \"ended\" inside the window through the 90-minute timeout, so their tokens counted. "
-        "That produced the spurious 105 → 86 → 144 V shape. Counted engine-side, global is monotone, 1282 → 1300 → 313 → 284 → 284, the same shape as the blog; TA stays between 1229 and 1279 from 64 to 512, a flat line. "
-        "TA's lower window average at 384 (797, † pre-fix) is the end-of-run stall caused by programs leaked at session close before fix 9f32e49; CC 512 re-measured on the fixed code brings the window average from 827 back to 1196 with the steady value unchanged (1255 → 1229). "
+        "That produced the spurious 105 → 86 → 144 V shape. Counted engine-side, global is monotone, 1282 → 1300 → 313 → 284 → 284, the same shape as the blog; TA stays between 1219 and 1279 from 64 to 512, a flat line. "
+        "Before fix 9f32e49 TA's window averages at 384/512 were only 797 / 827, an end-of-run stall caused by programs leaked at session close; re-measured on the fixed code (804b377) they return to 1210 / 1196 with the steady values nearly unchanged (1231 → 1219, 1255 → 1229), and all three TA points at 256/384/512 are now the re-measured values. "
         "Both metrics stay in the table; the session-level number is still the rate at which the trainer actually receives training data, see sections 3 to 5.")),
 }
 
