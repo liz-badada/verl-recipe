@@ -16,13 +16,13 @@ TXT = {
             sub="Uni-Agent SWE-bench Verified ×32 · Claude Code 2.1.296（subagent 开启）· 8× H20 · Qwen3-Coder-30B-A3B · rollout-only · 每卡 KV 60 GiB",
             y="引擎生成吞吐，稳态 (tokens s⁻¹)", x="agent 并发数 (CC，同时在跑的 Claude Code session)", regime="高并发区 (CC ≥ 384)",
             pend="运行中", pendg="global 运行中", sub_note="虚线框点：第二轮，强制派 3 个 subagent 的 prompt",
-            foot="* 第一轮名义 512 并发，但 Ray 默认 128 个 CPU 槽位只允许约 95 个 sandbox 同时运行，按实测并发标在 ≈95。纵轴为两台引擎 vLLM 调度器统计的生成 tok/s 的稳态中位数（10 分钟桶），计入每一个生成的 token，与 session 是否完成无关。",
+            foot="* 第一轮名义 512 并发，但 Ray 默认 128 个 CPU 槽位只允许约 95 个 sandbox 同时运行，按实测并发标在 ≈95。纵轴为两台引擎 vLLM 调度器统计的生成 tok/s 的稳态中位数（10 分钟桶），计入每一个生成的 token，与 session 是否完成无关。† 修复 9f32e49 之前的测量，重跑中。",
             cap="参考 PyTorch blog 的 regime 图：横轴并发，纵轴引擎生成 tok/s。实线为默认 prompt。数据：<code>regime_points.json</code>，由 <code>engine_rate.py</code> 从各臂的 vLLM 统计日志算出。"),
  "en": dict(title="Claude Code subagent RL rollouts: native ThunderAgent holds throughput at high concurrency, global LB drops 4× past CC 256",
             sub="Uni-Agent SWE-bench Verified ×32 · Claude Code 2.1.296 (subagents on) · 8× H20 · Qwen3-Coder-30B-A3B · rollout-only · 60 GiB KV per GPU",
             y="Engine generation throughput, steady state (tokens s⁻¹)", x="Agent admission concurrency (CC, Claude Code sessions in flight)", regime="High-concurrency regime (CC ≥ 384)",
             pend="running", pendg="global running", sub_note="Dashed-outline points: sweep 2, prompt forcing 3 subagents",
-            foot="* Sweep 1 was nominally CC 512, but Ray's default 128 CPU slots capped live sandboxes at about 95; plotted at the measured ≈95. Y is the steady-state median (10-min buckets) of the generation tok/s both engines' vLLM schedulers report, counting every generated token regardless of whether its session finished.",
+            foot="* Sweep 1 was nominally CC 512, but Ray's default 128 CPU slots capped live sandboxes at about 95; plotted at the measured ≈95. Y is the steady-state median (10-min buckets) of the generation tok/s both engines' vLLM schedulers report, counting every generated token regardless of whether its session finished. † measured before fix 9f32e49, re-run pending.",
             cap="Same construction as the PyTorch blog regime chart: concurrency on x, engine generation tok/s on y. Solid lines are the default prompt. Data: <code>regime_points.json</code>, computed by <code>engine_rate.py</code> from each arm's vLLM stats logs."),
 }
 
@@ -92,6 +92,7 @@ def block(p, lang):
     for d in p["default"]["ta-native"]:
         g = next((x for x in p["default"]["global"] if x["cc"] == d["cc"]), None)
         if g and d["cc"] >= 384: d["ann"] = f' (+{(d["v"]/g["v"]-1)*100:.0f}% vs global)'
+        if d.get("pre_fix"): d["ann"] = "†" + d.get("ann", "")
     return ('<!-- regime-chart -->\n<figure style="margin:28px 0 8px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--surface)">' + svg(p, t) +
             f'<figcaption style="padding:10px 16px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line)">{t["cap"]}</figcaption></figure>\n<!-- /regime-chart -->')
 

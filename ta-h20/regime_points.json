@@ -1,5 +1,5 @@
 {
- "note": "v = steady-state engine-side generation tok/s (median of 10-min buckets, both engines, from vLLM scheduler stats); w = window average; default Claude Code prompt unless flagged",
+ "note": "v = steady-state engine-side generation tok/s (median of 10-min buckets, both engines, from vLLM scheduler stats); w = window average; default Claude Code prompt unless flagged; pre_fix = TA run measured before fix 9f32e49 (program leak at session close), re-measurement pending",
  "default": {
   "global": [
    {
@@ -62,21 +62,22 @@
    },
    {
     "cc": 256,
-    "v": 1255,
-    "w": 1260,
-    "run": "ta-native-h20cc256-10131520"
+    "v": 1241,
+    "w": 1242,
+    "run": "ta-native-h20cc256-10141340"
    },
    {
     "cc": 384,
     "v": 1231,
     "w": 797,
-    "run": "ta-native-h20cc384-10131520"
+    "run": "ta-native-h20cc384-10131520",
+    "pre_fix": true
    },
    {
     "cc": 512,
-    "v": 1255,
-    "w": 827,
-    "run": "ta-native-h20cc512-10130706"
+    "v": 1229,
+    "w": 1196,
+    "run": "ta-native-h20cc512-10141340"
    }
   ]
  },
@@ -94,7 +95,8 @@
     "cc": 256,
     "v": 1214,
     "w": 1208,
-    "run": "ta-native-h20sub-10122136"
+    "run": "ta-native-h20sub-10122136",
+    "pre_fix": true
    }
   ],
   "kv": [

@@ -24,26 +24,26 @@ TXT = {
    "CC 64/128 跑两波（32×4、32×8），每个臂 3 小时墙钟上限。纵轴用<strong>引擎侧生成吞吐</strong>：两台 vLLM 引擎每 10 秒上报的调度器统计里的 "
    "generation tok/s，计入每一个生成的 token，与 session 是否结束无关；“稳态”取 10 分钟桶的中位数，“全程均值”把首尾爬坡和空转尾巴也算进去。"),
    cap="并发扫描：引擎侧吞吐与 session 结果", cols=["并发 CC", "TA 引擎 tok/s 稳态（全程）", "global 引擎 tok/s 稳态（全程）", "TA / global", "TA session 结束 / 完成", "global session 结束 / 完成", "TA session 均时", "global session 均时"],
-   running="运行中", note95="≈95*", foot95="* 第一轮：名义 512 并发，被 Ray 槽位压到约 95 个 sandbox 同时在跑。512 行取第三轮，session 列按“前 512 个按开始时间”规则，trainer 口径见第四节。",
+   running="运行中", note95="≈95*", foot95="* 第一轮：名义 512 并发，被 Ray 槽位压到约 95 个 sandbox 同时在跑。512 行取第三轮，session 列按“前 512 个按开始时间”规则，trainer 口径见第五节。† 修复 9f32e49 之前的测量，重跑中。",
    why_h3="为什么早先版本的折线会“先掉再回升”",
    why=("本页 v6 到 v13 的折线用的是 <code>summarize_run.py</code> 的“model tok/s”：只统计计分窗口内<em>结束</em>的 session 保留下来的轨迹（"
         "<code>trajectory_selection=longest</code> 还会丢掉 subagent 自己的链），再除以窗口时长。global 在 CC 256/384 撞到 3 小时上限时还有 104 / 75 个 session 没结束，"
         "它们几个小时里生成的 token 全部不计数，而时间照算；到 CC 512，几乎所有 session 都在窗口内被 90 分钟超时切断而“结束”，token 就都算进去了。"
         "于是出现了 105 → 86 → 144 这条假的 V 形。换成引擎侧计数后，global 是单调的 1282 → 1300 → 313 → 284 → 284，和 blog 的形状一致；"
-        "TA 在 64 到 512 全程 1231 到 1279，是一条水平线。TA 在 384/512 的全程均值（797 / 827）偏低，是因为最后几十个 session 在沙箱里跑测试、引擎空转的尾巴被算进了时间，不是调度器的吞吐下降。"
+        "TA 在 64 到 512 全程 1229 到 1279，是一条水平线。TA 在 384 的全程均值（797，†修复前）偏低，是修复 9f32e49 之前 session 关闭时泄漏的 program 在末尾造成的停滞；CC 512 用修复后代码复测，全程均值从 827 回到 1196，稳态不变（1255 → 1229）。"
         "两套口径都保留在表里；session 口径的数字仍是 trainer 真正拿到的训练数据的速度，对比第三、四、五节。")),
  "en": dict(h2="3 · Concurrency scan: the blog-style regime chart", lead=(
    "Following the blog, concurrency is swept from 64 to 512 (default prompt, 60 GiB KV per GPU, otherwise the sweep-3 configuration). CC 256/384/512 run the full 32×16=512 sessions, "
    "CC 64/128 run two waves (32×4, 32×8); every arm has a 3-hour wall-clock cap. The y axis is <strong>engine-side generation throughput</strong>: the generation tok/s in the scheduler stats "
    "both vLLM engines log every 10 s, counting every generated token regardless of whether its session ended. \"Steady\" is the median of 10-minute buckets; \"window\" averages over the whole run including ramp-up and the idle tail."),
    cap="Concurrency scan: engine-side throughput and session outcomes", cols=["CC", "TA engine tok/s steady (window)", "global engine tok/s steady (window)", "TA / global", "TA sessions ended / finished", "global sessions ended / finished", "TA mean session", "global mean session"],
-   running="running", note95="≈95*", foot95="* Sweep 1: nominally CC 512, capped by Ray slots at about 95 live sandboxes. The 512 row is sweep 3; its session columns follow the first-512-by-start rule, the trainer-faithful numbers are in section 4.",
+   running="running", note95="≈95*", foot95="* Sweep 1: nominally CC 512, capped by Ray slots at about 95 live sandboxes. The 512 row is sweep 3; its session columns follow the first-512-by-start rule, the trainer-faithful numbers are in section 5. † measured before fix 9f32e49, re-run pending.",
    why_h3="Why earlier versions of the chart dipped and came back",
    why=("Versions 6 to 13 of this page plotted the \"model tok/s\" from <code>summarize_run.py</code>: only trajectories kept from sessions that <em>ended</em> inside the scored window count "
         "(<code>trajectory_selection=longest</code> also drops the subagents' own chains), divided by the window length. When global hit the 3-hour cap at CC 256/384 it still had 104 / 75 sessions running; "
         "every token they generated over hours was dropped while their time counted. At CC 512 nearly every session \"ended\" inside the window through the 90-minute timeout, so their tokens counted. "
-        "That produced the spurious 105 → 86 → 144 V shape. Counted engine-side, global is monotone, 1282 → 1300 → 313 → 284 → 284, the same shape as the blog; TA stays between 1231 and 1279 from 64 to 512, a flat line. "
-        "TA's lower window averages at 384/512 (797 / 827) come from the tail where the last few dozen sessions run tests inside sandboxes and the engines idle, not from a scheduler slowdown. "
+        "That produced the spurious 105 → 86 → 144 V shape. Counted engine-side, global is monotone, 1282 → 1300 → 313 → 284 → 284, the same shape as the blog; TA stays between 1229 and 1279 from 64 to 512, a flat line. "
+        "TA's lower window average at 384 (797, † pre-fix) is the end-of-run stall caused by programs leaked at session close before fix 9f32e49; CC 512 re-measured on the fixed code brings the window average from 827 back to 1196 with the steady value unchanged (1255 → 1229). "
         "Both metrics stay in the table; the session-level number is still the rate at which the trainer actually receives training data, see sections 3 to 5.")),
 }
 
@@ -53,7 +53,7 @@ def section(lang):
     for cc in (95, 64, 128, 256, 384, 512):
         a, g = pt("ta-native", cc), pt("global", cc)
         sa, sg = (summ(a["run"]) if a else None), (summ(g["run"]) if g else None)
-        def cell_rate(d): return f'{d["v"]:,} ({d["w"]:,})' if d else t["running"]
+        def cell_rate(d): return f'{d["v"]:,} ({d["w"]:,}){"†" if d.get("pre_fix") else ""}' if d else t["running"]
         def cell_sess(s): return f'{s["sessions_done"]} / {s["finished_trajectories"]} (of {s["expected"]})'.replace("of", "共" if lang == "zh" else "of") if s else t["running"]
         def cell_lat(s): return f'{s["session_latency_mean_s"]:,.0f} s' if s else t["running"]
         ratio = f'{a["v"]/g["v"]:.2f}×' if a and g else t["running"]

@@ -23,7 +23,7 @@ for regime in ("default", "subagent_prompt"):
             logs = glob.glob(f"{H}/runs/{run}/dynamo/*frontend.log")
             peak = max((int(m) for f in logs for m in re.findall(r"programs=(\d+)", open(f, errors="replace").read())), default=None)
             out[run] = {"regime": regime, "arm": arm, "cc": d["cc"], "tok_s": d["v"],
-                        "peak_programs": peak,
+                        "peak_programs": peak, "pre_fix": d.get("pre_fix", False),
                         "sessions": w["sessions"] + wo["sessions"], "with_sub": w["sessions"], "dispatches": w["dispatches"],
                         "finished_rate_with": w["finished_rate"], "finished_rate_without": wo["finished_rate"],
                         "duration_with": w["mean_duration_s"], "duration_without": wo["mean_duration_s"]}
