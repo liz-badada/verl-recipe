@@ -1,0 +1,49 @@
+[15:14:47] arm ta-native cc=256 n=16 start (ta-native-h20cc256-10131520)
+[18:16:51] arm ta-native cc=256 done: "sessions_done":489,"wall_s":6584.0,"model_tokens_per_s":351.19608140947753,
+[18:18:21] arm global cc=256 n=16 start (global-h20cc256-10131520)
+[18:28:46] arm global cc=256 done: "sessions_done":0,"wall_s":null,"model_tokens_per_s":null,
+[18:34:13] skip ta-native-h20cc256-10131520 (done)
+[18:34:13] waiting: 8 GPUs in use by other jobs
+[18:44:15] waiting: 8 GPUs in use by other jobs
+[18:49:15] arm global cc=256 n=16 start (global-h20cc256-10131520)
+[21:51:28] arm global cc=256 done: "sessions_done":408,"wall_s":10443.0,"model_tokens_per_s":104.91362635258068,
+[21:53:58] arm ta-native cc=384 n=16 start (ta-native-h20cc384-10131520)
+[00:51:04] arm ta-native cc=384 done: "sessions_done":450,"wall_s":6318.0,"model_tokens_per_s":302.7522950300728,
+[00:53:35] arm global cc=384 n=16 start (global-h20cc384-10131520)
+[01:03:51] arm global cc=384 done: "sessions_done":0,"wall_s":null,"model_tokens_per_s":null,
+[01:05:21] waiting: 8 GPUs in use by other jobs
+[01:09:17] skip ta-native-h20cc256-10131520 (done)
+[01:09:17] skip global-h20cc256-10131520 (done)
+[01:09:17] skip ta-native-h20cc384-10131520 (done)
+[01:09:17] waiting: 8 GPUs in use by other jobs
+[01:18:19] arm global cc=384 n=16 start (global-h20cc384-10131520, attempt 1)
+[01:23:09] arm global cc=384 done: "sessions_done":0,"wall_s":null,"model_tokens_per_s":null,
+[01:23:09] arm global cc=384 produced no sessions (GPUs taken during startup?); will retry
+[01:24:09] arm global cc=384 n=16 start (global-h20cc384-10131520, attempt 2)
+[04:27:29] arm global cc=384 done: "sessions_done":437,"wall_s":10482.0,"model_tokens_per_s":85.7227628315207,
+[04:30:00] arm ta-native cc=128 n=8 start (ta-native-h20cc128-10131520, attempt 1)
+[04:40:45] arm ta-native cc=128 done: "sessions_done":0,"wall_s":null,"model_tokens_per_s":null,
+[04:40:45] arm ta-native cc=128 produced no sessions (GPUs taken during startup?); will retry
+[04:40:45] waiting: 8 GPUs in use by other jobs
+[04:53:47] waiting: 8 GPUs in use by other jobs
+[04:54:48] arm ta-native cc=128 n=8 start (ta-native-h20cc128-10131520, attempt 2)
+[06:29:35] arm ta-native cc=128 done: "sessions_done":230,"wall_s":3295.0,"model_tokens_per_s":254.29559939301973,
+[06:32:06] arm global cc=128 n=8 start (global-h20cc128-10131520, attempt 1)
+[06:42:44] arm global cc=128 done: "sessions_done":0,"wall_s":null,"model_tokens_per_s":null,
+[06:42:44] arm global cc=128 produced no sessions (GPUs taken during startup?); will retry
+[06:42:44] waiting: 8 GPUs in use by other jobs
+[06:55:46] waiting: 8 GPUs in use by other jobs
+[06:56:46] arm global cc=128 n=8 start (global-h20cc128-10131520, attempt 2)
+[08:37:18] arm global cc=128 done: "sessions_done":250,"wall_s":5486.0,"model_tokens_per_s":192.4385709077652,
+[08:39:48] arm ta-native cc=64 n=4 start (ta-native-h20cc64-10131520, attempt 1)
+[08:48:19] arm ta-native cc=64 done: "sessions_done":0,"wall_s":null,"model_tokens_per_s":null,
+[08:48:19] arm ta-native cc=64 produced no sessions (GPUs taken during startup?); will retry
+[08:48:19] waiting: 8 GPUs in use by other jobs
+[09:08:22] waiting: 8 GPUs in use by other jobs
+[09:28:25] waiting: 8 GPUs in use by other jobs
+[09:48:28] waiting: 8 GPUs in use by other jobs
+[09:56:30] arm ta-native cc=64 n=4 start (ta-native-h20cc64-10131520, attempt 2)
+[11:00:24] arm ta-native cc=64 done: "sessions_done":119,"wall_s":1866.0,"model_tokens_per_s":251.19828510182208,
+[11:02:54] arm global cc=64 n=4 start (global-h20cc64-10131520, attempt 1)
+[11:57:18] arm global cc=64 done: "sessions_done":121,"wall_s":1898.0,"model_tokens_per_s":229.18756585879873,
+[11:58:48] SWEEP DONE

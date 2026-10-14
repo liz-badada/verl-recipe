@@ -18,7 +18,7 @@ TXT = {
             pend="运行中", pendg="global 运行中", sub_note="虚线框点：第二轮，强制派 3 个 subagent 的 prompt",
             foot="* 第一轮名义 512 并发，但 Ray 默认 128 个 CPU 槽位只允许约 95 个 sandbox 同时运行，按实测并发标在 ≈95。纵轴为两台引擎 vLLM 调度器统计的生成 tok/s 的稳态中位数（10 分钟桶），计入每一个生成的 token，与 session 是否完成无关。",
             cap="参考 PyTorch blog 的 regime 图：横轴并发，纵轴引擎生成 tok/s。实线为默认 prompt。数据：<code>regime_points.json</code>，由 <code>engine_rate.py</code> 从各臂的 vLLM 统计日志算出。"),
- "en": dict(title="Native ThunderAgent sustains rollout throughput at high concurrency; global LB drops to about a quarter at CC ≥ 256",
+ "en": dict(title="Native ThunderAgent sustains rollout throughput at high concurrency; global LB drops 4× past CC 256",
             sub="Uni-Agent SWE-bench Verified ×32 · Claude Code 2.1.296 · 8× H20 · Qwen3-Coder-30B-A3B · rollout-only · 60 GiB KV per GPU",
             y="Engine generation throughput, steady state (tokens s⁻¹)", x="Agent admission concurrency (CC, Claude Code sessions in flight)", regime="High-concurrency regime (CC ≥ 384)",
             pend="running", pendg="global running", sub_note="Dashed-outline points: sweep 2, prompt forcing 3 subagents",
@@ -60,14 +60,16 @@ def svg(p, t):
         for d in pts:
             x, y = X(d["cc"]), Y(d["v"])
             o.append(marker(kind, x, y, color, hollow=(kind != "circle")))
-            dy = -16 if key == "ta-native" else 30
-            o.append(f'<text x="{x:.1f}" y="{y+dy:.1f}" text-anchor="middle" font-size="16" font-weight="600" fill="{color}">{d["v"]:,.0f}{d.get("ann","")}</text>')
+            if key == "ta-native":
+                o.append(f'<text x="{x:.1f}" y="{y-16:.1f}" text-anchor="middle" font-size="16" font-weight="600" fill="{color}">{d["v"]:,.0f}{d.get("ann","")}</text>')
+            else:
+                o.append(f'<text x="{x+13:.1f}" y="{y+24:.1f}" text-anchor="start" font-size="16" font-weight="600" fill="{color}">{d["v"]:,.0f}</text>')
     for key, pts in p.get("subagent_prompt", {}).items():
         name, color, kind = SERIES[key]
         for d in pts:
             x, y = X(d["cc"]), Y(d["v"])
             o.append(marker(kind, x, y, color, hollow=True, dashed=True))
-            o.append(f'<text x="{x+14:.1f}" y="{y+5:.1f}" font-size="15" fill="{color}">{d["v"]:,.0f}</text>')
+            o.append(f'<text x="{x-13:.1f}" y="{y+5:.1f}" text-anchor="end" font-size="15" fill="{color}">{d["v"]:,.0f}</text>')
     o.append(f'<text x="{X(256)+14:.1f}" y="{Y(0)-12:.1f}" font-size="13.5" fill="var(--ink-3)">{t["sub_note"]}</text>')
     lx, ly = L, 92
     for key in ("global", "ta-native", "kv"):
@@ -76,10 +78,12 @@ def svg(p, t):
         o.append(marker(kind, lx + 17, ly, color, hollow=(kind != "circle")))
         o.append(f'<text x="{lx+44}" y="{ly+6}" font-size="17" font-weight="600" fill="var(--ink-2)">{name}</text>')
         lx += 44 + 11 * len(name) + 60
-    o.append(f'<text x="{W/2:.0f}" y="40" text-anchor="middle" font-size="22" font-weight="600" fill="var(--ink)">{t["title"]}</text>')
+    o.append(f'<text x="{W/2:.0f}" y="40" text-anchor="middle" font-size="21" font-weight="600" fill="var(--ink)">{t["title"]}</text>')
     o.append(f'<text x="{W/2:.0f}" y="68" text-anchor="middle" font-size="17" fill="var(--ink-2)">{t["sub"]}</text>')
-    o.append(f'<text x="{L}" y="{HT-30}" font-size="13" fill="var(--ink-3)">{t["foot"][:170]}</text>')
-    o.append(f'<text x="{L}" y="{HT-12}" font-size="13" fill="var(--ink-3)">{t["foot"][170:]}</text>')
+    f = t["foot"]; cut = f.rfind(" ", 0, 175) if " " in f[:175] else min(len(f), 100)
+    if cut <= 0: cut = min(len(f), 100)
+    o.append(f'<text x="{L}" y="{HT-30}" font-size="13" fill="var(--ink-3)">{f[:cut]}</text>')
+    o.append(f'<text x="{L}" y="{HT-12}" font-size="13" fill="var(--ink-3)">{f[cut:].strip()}</text>')
     o.append('</svg>')
     return "\n".join(o)
 

@@ -15,7 +15,7 @@ for cc in ${CCS:-256 384 128 64}; do
   case $cc in 64) n=4;; 128) n=8;; *) n=16;; esac
   cpus=$(( cc + 128 )); [ $cpus -lt 320 ] && cpus=320
   for arm in ${ARMS:-ta-native global}; do
-    name=$arm-h20cc$cc-$TAG
+    name=$arm-${SITE:-h20}cc$cc-$TAG
     if grep -q '"sessions_done": [1-9]' $H/runs/$name/summary.txt 2>/dev/null; then log "skip $name (done)"; continue; fi
     # An arm whose engines never started (another job grabbed the GPUs while we were loading) is retried, not skipped.
     for attempt in 1 2 3 4 5 6; do
