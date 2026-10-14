@@ -1,93 +1,23 @@
 {
- "note": "model tok/s over the scored window; default Claude Code prompt unless flagged",
- "default": {
-  "global": [
-   {
-    "cc": 95,
-    "v": 335.0,
-    "run": "global-h20-10121643",
-    "label": "≈95*"
-   },
-   {
-    "cc": 512,
-    "v": 143.5,
-    "run": "global-h20cc512-10130706"
-   },
-   {
-    "cc": 256,
-    "v": 104.9,
-    "run": "global-h20cc256-10131520"
-   },
-   {
-    "cc": 384,
-    "v": 85.7,
-    "run": "global-h20cc384-10131520"
-   },
-   {
-    "cc": 128,
-    "v": 192.4,
-    "run": "global-h20cc128-10131520"
-   }
-  ],
-  "ta-native": [
-   {
-    "cc": 95,
-    "v": 354.6,
-    "run": "ta-native-h20-10121643",
-    "label": "≈95*"
-   },
-   {
-    "cc": 512,
-    "v": 347.7,
-    "run": "ta-native-h20cc512-10130706"
-   },
-   {
-    "cc": 256,
-    "v": 351.2,
-    "run": "ta-native-h20cc256-10131520"
-   },
-   {
-    "cc": 384,
-    "v": 302.8,
-    "run": "ta-native-h20cc384-10131520"
-   },
-   {
-    "cc": 128,
-    "v": 254.3,
-    "run": "ta-native-h20cc128-10131520"
-   },
-   {
-    "cc": 64,
-    "v": 251.2,
-    "run": "ta-native-h20cc64-10131520"
-   }
-  ]
- },
- "subagent_prompt": {
-  "global": [
-   {
-    "cc": 256,
-    "v": 91.6,
-    "run": "global-h20sub-10122136"
-   }
-  ],
-  "ta-native": [
-   {
-    "cc": 256,
-    "v": 296.6,
-    "run": "ta-native-h20sub-10122136"
-   }
-  ],
-  "kv": [
-   {
-    "cc": 256,
-    "v": 71.5,
-    "run": "kv-h20sub-kv-10130401"
-   }
-  ]
- },
- "pending": [],
- "pending_global": [
-  64
- ]
+  "note": "v = steady-state engine-side generation tok/s (median of 10-min buckets, both engines, from vLLM scheduler stats); w = window average; default Claude Code prompt unless flagged",
+  "default": {
+    "global":    [{"cc": 95,  "v": 1282, "w": 1291, "run": "global-h20-10121643", "label": "≈95*"},
+                  {"cc": 128, "v": 1300, "w": 837,  "run": "global-h20cc128-10131520"},
+                  {"cc": 256, "v": 313,  "w": 323,  "run": "global-h20cc256-10131520"},
+                  {"cc": 384, "v": 284,  "w": 281,  "run": "global-h20cc384-10131520"},
+                  {"cc": 512, "v": 284,  "w": 292,  "run": "global-h20cc512-10130706"}],
+    "ta-native": [{"cc": 95,  "v": 1272, "w": 1285, "run": "ta-native-h20-10121643", "label": "≈95*"},
+                  {"cc": 64,  "v": 1255, "w": 1255, "run": "ta-native-h20cc64-10131520"},
+                  {"cc": 128, "v": 1279, "w": 1263, "run": "ta-native-h20cc128-10131520"},
+                  {"cc": 256, "v": 1255, "w": 1260, "run": "ta-native-h20cc256-10131520"},
+                  {"cc": 384, "v": 1231, "w": 797,  "run": "ta-native-h20cc384-10131520"},
+                  {"cc": 512, "v": 1255, "w": 827,  "run": "ta-native-h20cc512-10130706"}]
+  },
+  "subagent_prompt": {
+    "global":    [{"cc": 256, "v": 311, "w": 362, "run": "global-h20sub-10122136"}],
+    "ta-native": [{"cc": 256, "v": 1214, "w": 1208, "run": "ta-native-h20sub-10122136"}],
+    "kv":        [{"cc": 256, "v": 253, "w": 282, "run": "kv-h20sub-kv-10130401"}]
+  },
+  "pending": [],
+  "pending_global": [64]
 }
