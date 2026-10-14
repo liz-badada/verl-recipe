@@ -201,7 +201,7 @@ TXT = {
        "它超过并发数的部分就是同时活着的 subagent 子 program。"),
   cols=["并发", "臂", "稳态 tok/s", "session", "派生过 subagent 的 session", "派生次数", "完成率：有 subagent", "完成率：无 subagent", "平均时长 有 / 无 (s)", "路由器峰值 program"],
   forced="强制 3 个 subagent 的 prompt（第二轮，CC 256）",
-  dagger="† TA 在 CC ≥ 256 的行采自修复 9f32e49 之前：session 关闭时未取消的 turn 把 program 留在路由器里，吞吐与完成率是下界，峰值 program 数被僵尸 program 抬高；修复后重跑中。",
+  dagger="† TA 在 CC ≥ 256 的行（含第二轮）采自修复 9f32e49 之前：session 关闭时未取消的 turn 把 program 留在路由器里，吞吐与完成率是下界，峰值 program 数被僵尸 program 抬高；修复后重跑中。",
   reading=("<li><strong>默认 prompt 下三到四成 session 会派 subagent</strong>，每个派 1.6–1.7 个；强制 prompt 下 70% 的 session 派，平均 3.1 个。两臂的派生比例相近，差别不来自负载。</li>"
            "<li><strong>路由器确实把 subagent 当成了 program</strong>：CC 64 时峰值 103 个 program（64 个根 + 39 个子）、CC 128 时 195 个。这些子 program 就是适配器从 agent-id 头映射、带 parent 链接送到 TA 的。</li>"
            "<li><strong>轻压力（CC 64 / 128）两臂的 subagent 结果一致</strong>：完成率和时长都在噪声内，subagent 支持没有引入额外开销。</li>"
@@ -227,7 +227,7 @@ TXT = {
        "and the part above the concurrency is subagent child programs alive at the same time."),
   cols=["CC", "arm", "steady tok/s", "sessions", "sessions dispatching subagents", "dispatches", "finished: with subagents", "finished: without", "mean duration with / without (s)", "peak programs in router"],
   forced="prompt forcing 3 subagents (sweep 2, CC 256)",
-  dagger="† TA rows at CC ≥ 256 predate fix 9f32e49: a turn left uncancelled at session close kept its program in the router, so throughput and completion are lower bounds and peak programs are inflated by zombies; being re-run.",
+  dagger="† TA rows at CC ≥ 256 (sweep 2 included) predate fix 9f32e49: a turn left uncancelled at session close kept its program in the router, so throughput and completion are lower bounds and peak programs are inflated by zombies; being re-run.",
   reading=("<li><strong>With the default prompt 30–40% of sessions dispatch subagents</strong>, 1.6–1.7 each; with the forcing prompt 70% dispatch, 3.1 on average. Both arms dispatch at similar rates, so the gap is not a workload difference.</li>"
            "<li><strong>The router really sees subagents as programs</strong>: 103 programs at peak for CC 64 (64 roots + 39 children), 195 for CC 128. Those children are the programs the adapter derives from agent-id headers and sends to TA with a parent link.</li>"
            "<li><strong>Under light load (CC 64 / 128) both arms agree on the subagent sessions</strong>: completion and duration within noise, so subagent support adds no overhead.</li>"
@@ -247,7 +247,7 @@ def table(lang):
     for r in rows:
         if r["regime"] != "default" and not seen_forced:
             out.append(f'<tr><td colspan="{len(t["cols"])}" style="font-weight:600;color:var(--ink-2)">{t["forced"]}</td></tr>'); seen_forced = True
-        lower = r["arm"] == "ta-native" and r["regime"] == "default" and r["cc"] >= 256
+        lower = r["arm"] == "ta-native" and r["cc"] >= 256  # all TA runs at CC >= 256 predate fix 9f32e49
         peak = "—" if r["peak_programs"] is None or r["arm"] != "ta-native" else f'{r["peak_programs"]}'
         out.append("<tr>" + "".join(f"<td>{c}</td>" for c in [
             r["cc"], ARM[lang][r["arm"]] + ("†" if lower else ""), f'{r["tok_s"]:,}', r["sessions"],
