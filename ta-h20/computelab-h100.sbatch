@@ -25,5 +25,9 @@ echo "image ready $(date +%T)"
 printf '%s\n' "DYN_LOG=info,thunderagent=debug" "VLLM_ALLREDUCE_USE_SYMM_MEM=0" "VLLM_ALLREDUCE_USE_FLASHINFER=0" > $SC/ci/env.sh
 export UNIAGENT=$SC/uni-agent RECIPE=$SC/verl-recipe MODEL_DIR=$SC/model/Qwen3-Coder-30B-A3B-Instruct IMAGE=$IMG TASK_CONFIG=/h20/task_config_claude_code_docker.computelab.yaml
 export KV_BYTES=${KV_BYTES:-51539607552} GPU_MEM=${GPU_MEM:-0.92} TP=${TP:-4} SITE=h100 ARMS="${ARMS:-ta-native global}" CCS="${CCS:-256 128 512}"
-bash $SC/ci/sweep_cc.sh "$(date +%m%d%H%M)"
+TAG=$(date +%m%d%H%M)
+# Gate: the gateway close fix (recipe 9f32e49) must release every program before any arm is measured.
+TASK_CONFIG=/h20/task_config_claude_code_docker.computelab.leaksmoke.yaml bash $SC/ci/leak_smoke.sh $TAG | tee $SC/ci/runs/leak_smoke-h100-$TAG.log | grep -q LEAK_SMOKE_PASS || { echo SMOKE_FAILED; exit 5; }
+sleep 90
+bash $SC/ci/sweep_cc.sh $TAG
 echo "end=$(date)"

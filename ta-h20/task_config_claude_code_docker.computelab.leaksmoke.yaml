@@ -1,0 +1,28 @@
+# Claude Code solving SWE-bench Verified in local Docker sandboxes, subagents enabled.
+# The dataset row supplies sandbox.image (canonical swebench image) and metadata; the
+# host's Claude Code binary is bind-mounted into every sandbox and exposed as /usr/bin/claude.
+- name: swe_bench
+  eval_timeout: 600
+  sandbox:
+    provider: docker
+    runtime_timeout: 7200
+    executable_paths:
+      claude: /opt/claude-code/claude
+    sandbox_kwargs:
+      pull_policy: never
+      start_timeout: 600
+      run_args: ["-v", "/home/scratch.jinyanc_wwfo/ta-h20/claude-2.1.296:/opt/claude-code/claude:ro", "--runtime", "runc", "--memory", "16g", "--cpus", "4"]
+  agent:
+    name: claude_code
+    max_turns: 30
+    run_timeout: 240
+    enable_subagents: true
+  prompt_template:
+    - role: user
+      content: |-
+        Read the following task description and resolve the issue in the current directory.
+
+        Task description:
+        {problem_statement}
+
+        Inspect the relevant code, make the minimal correct changes, and verify the result with appropriate tests or checks. Do not modify tests or commit changes. When finished, briefly summarize what changed and how it was verified.
