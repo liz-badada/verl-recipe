@@ -19,7 +19,7 @@ def summ(run):
 def pt(series, cc): return next((d for d in P["default"][series] if d["cc"] == cc), None)
 
 TXT = {
- "zh": dict(h2="二 · 并发扫描：blog 口径的折线图", lead=(
+ "zh": dict(h2="三 · 并发扫描：blog 口径的折线图", lead=(
    "按 blog 的做法把并发从 64 扫到 512（默认 prompt，每卡 KV 60 GiB，其余配置与第三轮相同）。CC 256/384/512 跑满 32×16=512 个 session，"
    "CC 64/128 跑两波（32×4、32×8），每个臂 3 小时墙钟上限。纵轴用<strong>引擎侧生成吞吐</strong>：两台 vLLM 引擎每 10 秒上报的调度器统计里的 "
    "generation tok/s，计入每一个生成的 token，与 session 是否结束无关；“稳态”取 10 分钟桶的中位数，“全程均值”把首尾爬坡和空转尾巴也算进去。"),
@@ -32,7 +32,7 @@ TXT = {
         "于是出现了 105 → 86 → 144 这条假的 V 形。换成引擎侧计数后，global 是单调的 1282 → 1300 → 313 → 284 → 284，和 blog 的形状一致；"
         "TA 在 64 到 512 全程 1231 到 1279，是一条水平线。TA 在 384/512 的全程均值（797 / 827）偏低，是因为最后几十个 session 在沙箱里跑测试、引擎空转的尾巴被算进了时间，不是调度器的吞吐下降。"
         "两套口径都保留在表里；session 口径的数字仍是 trainer 真正拿到的训练数据的速度，对比第三、四、五节。")),
- "en": dict(h2="2 · Concurrency scan: the blog-style regime chart", lead=(
+ "en": dict(h2="3 · Concurrency scan: the blog-style regime chart", lead=(
    "Following the blog, concurrency is swept from 64 to 512 (default prompt, 60 GiB KV per GPU, otherwise the sweep-3 configuration). CC 256/384/512 run the full 32×16=512 sessions, "
    "CC 64/128 run two waves (32×4, 32×8); every arm has a 3-hour wall-clock cap. The y axis is <strong>engine-side generation throughput</strong>: the generation tok/s in the scheduler stats "
    "both vLLM engines log every 10 s, counting every generated token regardless of whether its session ended. \"Steady\" is the median of 10-minute buckets; \"window\" averages over the whole run including ramp-up and the idle tail."),
