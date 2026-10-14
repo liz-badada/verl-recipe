@@ -22,6 +22,11 @@
     "cc": 384,
     "v": 85.7,
     "run": "global-h20cc384-10131520"
+   },
+   {
+    "cc": 128,
+    "v": 192.4,
+    "run": "global-h20cc128-10131520"
    }
   ],
   "ta-native": [
@@ -79,7 +84,5 @@
  "pending": [
   64
  ],
- "pending_global": [
-  128
- ]
+ "pending_global": []
 }
