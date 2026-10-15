@@ -11,7 +11,7 @@
     sandbox_kwargs:
       pull_policy: never
       start_timeout: 600
-      run_args: ["-v", "/home/scratch.jinyanc_wwfo/ta-h20/claude-2.1.296:/opt/claude-code/claude:ro", "--runtime", "runc", "--memory", "16g", "--cpus", "4"]
+      run_args: ["-v", "/home/scratch.jinyanc_wwfo/ta-h20/claude-2.1.296:/opt/claude-code/claude:ro", "--runtime", "nvidia", "--memory", "16g", "--cpus", "4"]
   agent:
     name: claude_code
     max_turns: 30
