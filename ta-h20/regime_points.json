@@ -91,7 +91,7 @@
    "w": 1172,
    "run": "ta-native-h20cc64-10141340",
    "arm": "ta-native",
-   "reason": "128 / 256 trajectories per arm (20 / 50 min): one usable 10-min bucket at CC 64; re-run with 512 trajectories queued (after_rerun2.sh)"
+   "reason": "128 / 256 trajectories per arm (20 / 50 min): one usable 10-min bucket at CC 64; re-run with 512 trajectories queued (after_384.sh, runs right after global 384)"
   },
   {
    "cc": 128,
@@ -99,7 +99,7 @@
    "w": 1279,
    "run": "ta-native-h20cc128-10141340",
    "arm": "ta-native",
-   "reason": "128 / 256 trajectories per arm (20 / 50 min): one usable 10-min bucket at CC 64; re-run with 512 trajectories queued (after_rerun2.sh)"
+   "reason": "128 / 256 trajectories per arm (20 / 50 min): one usable 10-min bucket at CC 64; re-run with 512 trajectories queued (after_384.sh, runs right after global 384)"
   },
   {
    "cc": 128,
@@ -107,7 +107,7 @@
    "w": 1275,
    "run": "global-h20cc128-10141340",
    "arm": "global",
-   "reason": "128 / 256 trajectories per arm (20 / 50 min): one usable 10-min bucket at CC 64; re-run with 512 trajectories queued (after_rerun2.sh)"
+   "reason": "128 / 256 trajectories per arm (20 / 50 min): one usable 10-min bucket at CC 64; re-run with 512 trajectories queued (after_384.sh, runs right after global 384)"
   },
   {
    "cc": 64,
@@ -115,7 +115,7 @@
    "w": 1308,
    "run": "global-h20cc64-10141340",
    "arm": "global",
-   "reason": "128 / 256 trajectories per arm (20 / 50 min): one usable 10-min bucket at CC 64; re-run with 512 trajectories queued (after_rerun2.sh)"
+   "reason": "128 / 256 trajectories per arm (20 / 50 min): one usable 10-min bucket at CC 64; re-run with 512 trajectories queued (after_384.sh, runs right after global 384)"
   }
  ]
 }
