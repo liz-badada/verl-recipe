@@ -12,7 +12,7 @@ log() { echo "[$(date +%T)] $*"; }
 busy() { nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits | awk '$1>2000{c++} END{print c+0}'; }
 wait_free() { local w=0; while [ "$(busy)" -ne 0 ]; do [ $((w % 20)) -eq 0 ] && log "waiting: $(busy) GPUs in use by other jobs"; sleep 60; w=$((w+1)); done; }
 for cc in ${CCS:-256 384 128 64}; do
-  case $cc in 64) n=4;; 128) n=8;; *) n=16;; esac
+  case $cc in 64) n=4;; 128) n=8;; *) n=16;; esac; n=${N_OVERRIDE:-$n}  # N_OVERRIDE=16 gives every CC the same 512 trajectories
   cpus=$(( cc + 128 )); [ $cpus -lt 320 ] && cpus=320
   for arm in ${ARMS:-ta-native global}; do
     name=$arm-${SITE:-h20}cc$cc-$TAG
