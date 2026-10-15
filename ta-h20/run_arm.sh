@@ -10,14 +10,21 @@ ARM=${1:?ta-native|kv|global}; RUN_NAME=${2:?run name}; shift 2
 H=${TA_H20_ROOT:-/lustre/raplab/client/jinyanc/workspace/jinyanc/ci/ta-h20}
 UNIAGENT=${UNIAGENT:-/home/jinyanc/workspace/jinyanc/github/uni-agent}
 RECIPE=${RECIPE:-/home/jinyanc/workspace/jinyanc/github/verl-recipe}
-IMAGE=${IMAGE:-verl-recipe-thunderagent:rust-ta-uniagent-20261012}
+ENGINE=${ENGINE:-vllm}            # vllm | sglang: the inference engine behind every arm (image, trainer config and engine flags follow)
+case $ENGINE in
+  vllm)   IMAGE=${IMAGE:-verl-recipe-thunderagent:rust-ta-uniagent-20261012};;
+  sglang) IMAGE=${IMAGE:-verl-recipe-thunderagent:rust-ta-uniagent-sglang-20261015};;
+  *) echo "ENGINE must be vllm or sglang, got $ENGINE" >&2; exit 2;;
+esac
 MODEL_DIR=${MODEL_DIR:-/home/jinyanc/workspace/model/hub/Qwen3-Coder-30B-A3B-Instruct}
 MODEL_NAME=${MODEL_NAME:-$(basename "$MODEL_DIR")}
 DATA=${DATA:-/h20/data/swe_bench_verified_32_task.parquet}
 TASK_CONFIG=${TASK_CONFIG:-/h20/task_config_claude_code_docker.yaml}
 BATCH=${BATCH:-32}; N=${N:-16}; CONCURRENCY=${CONCURRENCY:-512}
 MAX_PROMPT=${MAX_PROMPT:-8192}; MAX_RESP=${MAX_RESP:-65536}
-GPU_MEM=${GPU_MEM:-0.75}; MAX_NUM_SEQS=${MAX_NUM_SEQS:-256}; TP=${TP:-4}
+# sglang's --mem-fraction-static covers weights too: 0.78 of an H20 at TP4 leaves the same ~60 GiB of KV per GPU as
+# KV_BYTES does on vLLM (sglang has no byte cap, so KV_BYTES is ignored there).
+GPU_MEM=${GPU_MEM:-$([ "$ENGINE" = sglang ] && echo 0.78 || echo 0.75)}; MAX_NUM_SEQS=${MAX_NUM_SEQS:-256}; TP=${TP:-4}
 TEMP=${TEMP:-0.8}; TOP_P=${TOP_P:-0.9}
 GATEWAY_COUNT=${GATEWAY_COUNT:-8}; RAY_NUM_CPUS=${RAY_NUM_CPUS:-128}
 KV_BYTES=${KV_BYTES:-}            # optional per-GPU KV cap (bytes); empty = gpu_memory_utilization
@@ -107,19 +114,30 @@ env=(-e HOME=/bench_run/home -e USER=$(id -un) -e LOGNAME=$(id -un) -e "PYTHONPA
      -e VERL_DYNAMO_FE_READY_TIMEOUT=1800 -e VLLM_LOGGING_LEVEL=INFO)
 rt=("++ray_kwargs.ray_init.runtime_env.env_vars.PYTHONPATH='$PYPATH'" "++ray_kwargs.ray_init.runtime_env.env_vars.VERL_DYNAMO_LOG_DIR=/bench_run/dynamo"
     "++ray_kwargs.ray_init.runtime_env.env_vars.VERL_DYNAMO_WORKER_METRICS_DIR=/bench_run/worker_metrics")
+# Engine-specific pieces. vLLM: seed, router block size, admission and the KV byte cap on the command line, plus the
+# patched dynamo.vllm handlers overlay. sglang: --page-size and --max-running-requests come from the recipe config
+# (router_block_size, max_num_seqs); the seed flag is spelled --random-seed; no overlay.
+case $ENGINE in
+  vllm)   ENGINE_CFG_SUFFIX=""
+          ENGINE_EXTRA_ARGS="[--seed,42,--block-size,16,--max-num-seqs,$MAX_NUM_SEQS${DISABLE_CUSTOM_AR:+,--disable-custom-all-reduce}${KV_BYTES:+,--kv-cache-memory-bytes,$KV_BYTES}]"
+          OVERLAY=(-v "$H/overlay/handlers.py":/usr/local/lib/python3.12/dist-packages/dynamo/vllm/handlers.py:ro);;
+  sglang) ENGINE_CFG_SUFFIX="_sglang"
+          ENGINE_EXTRA_ARGS="[--random-seed,42${DISABLE_CUSTOM_AR:+,--disable-custom-all-reduce}]"
+          OVERLAY=();;
+esac
 case $ARM in
   global)
-    arm=(actor_rollout_ref.rollout.name=vllm
+    arm=("actor_rollout_ref.rollout.name=$ENGINE"
          ++actor_rollout_ref.rollout.agent.agent_loop_manager_class=uni_agent.framework.entry.AgentFrameworkRolloutAdapter)
-    [ -n "$KV_BYTES" ] && arm+=("+actor_rollout_ref.rollout.engine_kwargs.vllm.kv_cache_memory_bytes=$KV_BYTES")
-    [ -n "${DISABLE_CUSTOM_AR:-}" ] && arm+=("+actor_rollout_ref.rollout.engine_kwargs.vllm.disable_custom_all_reduce=true")
+    [ "$ENGINE" = vllm ] && [ -n "$KV_BYTES" ] && arm+=("+actor_rollout_ref.rollout.engine_kwargs.vllm.kv_cache_memory_bytes=$KV_BYTES")
+    [ -n "${DISABLE_CUSTOM_AR:-}" ] && arm+=("+actor_rollout_ref.rollout.engine_kwargs.$ENGINE.disable_custom_all_reduce=true")
     ;;
   kv|ta-native)
     env+=(-e VERL_USE_EXTERNAL_MODULES=recipe.dynamo.register)
     rt+=("++ray_kwargs.ray_init.runtime_env.env_vars.VERL_USE_EXTERNAL_MODULES=recipe.dynamo.register")
-    arm=(--config-path /workspace/recipe-root/recipe/dynamo/config --config-name dynamo_trainer_v1_colocate
+    arm=(--config-path /workspace/recipe-root/recipe/dynamo/config --config-name "dynamo_trainer_v1_colocate${ENGINE_CFG_SUFFIX:-}"
          actor_rollout_ref.rollout.name=dynamo
-         ++actor_rollout_ref.rollout.engine_kwargs.dynamo.engine=vllm
+         "++actor_rollout_ref.rollout.engine_kwargs.dynamo.engine=$ENGINE"
          ++actor_rollout_ref.rollout.engine_kwargs.dynamo.router_mode=kv
          ++actor_rollout_ref.rollout.engine_kwargs.dynamo.enable_kv_events=true
          ++actor_rollout_ref.rollout.engine_kwargs.dynamo.router_session_affinity_ttl_secs=1800
@@ -132,7 +150,7 @@ case $ARM in
          ++actor_rollout_ref.rollout.engine_kwargs.dynamo.free_engine_on_train=true
          "++actor_rollout_ref.rollout.engine_kwargs.dynamo.namespace='$NS'"
          ++actor_rollout_ref.rollout.engine_kwargs.dynamo.thunderagent.router_block_size=16
-         "++actor_rollout_ref.rollout.engine_kwargs.dynamo.extra_args=[--seed,42,--block-size,16,--max-num-seqs,$MAX_NUM_SEQS${DISABLE_CUSTOM_AR:+,--disable-custom-all-reduce}${KV_BYTES:+,--kv-cache-memory-bytes,$KV_BYTES}]"
+         "++actor_rollout_ref.rollout.engine_kwargs.dynamo.extra_args=$ENGINE_EXTRA_ARGS"
          '++actor_rollout_ref.rollout.engine_kwargs.dynamo.frontend_extra_args=[--kv-cache-block-size,16]')
     if [ $ARM = ta-native ]; then
       arm+=(++actor_rollout_ref.rollout.engine_kwargs.dynamo.thunderagent.enabled=true
@@ -151,7 +169,7 @@ esac
 
 {
   echo "SITE_ENV=${SITE_ENV[*]}"
-  echo "ARM=$ARM RUN_NAME=$RUN_NAME BATCH=$BATCH N=$N CONCURRENCY=$CONCURRENCY MAX_PROMPT=$MAX_PROMPT MAX_RESP=$MAX_RESP GPU_MEM=$GPU_MEM MAX_NUM_SEQS=$MAX_NUM_SEQS TP=$TP KV_BYTES=$KV_BYTES TA_PARAMS=$TA_PARAMS MODEL_DIR=$MODEL_DIR IMAGE=$IMAGE"
+  echo "ARM=$ARM ENGINE=$ENGINE RUN_NAME=$RUN_NAME BATCH=$BATCH N=$N CONCURRENCY=$CONCURRENCY MAX_PROMPT=$MAX_PROMPT MAX_RESP=$MAX_RESP GPU_MEM=$GPU_MEM MAX_NUM_SEQS=$MAX_NUM_SEQS TP=$TP KV_BYTES=$KV_BYTES TA_PARAMS=$TA_PARAMS MODEL_DIR=$MODEL_DIR IMAGE=$IMAGE"
   echo "HOST=$(hostname) UNIAGENT_SHA=$(git -C $UNIAGENT rev-parse HEAD) RECIPE_SHA=$(git -C $RECIPE rev-parse HEAD) CLAUDE=$(readlink -f ~/.local/bin/claude) START_EPOCH=$(date +%s)"
   echo "python -m verl.trainer.main_ppo ${arm[*]} ${common[*]} ${rt[*]} $*"
 } > "$RUN/command.txt"
@@ -183,7 +201,7 @@ docker run --rm --name "$RUN_NAME" --network host --gpus all --ipc=host --shm-si
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v "$UNIAGENT":/workspace/uni-agent:ro -v "$RECIPE":/workspace/recipe-root/recipe:ro \
   -v "$MODEL_DIR":/model:ro -v "$H":/h20:ro -v "$RUN":/bench_run -v "$RUN/ray":/tmp/ray \
-  -v "$H/overlay/handlers.py":/usr/local/lib/python3.12/dist-packages/dynamo/vllm/handlers.py:ro \
+  "${OVERLAY[@]}" \
   "${env[@]}" "${SITE_ENV[@]}" -w /workspace/uni-agent/verl "$IMAGE" \
   python -m verl.trainer.main_ppo "${arm[@]}" "${common[@]}" "${rt[@]}" "$@" 2>&1 | tee "$RUN/console.log" || true
 echo "END_EPOCH=$(date +%s)" >> "$RUN/command.txt"

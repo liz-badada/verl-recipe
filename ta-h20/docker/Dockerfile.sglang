@@ -1,0 +1,42 @@
+# SGLang counterpart of Dockerfile (the vLLM 0.24 bench image): the recipe's SGLang 0.5.19 engine behind the same
+# Dynamo nightly (2026-09-24, native Rust ThunderAgent plugin) plus the verl trainer deps, docker CLI and swe-rex that
+# Uni-Agent's Claude Code sandboxes need. Code (verl-recipe, uni-agent, verl) is bind-mounted at run time, as before.
+# The base image's own pins (torch, transformers, triton, flashinfer, sglang-kernel) are frozen as constraints so no
+# install below can move them.
+FROM dynamo-nightly-gpu:20261009 AS dynamo-bits
+FROM verl-recipe-thunderagent:rust-ta-uniagent-20261012 AS vllm-bench
+FROM lmsysorg/sglang:v0.5.19-cu130
+USER root
+COPY --from=dynamo-bits /usr/local/lib/libavcodec_dynamo.so* /usr/local/lib/libavdevice_dynamo.so* \
+     /usr/local/lib/libavfilter_dynamo.so* /usr/local/lib/libavformat_dynamo.so* /usr/local/lib/libavutil_dynamo.so* \
+     /usr/local/lib/libswresample_dynamo.so* /usr/local/lib/libswscale_dynamo.so* /usr/local/lib/
+COPY --from=vllm-bench /usr/local/bin/docker /usr/local/bin/docker
+RUN ldconfig && apt-get update -qq && apt-get install -y -qq --no-install-recommends git patch > /dev/null && rm -rf /var/lib/apt/lists/*
+COPY constraints.sglang.txt dynamo-client-errors.patch /tmp/
+RUN python -m pip freeze 2>/dev/null | grep -v '^-e\|^sglang\b\|^torch==\|@ file' > /tmp/base-pins.txt; python -m pip freeze | grep -E '^(torch|torchvision|torchaudio|transformers|triton|flashinfer|sglang)' > /tmp/base-core.txt; cat /tmp/base-core.txt
+# ai-dynamo pulls aisimulate/JAX for dynamo.replay only; install the two wheels without deps, then the runtime deps
+# the frontend and the dynamo.sglang worker import (the sglang extra minus sglang itself, which the base provides).
+RUN python -m pip install --no-cache-dir --no-deps --pre \
+        "ai-dynamo==1.6.0.dev20260924" "ai-dynamo-runtime==1.6.0.dev20260924" \
+    && python -m pip install --no-cache-dir -c /tmp/base-core.txt -c /tmp/constraints.sglang.txt \
+        "aiohttp>=3.14.3,<4" "msgspec>=0.19.0" "prometheus-client>=0.23.1,<1" "pyzmq>=26" "redis>=6.2,<9" \
+        "zstandard>=0.23,<1" "kubernetes>=32.0.1,<33" "typing-extensions>=4.10" uvloop "pydantic>=2" \
+        "protobuf>=6.33.5,<7" "grpcio-tools==1.81.1" blake3 "nixl[cu13]==1.4.0" "cupy-cuda13x>=13.6.0" \
+        "TransferQueue @ git+https://github.com/Ascend/TransferQueue.git@434f8c476b4be24bc087e6e95070e64efcc739f9" \
+        fastapi uvicorn cachetools loguru pytest pytest-asyncio
+# verl trainer deps (same set as the vLLM image, accelerate 1.15.0 already carries the _is_hf_initialized fix),
+# then Uni-Agent's sandbox deps.
+RUN python -m pip install --no-cache-dir -c /tmp/base-core.txt \
+        "ray[default]==2.54.1" accelerate==1.15.0 codetiming==1.4.0 datasets==5.0.0 dill==0.4.1 hydra-core==1.3.3 \
+        pandas==3.0.3 peft==0.19.1 pyarrow==24.0.0 pybind11==3.0.4 pylatexenc==2.10 tensordict==0.10.0 \
+        tensorboard==2.21.0 torchdata==0.11.0 wandb==0.28.0 \
+    && python -m pip install --no-cache-dir -c /tmp/base-core.txt swe-rex==1.4.0 swebench docker
+RUN cd "$(python -c 'import sysconfig;print(sysconfig.get_paths()["purelib"])')" \
+    && patch -p3 < /tmp/dynamo-client-errors.patch \
+    && python -c "import dynamo._core, dynamo.frontend, dynamo.sglang, transfer_queue, sglang, torch, transformers, ray, tensordict, swerex; print('sglang', sglang.__version__, 'torch', torch.__version__, 'transformers', transformers.__version__)" \
+    && python -m dynamo.frontend --help | grep -q -- --router-policy-config && echo "router-policy-config OK" \
+    && docker --version \
+    && python -m pip freeze | grep -E '^(torch|transformers|triton|sglang)==' | sort > /tmp/after-core.txt \
+    && grep -E '^(torch|transformers|triton|sglang)==' /tmp/base-core.txt | sort > /tmp/before-core.txt \
+    && cmp /tmp/before-core.txt /tmp/after-core.txt && echo "base pins intact"
+RUN groupadd -g 1015 jinyanc && useradd -u 1015 -g 1015 -m jinyanc

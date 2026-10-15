@@ -1,0 +1,5 @@
+ray==2.54.1
+tensordict==0.10.0
+accelerate==1.15.0
+protobuf>=6.33.5,<7
+grpcio-tools==1.81.1
