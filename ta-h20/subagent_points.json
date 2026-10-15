@@ -194,20 +194,20 @@
   "duration_with": 4781,
   "duration_without": 5295
  },
- "ta-native-h20sub-10122136": {
+ "ta-native-h20subcc256-10141340": {
   "regime": "subagent_prompt",
   "arm": "ta-native",
   "cc": 256,
-  "tok_s": 1214,
-  "peak_programs": 470,
-  "pre_fix": true,
-  "sessions": 462,
-  "with_sub": 324,
-  "dispatches": 1010,
-  "finished_rate_with": 0.627,
-  "finished_rate_without": 0.616,
-  "duration_with": 2459,
-  "duration_without": 2472
+  "tok_s": 1203,
+  "peak_programs": 471,
+  "pre_fix": false,
+  "sessions": 510,
+  "with_sub": 344,
+  "dispatches": 1041,
+  "finished_rate_with": 0.576,
+  "finished_rate_without": 0.524,
+  "duration_with": 2631,
+  "duration_without": 2671
  },
  "kv-h20sub-kv-10130401": {
   "regime": "subagent_prompt",
