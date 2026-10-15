@@ -25,6 +25,9 @@ MAX_PROMPT=${MAX_PROMPT:-8192}; MAX_RESP=${MAX_RESP:-65536}
 # sglang's --mem-fraction-static covers weights too: 0.78 of an H20 at TP4 leaves the same ~60 GiB of KV per GPU as
 # KV_BYTES does on vLLM (sglang has no byte cap, so KV_BYTES is ignored there).
 GPU_MEM=${GPU_MEM:-$([ "$ENGINE" = sglang ] && echo 0.78 || echo 0.75)}; MAX_NUM_SEQS=${MAX_NUM_SEQS:-256}; TP=${TP:-4}
+# H100 80 GB: the FSDP trainer already holds ~12 GiB/GPU when the engines start, so 0.92 (72.9 GiB) never fits
+# (free 66.8-68.2 GiB). 0.80 = 63.4 GiB, with a 44 GiB KV cap shared by both arms (H20 uses 60 GiB of its 96).
+if [ "${SITE:-h20}" = h100 ]; then GPU_MEM=0.80; KV_BYTES=47244640256; fi
 TEMP=${TEMP:-0.8}; TOP_P=${TOP_P:-0.9}
 GATEWAY_COUNT=${GATEWAY_COUNT:-8}; RAY_NUM_CPUS=${RAY_NUM_CPUS:-128}
 KV_BYTES=${KV_BYTES:-}            # optional per-GPU KV cap (bytes); empty = gpu_memory_utilization
