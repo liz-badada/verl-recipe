@@ -202,9 +202,8 @@ TXT = {
   cols=["并发", "臂", "稳态 tok/s", "session", "派生过 subagent 的 session", "派生次数", "完成率：有 subagent", "完成率：无 subagent", "平均时长 有 / 无 (s)", "路由器峰值 program"],
   forced="强制 3 个 subagent 的 prompt（第二轮，CC 256）",
   dagger="所有 TA 行现在都是修复 9f32e49 之后的复测值。强制 subagent 的第二轮 CC 256 于 10-15 复测（804b377）：稳态 1214 → 1203，跑完的 session 462 → 510，派生过 subagent 的 session 完成率 63% → 58%（约 330 个这样的 session，两次之差在 run 间波动内），路由器峰值 program 470 → 471。默认 prompt 下 CC 256 / 384 / 512 的 TA 行已全部换成修复后（804b377）的复测：稳态不变，CC 512 峰值 program 从 831 降到 712，同样墙钟内 256/384/512 分别多跑完 19 / 59 / 147 个 session。",
-  reading=("<li><strong>默认 prompt 下三到五成 session 会派 subagent</strong>，每个派 1.5–1.7 个；强制 prompt 下 67% 的 session 派，平均 3.0 个。两臂的派生比例相近，差别不来自负载。</li>"
-           "<li><strong>路由器确实把 subagent 当成了 program</strong>：CC 64 时峰值 103 个 program（64 个根 + 39 个子）、CC 128 时 195 个。这些子 program 就是适配器从 agent-id 头映射、带 parent 链接送到 TA 的。</li>"
-           "<li><strong>轻压力（CC 64 / 128）两臂的 subagent 结果一致</strong>：完成率和时长都在噪声内，subagent 支持没有引入额外开销。</li>"
+  reading=("<li><strong>默认 prompt 下 TA 臂 39–47% 的 session 会派 subagent</strong>，每个派 1.6 个；global 臂只有 15–25%、每个 1.1–1.2 个，因为它的 session 多数没走到派 subagent 的那一步就超时了。强制 prompt 下 67% 的 session 派，平均 3.0 个。</li>"
+           "<li><strong>路由器确实把 subagent 当成了 program</strong>：CC 256 时峰值 369 个 program（256 个根 + 113 个子）、CC 384 时 516 个、CC 512 时 712 个。这些子 program 就是适配器从 agent-id 头映射、带 parent 链接送到 TA 的。</li>"
            "<li><strong>压力起来后差距全在 subagent 会话上</strong>：CC 256 带 subagent 的 session TA 完成 62%，global 23%；CC 384 global 掉到 2%、CC 512 为 0，TA 仍保持 48–61%（CC 512 复测为 48%：以前卡死的 session 现在被正常关闭并计入分母，绝对完成数 228 对 191 更多）。"
            "强制 subagent 的第二轮更直接：TA 1203 tok/s 对 global 311、KV 253，带 subagent 的 session 完成率 58% 对 31% 和 2%。</li>"),
   ref=("见第四节。", "见第五节。")),
@@ -228,9 +227,8 @@ TXT = {
   cols=["CC", "arm", "steady tok/s", "sessions", "sessions dispatching subagents", "dispatches", "finished: with subagents", "finished: without", "mean duration with / without (s)", "peak programs in router"],
   forced="prompt forcing 3 subagents (sweep 2, CC 256)",
   dagger="Every TA row is now a post-fix (9f32e49) re-measurement. The forced-subagent sweep-2 CC 256 was re-run on 10-15 (804b377): steady 1214 → 1203, completed sessions 462 → 510, completion of sessions with subagents 63% → 58% (about 330 such sessions; the difference is within run-to-run spread), peak programs 470 → 471. All default-prompt TA rows at CC 256 / 384 / 512 are now the post-fix (804b377) re-measurement: steady throughput unchanged, CC 512 peak programs down from 831 to 712, and 19 / 59 / 147 more sessions completed in the same wall clock at 256 / 384 / 512.",
-  reading=("<li><strong>With the default prompt 30–50% of sessions dispatch subagents</strong>, 1.5–1.7 each; with the forcing prompt 67% dispatch, 3.0 on average. Both arms dispatch at similar rates, so the gap is not a workload difference.</li>"
-           "<li><strong>The router really sees subagents as programs</strong>: 103 programs at peak for CC 64 (64 roots + 39 children), 195 for CC 128. Those children are the programs the adapter derives from agent-id headers and sends to TA with a parent link.</li>"
-           "<li><strong>Under light load (CC 64 / 128) both arms agree on the subagent sessions</strong>: completion and duration within noise, so subagent support adds no overhead.</li>"
+  reading=("<li><strong>With the default prompt 39–47% of TA sessions dispatch subagents</strong>, 1.6 each; on global only 15–25% do, 1.1–1.2 each, because most of its sessions time out before reaching the point of dispatching. With the forcing prompt 67% dispatch, 3.0 on average.</li>"
+           "<li><strong>The router really sees subagents as programs</strong>: 369 programs at peak for CC 256 (256 roots + 113 children), 516 at CC 384, 712 at CC 512. Those children are the programs the adapter derives from agent-id headers and sends to TA with a parent link.</li>"
            "<li><strong>Under pressure the whole gap is in the subagent sessions</strong>: at CC 256 sessions with subagents finish 62% on TA vs 23% on global; global drops to 2% at CC 384 and 0 at CC 512 while TA stays at 48–61% (48% at CC 512 after the re-run: sessions that used to hang are now closed and counted in the denominator; absolute finished trajectories rose from 191 to 228). "
            "The forced-subagent sweep is more direct: TA 1203 tok/s vs global 311 and KV 253, and 58% vs 31% and 2% of subagent sessions finished.</li>"),
   ref=None),
