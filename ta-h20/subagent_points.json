@@ -14,20 +14,20 @@
   "duration_with": 2053,
   "duration_without": 1622
  },
- "global-h20cc256-10131520": {
+ "global-h20cc256-10141340": {
   "regime": "default",
   "arm": "global",
   "cc": 256,
-  "tok_s": 313,
+  "tok_s": 319,
   "peak_programs": null,
   "pre_fix": false,
-  "sessions": 408,
-  "with_sub": 101,
-  "dispatches": 124,
-  "finished_rate_with": 0.228,
-  "finished_rate_without": 0.231,
-  "duration_with": 5112,
-  "duration_without": 4264
+  "sessions": 415,
+  "with_sub": 113,
+  "dispatches": 148,
+  "finished_rate_with": 0.345,
+  "finished_rate_without": 0.331,
+  "duration_with": 4802,
+  "duration_without": 4007
  },
  "global-h20cc384-10131520": {
   "regime": "default",
