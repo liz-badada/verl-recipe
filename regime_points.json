@@ -1,0 +1,171 @@
+{
+ "note": "v = steady-state engine-side generation tok/s (median of 10-min buckets, both engines, from vLLM scheduler stats); w = window average (sampled time between first and last active engine stats line, gaps capped at 30 s); default Claude Code prompt unless flagged; pre_fix = TA run measured before fix 9f32e49 (program leak at session close), re-measurement pending; finalize_pause = on TA arms, sessions closing after the step-end abort_all_requests lost their trajectories to the 60 s final-request timeout (native plugin final parks on the paused engine; 2-3% of sessions per run, fixed in 33fac10): TA session counts are lower bounds, engine rates unaffected; excluded = points removed from the pages (see reason), kept here for provenance; awaiting_pair = clean 512-trajectory re-measurements whose other arm has not landed yet (not rendered until both arms exist); superseded = points replaced by a re-measurement of the same arm and CC",
+ "default": {
+  "global": [
+   {
+    "cc": 95,
+    "v": 1282,
+    "w": 1291,
+    "run": "global-h20-10121643",
+    "label": "≈95*"
+   },
+   {
+    "cc": 128,
+    "v": 1318,
+    "w": 1311,
+    "run": "global-h20cc128-10150700"
+   },
+   {
+    "cc": 256,
+    "v": 319,
+    "w": 346,
+    "run": "global-h20cc256-10141340"
+   },
+   {
+    "cc": 384,
+    "v": 272,
+    "w": 273,
+    "run": "global-h20cc384-10141340"
+   },
+   {
+    "cc": 512,
+    "v": 271,
+    "w": 286,
+    "run": "global-h20cc512-10141340"
+   }
+  ],
+  "ta-native": [
+   {
+    "cc": 95,
+    "v": 1272,
+    "w": 1280,
+    "run": "ta-native-h20-10121643",
+    "label": "≈95*"
+   },
+   {
+    "cc": 128,
+    "v": 1312,
+    "w": 1294,
+    "run": "ta-native-h20cc128-10150700"
+   },
+   {
+    "cc": 256,
+    "v": 1241,
+    "w": 1236,
+    "run": "ta-native-h20cc256-10141340"
+   },
+   {
+    "cc": 384,
+    "v": 1219,
+    "w": 1204,
+    "run": "ta-native-h20cc384-10141340"
+   },
+   {
+    "cc": 512,
+    "v": 1229,
+    "w": 1196,
+    "run": "ta-native-h20cc512-10141340"
+   }
+  ]
+ },
+ "subagent_prompt": {
+  "global": [
+   {
+    "cc": 256,
+    "v": 311,
+    "w": 362,
+    "run": "global-h20sub-10122136"
+   }
+  ],
+  "ta-native": [
+   {
+    "cc": 256,
+    "v": 1203,
+    "w": 1200,
+    "run": "ta-native-h20subcc256-10141340"
+   }
+  ],
+  "kv": [
+   {
+    "cc": 256,
+    "v": 253,
+    "w": 281,
+    "run": "kv-h20sub-kv-10130401"
+   }
+  ]
+ },
+ "pending": [],
+ "pending_global": [],
+ "excluded": [
+  {
+   "cc": 64,
+   "v": 1256,
+   "w": 1172,
+   "run": "ta-native-h20cc64-10141340",
+   "arm": "ta-native",
+   "reason": "128 / 256 trajectories per arm (20 / 50 min): one usable 10-min bucket at CC 64; re-measured with 512 trajectories on 2026-10-15/16 (tag 10150700)"
+  },
+  {
+   "cc": 128,
+   "v": 1301,
+   "w": 1279,
+   "run": "ta-native-h20cc128-10141340",
+   "arm": "ta-native",
+   "reason": "128 / 256 trajectories per arm (20 / 50 min): one usable 10-min bucket at CC 64; re-measured with 512 trajectories on 2026-10-15/16 (tag 10150700)"
+  },
+  {
+   "cc": 128,
+   "v": 1305,
+   "w": 1275,
+   "run": "global-h20cc128-10141340",
+   "arm": "global",
+   "reason": "128 / 256 trajectories per arm (20 / 50 min): one usable 10-min bucket at CC 64; re-measured with 512 trajectories on 2026-10-15/16 (tag 10150700)"
+  },
+  {
+   "cc": 64,
+   "v": 1347,
+   "w": 1308,
+   "run": "global-h20cc64-10141340",
+   "arm": "global",
+   "reason": "128 / 256 trajectories per arm (20 / 50 min): one usable 10-min bucket at CC 64; re-measured with 512 trajectories on 2026-10-15/16 (tag 10150700)"
+  },
+  {
+   "cc": 64,
+   "v": 727,
+   "w": 752,
+   "run": "ta-native-h20cc64-10150700",
+   "arm": "ta-native",
+   "reason": "from minute 27 on, GPUs 0-3 (replica0) were shared with an unrelated job on the node (venv-tpmoe bench, 100% SM, 3.8 GiB): replica0 fell to ~150 tok/s at 38 running requests while replica1 stayed at ~600; re-run queued (after_tail.sh, after the TA 512 / forced-subagent arms)"
+  },
+  {
+   "cc": 512,
+   "v": 1145,
+   "w": 1160,
+   "run": "ta-native-h20cc512-10150700",
+   "arm": "ta-native",
+   "reason": "re-run of the CC 512 TA arm on 33fac10: from minute 27 to 48 another process on this box held ~23 GB on all 8 GPUs (10-min buckets 891 / 1088 vs 1219-1361 around them); the 804b377 point (1229) stays, a second re-run is queued as tag 10160955"
+  }
+ ],
+ "awaiting_pair": [
+  {
+   "cc": 64,
+   "v": 1240,
+   "w": 1241,
+   "run": "global-h20cc64-10150700",
+   "arm": "global",
+   "sessions_done": 512,
+   "wall_s": 9215,
+   "note": "clean 512-trajectory run; rendered once the TA CC 64 re-run lands"
+  }
+ ],
+ "superseded": [
+  {
+   "cc": 512,
+   "v": 284,
+   "w": 292,
+   "run": "global-h20cc512-10130706",
+   "arm": "global",
+   "reason": "replaced by global-h20cc512-10141340 (same run as the 256/384 re-measurements)"
+  }
+ ]
+}

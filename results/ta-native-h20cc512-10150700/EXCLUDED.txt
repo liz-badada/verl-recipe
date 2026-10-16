@@ -1,0 +1,1 @@
+excluded: GPUs shared with another process minutes 27-48 (see regime_points.json excluded[])
