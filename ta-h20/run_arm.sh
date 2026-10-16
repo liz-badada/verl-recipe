@@ -163,6 +163,7 @@ case $ARM in
             ++actor_rollout_ref.rollout.engine_kwargs.dynamo.thunderagent.native=true
             ++actor_rollout_ref.rollout.engine_kwargs.dynamo.thunderagent.auto_finalize=false
             "++actor_rollout_ref.rollout.engine_kwargs.dynamo.thunderagent.native_parameters=$TA_PARAMS"
+            ${SUBAGENT_PROGRAMS:+++actor_rollout_ref.rollout.engine_kwargs.dynamo.thunderagent.subagent_programs=$SUBAGENT_PROGRAMS}
             actor_rollout_ref.rollout.agent.agent_loop_manager_class=recipe.dynamo.uniagent_gateway.DynamoAgentFrameworkRolloutAdapter)
     else
       # Dynamo KV router baseline: the recipe adapter without ThunderAgent keeps the vLLM tool parser
@@ -176,6 +177,7 @@ esac
 {
   echo "SITE_ENV=${SITE_ENV[*]}"
   echo "ARM=$ARM ENGINE=$ENGINE RUN_NAME=$RUN_NAME BATCH=$BATCH N=$N CONCURRENCY=$CONCURRENCY MAX_PROMPT=$MAX_PROMPT MAX_RESP=$MAX_RESP GPU_MEM=$GPU_MEM MAX_NUM_SEQS=$MAX_NUM_SEQS TP=$TP KV_BYTES=$KV_BYTES TA_PARAMS=$TA_PARAMS MODEL_DIR=$MODEL_DIR IMAGE=$IMAGE"
+  echo "SUBAGENT_PROGRAMS=${SUBAGENT_PROGRAMS:-tree}"
   echo "HOST=$(hostname) UNIAGENT_SHA=$(git -C $UNIAGENT rev-parse HEAD) RECIPE_SHA=$(git -C $RECIPE rev-parse HEAD) CLAUDE=$(readlink -f ~/.local/bin/claude) START_EPOCH=$(date +%s)"
   echo "python -m verl.trainer.main_ppo ${arm[*]} ${common[*]} ${rt[*]} $*"
 } > "$RUN/command.txt"

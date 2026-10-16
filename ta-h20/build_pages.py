@@ -30,7 +30,7 @@ TXT = {
         "<code>trajectory_selection=longest</code> 还会丢掉 subagent 自己的链），再除以窗口时长。global 在 CC 256/384 撞到 3 小时上限时还有 104 / 75 个 session 没结束，"
         "它们几个小时里生成的 token 全部不计数，而时间照算；到 CC 512，几乎所有 session 都在窗口内被 90 分钟超时切断而“结束”，token 就都算进去了。"
         "于是出现了 105 → 86 → 144 这条假的 V 形。换成引擎侧计数后，global 在 CC ≈95 / 128 是 1282 / 1318，到 256 跌到 319，再 272 / 271，和 blog 的形状一致；"
-        "TA 在 ≈95 到 512 全程 1219 到 1272，是一条水平线。修复 9f32e49 之前 TA 在 384/512 的全程均值只有 797 / 827：session 关闭时泄漏的 program 在末尾造成停滞；用修复后代码（804b377）复测后回到 1204 / 1196，稳态几乎不变（1231 → 1219、1255 → 1229）。强制 subagent 的第二轮 TA 256 也复测了：稳态 1214 → 1203，跑完的 session 从 462 到 510。表里的 TA 点现在全部是修复后的复测值。"
+        "TA 在 ≈95 到 512 全程 1219 到 1272，是一条水平线。修复 9f32e49 之前的 TA run（384/512）在同样的墙钟预算内生成的 token 和修复后一样多（1225 对 1227、1166 对 1172 tok/s），但预算用完后引擎还带着泄漏的 program 空转了 57 / 42 分钟，少跑完 55 / 147 个 session；按引擎活跃区间算的均值因此只有 797 / 827，修复后（804b377）是 1210 / 1196，稳态几乎不变（1231 → 1219、1255 → 1229）。强制 subagent 的第二轮 TA 256 也复测了：稳态 1214 → 1203，跑完的 session 从 462 到 510。表里的 TA 点现在全部是修复后的复测值。"
         "两套口径都保留在表里；session 口径的数字仍是 trainer 真正拿到的训练数据的速度，对比第三、四、五节。")),
  "en": dict(h2="3 · Concurrency scan: the blog-style regime chart", lead=(
    "Following the blog, concurrency is swept (default prompt, 60 GiB KV per GPU, otherwise the sweep-3 configuration); every point runs the full 32×16=512 sessions with a 3-hour wall-clock cap per arm. "
@@ -43,7 +43,7 @@ TXT = {
         "(<code>trajectory_selection=longest</code> also drops the subagents' own chains), divided by the window length. When global hit the 3-hour cap at CC 256/384 it still had 104 / 75 sessions running; "
         "every token they generated over hours was dropped while their time counted. At CC 512 nearly every session \"ended\" inside the window through the 90-minute timeout, so their tokens counted. "
         "That produced the spurious 105 → 86 → 144 V shape. Counted engine-side, global sits at 1282 / 1318 at CC ≈95 / 128, drops to 319 at 256 and stays at 272 / 271, the same shape as the blog; TA stays between 1219 and 1272 from ≈95 to 512, a flat line. "
-        "Before fix 9f32e49 TA's window averages at 384/512 were only 797 / 827, an end-of-run stall caused by programs leaked at session close; re-measured on the fixed code (804b377) they return to 1204 / 1196 with the steady values nearly unchanged (1231 → 1219, 1255 → 1229). The forced-subagent TA 256 of sweep 2 was re-run as well: steady 1214 → 1203, completed sessions 462 → 510. Every TA point in the table is now a post-fix re-measurement. "
+        "The TA runs before fix 9f32e49 (384/512) generated as many tokens inside the same wall-clock budget as the fixed ones (1225 vs 1227, 1166 vs 1172 tok/s), but after the budget the engines idled for 57 / 42 more minutes on leaked programs and 55 / 147 fewer sessions finished; averaged over the engines' active span that reads 797 / 827 against 1210 / 1196 on the fixed code (804b377), with the steady values nearly unchanged (1231 → 1219, 1255 → 1229). The forced-subagent TA 256 of sweep 2 was re-run as well: steady 1214 → 1203, completed sessions 462 → 510. Every TA point in the table is now a post-fix re-measurement. "
         "Both metrics stay in the table; the session-level number is still the rate at which the trainer actually receives training data, see sections 3 to 5.")),
 }
 
@@ -63,7 +63,7 @@ def section(lang):
     head = "".join(f'<th{" class=num" if i else ""}>{c}</th>' for i, c in enumerate(t["cols"]))
     return ("<!-- sweep-section -->\n" + f'<h2>{t["h2"]}</h2>\n<p>{t["lead"]}</p>\n<!-- regime-chart --><!-- /regime-chart -->\n'
             f'<div class="scroller"><table><caption>{t["cap"]}</caption><thead><tr>{head}</tr></thead><tbody>{"".join(rows)}</tbody></table></div>\n'
-            f'<p style="font-size:13.5px;color:var(--ink-3)">{t["foot95"]}</p>\n<h3>{t["why_h3"]}</h3>\n<p>{t["why"]}</p>\n<!-- /sweep-section -->')
+            f'<p style="font-size:13.5px;color:var(--ink-3)">{t["foot95"]}</p>\n<h3>{t["why_h3"]}</h3>\n<p>{t["why"]}</p>\n<!-- subagent-gain --><!-- /subagent-gain -->\n<!-- /sweep-section -->')
 
 def put(html, sec):
     if "<!-- sweep-section -->" in html and "<!-- /sweep-section -->" in html:
