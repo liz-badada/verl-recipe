@@ -12,8 +12,10 @@ UNIAGENT=${UNIAGENT:-/home/jinyanc/workspace/jinyanc/github/uni-agent}
 RECIPE=${RECIPE:-/home/jinyanc/workspace/jinyanc/github/verl-recipe}
 ENGINE=${ENGINE:-vllm}            # vllm | sglang: the inference engine behind every arm (image, trainer config and engine flags follow)
 case $ENGINE in
-  vllm)   IMAGE=${IMAGE:-verl-recipe-thunderagent:rust-ta-uniagent-20261012};;
-  sglang) IMAGE=${IMAGE:-verl-recipe-thunderagent:rust-ta-uniagent-sglang-20261015};;
+  vllm)   IMAGE=${IMAGE:-verl-recipe-thunderagent:rust-ta-uniagent-20261012}; FSDP_RMPAD=true;;
+  # The SGLang image (torch 2.13 + cu130) has no flash-attn wheel, so the FSDP actor loads with SDPA and without
+  # remove-padding there; the rollout engine, whose throughput is what the bench measures, is unaffected.
+  sglang) IMAGE=${IMAGE:-verl-recipe-thunderagent:rust-ta-uniagent-sglang-20261015}; FSDP_RMPAD=false;;
   *) echo "ENGINE must be vllm or sglang, got $ENGINE" >&2; exit 2;;
 esac
 MODEL_DIR=${MODEL_DIR:-/home/jinyanc/workspace/model/hub/Qwen3-Coder-30B-A3B-Instruct}
@@ -53,7 +55,7 @@ common=(
   data.filter_overlong_prompts=true data.filter_overlong_prompts_workers=1
   data.truncation=error data.shuffle=false data.seed=42
   "actor_rollout_ref.model.path=/model"
-  actor_rollout_ref.model.use_remove_padding=true
+  "actor_rollout_ref.model.use_remove_padding=$FSDP_RMPAD"
   actor_rollout_ref.model.enable_gradient_checkpointing=true
   actor_rollout_ref.actor.strategy=fsdp2
   actor_rollout_ref.actor.optim.lr=1e-6
@@ -111,6 +113,7 @@ common=(
   ++ray_kwargs.ray_init.runtime_env.py_executable=null
   "hydra.run.dir=/bench_run/hydra"
 )
+[ "$ENGINE" = sglang ] && common+=(+actor_rollout_ref.model.override_config.attn_implementation=sdpa)
 PYPATH=/workspace/recipe-root:/workspace/uni-agent/verl:/workspace/uni-agent
 env=(-e HOME=/bench_run/home -e USER=$(id -un) -e LOGNAME=$(id -un) -e "PYTHONPATH=$PYPATH" -e TOKENIZERS_PARALLELISM=false -e OMP_NUM_THREADS=1 -e OPENBLAS_NUM_THREADS=1
      -e RAY_DEDUP_LOGS=0 -e HYDRA_FULL_ERROR=1 -e VERL_DYNAMO_LOG_DIR=/bench_run/dynamo -e VERL_DYNAMO_WORKER_METRICS_DIR=/bench_run/worker_metrics
@@ -180,11 +183,15 @@ esac
 printf 'timestamp,index,utilization_gpu_pct,memory_used_mib,power_draw_w\n' > "$RUN/gpu.csv"
 ( while true; do ts=$(date +%s.%N); nvidia-smi --query-gpu=index,utilization.gpu,memory.used,power.draw --format=csv,noheader,nounits | while IFS= read -r row; do printf '%s,%s\n' "$ts" "${row//, /,}"; done; sleep 1; done ) >> "$RUN/gpu.csv" 2>/dev/null &
 SAMPLER=$!
+( while true; do nvidia-smi --query-compute-apps=pid,gpu_uuid,used_memory,process_name --format=csv,noheader | sed "s/^/$(date +%s),/"; sleep 60; done ) >> "$RUN/gpu_procs.csv" 2>/dev/null &
+PROC_SAMPLER=$!
 # Rollout-only: stop the container once every session has a trajectory dump (the train step is not measured).
 ( set +e  # the loop must survive empty globs under the script's errexit/pipefail
   while sleep 15; do
     # count finished sessions among the first EXPECTED started (the trainer keeps prefetching prompt groups)
-    n=$(python3 "$H/first_n_done.py" "$RUN" "$EXPECTED" 2>/dev/null | awk '{print $1+0}')
+    # Bounded: on a node whose sandboxes keep failing the framework piles up retry directories and the scan
+    # would otherwise outlast the wall cap it is meant to enforce.
+    n=$(timeout 120 python3 "$H/first_n_done.py" "$RUN" "$EXPECTED" 2>/dev/null | awk '{print $1+0}')
     docker ps -q --filter "name=^$RUN_NAME$" | grep -q . || break
     # stop when the first EXPECTED sessions are all done, or at the wall cap (same rule for every arm)
     if [ "$n" -ge "$EXPECTED" ] || [ $(( $(date +%s) - ARM_T0 )) -ge "${ROLLOUT_MAX_S:-10800}" ] || grep -q 'generate_sequences summary' "$RUN/console.log" 2>/dev/null; then
@@ -196,7 +203,7 @@ SAMPLER=$!
     fi
   done ) &
 WATCHER=$!
-cleanup() { kill $SAMPLER $WATCHER 2>/dev/null; docker ps -q --filter name=uni-agent- | xargs -r docker rm -f >/dev/null 2>&1; }
+cleanup() { kill $SAMPLER $PROC_SAMPLER $WATCHER 2>/dev/null; docker ps -q --filter name=uni-agent- | xargs -r docker rm -f >/dev/null 2>&1; }
 trap cleanup EXIT
 
 docker run --rm --name "$RUN_NAME" --network host --gpus all --ipc=host --shm-size 64g \
