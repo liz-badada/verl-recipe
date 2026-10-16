@@ -80,9 +80,9 @@
   "ta-native": [
    {
     "cc": 256,
-    "v": 1203,
-    "w": 1200,
-    "run": "ta-native-h20subcc256-10141340"
+    "v": 1201,
+    "w": 1193,
+    "run": "ta-native-h20subcc256-10150700"
    }
   ],
   "kv": [
@@ -166,6 +166,14 @@
    "run": "global-h20cc512-10130706",
    "arm": "global",
    "reason": "replaced by global-h20cc512-10141340 (same run as the 256/384 re-measurements)"
+  },
+  {
+   "cc": 256,
+   "v": 1203,
+   "w": 1200,
+   "run": "ta-native-h20subcc256-10141340",
+   "arm": "ta-native",
+   "reason": "804b377 run replaced by the 33fac10 re-run ta-native-h20subcc256-10150700 (1201 / 1193, 511 / 512 sessions, 0 leaks, GPUs not shared); same code line as the ablation arms"
   }
  ]
 }
