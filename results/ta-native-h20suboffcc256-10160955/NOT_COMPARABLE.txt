@@ -1,0 +1,6 @@
+subagent_programs=off (TA blind to subagents, one program per session), forced-subagent task, CC 256, recipe 7c1a747.
+Not a throughput point: the gateway's serial-call guard (upstream at 242c73f: "requires serial calls within one session")
+rejected 411 concurrent subagent requests with HTTP 409 across 210/512 sessions (tree run ta-native-h20subcc256-10150700: 0).
+Sessions ended early: turns 44.6 vs 59.1, model tokens 1.74M vs 2.92M, finished 182 vs 282, reward 0.227 vs 0.315.
+Engine steady 1272 vs 1201 reflects under-counted admission (running 68 vs 42, KV 54% vs 41%) and less work, not throughput.
+Kept as the measured rung-2 outcome (table D on the pages); see regime_points.json ablation[].

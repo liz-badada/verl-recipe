@@ -50,10 +50,24 @@ TXT = {
         h3="subagent 这块优化到底换回多少：把 TA 本身的收益和 subagent 专项分开",
         lead=("上面 3.9–4.5× 是整套 ThunderAgent 对 global LB 的差距，里面既有 TA 本来就有的准入控制，也有这次为 Claude Code subagent 做的事。"
               "两者在同一份强制 subagent 流量（CC 256，512 个 session，约 67% 的 session 各派 3 个 subagent）上按阶梯拆：每一级只多开一样东西。"
-              "两端已经测过，中间两级（TA 不认 subagent；TA 认 subagent 但不告诉 router 父子关系）排在 TA 64 重测之后跑，各 3 小时，跑完直接填进这张图。"),
+              "两端已经测过。第 ② 级 10-16 18:58 跑完，但它不是一个吞吐数据点：不认 subagent 的 TA 把兄弟 subagent 的并发请求撞上了 gateway 的串行保护，41% 的 session 收到 409（表 D）。第 ③ 级排在强制 subagent CC 512 之后跑（预计 10-17 01:00），跑完直接填进这张图。"),
         capA="A · 阶梯：强制 subagent，CC 256，引擎稳态 tok/s",
         rungs=["global LB（基线）", "TA · 不认 subagent（请求都算在父 session 的 program 上，上游 TA 的行为）", "TA · 每个 subagent 一个 program，用完即释放，不报父子", "TA · 完整（+ 兄弟同置 / 根绑定）"],
-        pending="待测", measured="已测",
+        pending="待测", measured="已测", invalid="不可比：210 / 512 个 session 收到 409，见表 D",
+        capD="D · ② 对 ④：TA 不认 subagent 时发生了什么（同一任务、CC 256、512 条轨迹、同一台机器）",
+        colsD=["", "② TA 不认 subagent", "④ TA 完整"],
+        rowsD=[["gateway 409（同一 program 内不允许并发）", "411 次 / 210 个 session", "0"],
+               ["派了 subagent 的 session / 511", "247", "351"],
+               ["每个 session 的轮数（均值）", "44.6", "59.1"],
+               ["交给 trainer 的 model token", "174 万", "292 万"],
+               ["正常结束的轨迹 / 511", "182", "282"],
+               ["reward 均值", "0.227", "0.315"],
+               ["引擎稳态 tok/s（在跑 / KV）", "1272（68 / 54%）", "1201（42 / 41%）"]],
+        noteD=("上游 gateway（242c73f）本来就有这条保护：一个 session 内的请求必须串行，否则 409；Claude Code 的兄弟 subagent 是并发发请求的。"
+               "所以 TA 不认 subagent 时，41% 的 session 至少有一次 subagent 请求被拒，Claude Code 收到 API Error 后那条 subagent 链就断了：session 更早结束、轮数少 25%、交给 trainer 的 token 少 40%、reward 低 28%。"
+               "引擎侧 tok/s 反而高 6%：一个 session 的 4 个并发请求只算一个 program，准入放进了更多请求（在跑 68 对 42，KV 54% 对 41%），而且每个 session 做的事少了，这个数不能和 ④ 比。"
+               "结论：在这类流量上，认不认 subagent 首先是正确性差异，不是几个百分点的吞吐差异；CC 512 的 off 臂因此不再跑，③ 是剩下唯一的吞吐对照。"
+               "两次 run 的代码线差 0b8a48d（close 时释放失败改后台重试）和 7c1a747（开关本身），都不碰调度。"),
         capB="B · subagent 正确性修复（release-on-return、不泄漏 program）在同一墙钟预算内换回的东西",
         colsB=["场景", "预算内 tok/s（修前 → 修后）", "跑完的 session / 512（修前 → 修后）", "预算后引擎空转（分钟）"],
         noteB=("修前的 TA 已经按 subagent 建 program，只是 session 关闭时泄漏；所以这一行量的是\"修复泄漏\"的收益，不是\"认 subagent 对比不认\"的收益——那是面板 A 的第二级。"
@@ -68,10 +82,24 @@ TXT = {
         h3="How much of the gain is the subagent work: separating ThunderAgent itself from the subagent-specific part",
         lead=("The 3.9–4.5× above is the whole ThunderAgent stack against the global LB: the admission control TA always had, plus what was built here for Claude Code subagents. "
               "The two are separated on one forced-subagent traffic (CC 256, 512 sessions, about 67% of them dispatching 3 subagents each) as a ladder where each rung adds one thing. "
-              "Both ends are measured; the two middle rungs (TA ignoring subagents; TA with a program per agent but no parent announced to the router) are queued after the TA 64 re-run, 3 hours each, and drop straight into this figure."),
+              "Both ends are measured. Rung ② finished 10-16 18:58 but is not a throughput point: with TA blind to subagents, the concurrent requests of sibling subagents hit the gateway's serial-call guard and 41% of the sessions got HTTP 409 (table D). Rung ③ runs after the forced-subagent CC 512 arm (around 10-17 01:00) and drops straight into this figure."),
         capA="A · Ladder: forced subagents, CC 256, steady engine tok/s",
         rungs=["global LB (baseline)", "TA · subagents ignored (every turn charged to the parent session's program, as upstream TA behaves)", "TA · a program per subagent, released on return, no parent announced", "TA · full (+ sibling co-location / root pinning)"],
-        pending="pending", measured="measured",
+        pending="pending", measured="measured", invalid="not comparable: 210 / 512 sessions got HTTP 409, see table D",
+        capD="D · ② vs ④: what happens when TA is blind to subagents (same task, CC 256, 512 trajectories, same node)",
+        colsD=["", "② TA blind to subagents", "④ TA full"],
+        rowsD=[["gateway 409 (no concurrent calls within one program)", "411 / 210 sessions", "0"],
+               ["sessions dispatching subagents / 511", "247", "351"],
+               ["turns per session (mean)", "44.6", "59.1"],
+               ["model tokens handed to the trainer", "1.74M", "2.92M"],
+               ["trajectories finished normally / 511", "182", "282"],
+               ["mean reward", "0.227", "0.315"],
+               ["steady engine tok/s (running / KV)", "1272 (68 / 54%)", "1201 (42 / 41%)"]],
+        noteD=("The upstream gateway (242c73f) already had this guard: calls within one session must be serial or get 409, and Claude Code's sibling subagents call concurrently. "
+               "So with TA blind to subagents 41% of the sessions had at least one subagent request rejected; after the API error that subagent chain is dead, and the session ends earlier: 25% fewer turns, 40% fewer tokens to the trainer, 28% lower reward. "
+               "Engine tok/s is 6% higher, not lower: the 4 concurrent requests of one session count as one program, so admission let more in (running 68 vs 42, KV 54% vs 41%), and each session did less work; the number is not comparable with ④. "
+               "Conclusion: on this traffic, subagent-aware vs blind is first a correctness difference, not a few percent of throughput; the off arm at CC 512 is therefore dropped and ③ is the one remaining throughput comparison. "
+               "The two runs differ by 0b8a48d (background retry of a failed release at close) and 7c1a747 (the knob itself); neither touches scheduling."),
         capB="B · What the subagent correctness work (release on return, no leaked programs) bought inside the same wall-clock budget",
         colsB=["Scenario", "tok/s inside the budget (before → after)", "Sessions finished / 512 (before → after)", "Engine idle after the budget (min)"],
         noteB=("The pre-fix TA already created a program per subagent; it leaked them at session close. So this row measures the leak fix, not subagent-aware vs unaware, which is rung 2 of panel A. "
@@ -87,7 +115,7 @@ TXT = {
 
 def ladder_svg(t):
     rows = [(t["rungs"][0], G["v"] if G else None, "var(--ink-3)", G["run"] if G else ""),
-            (t["rungs"][1], OFF["v"] if OFF else None, "var(--accent)", OFF["run"] if OFF else ""),
+            (t["rungs"][1], OFF["v"] if OFF and OFF.get("valid", True) else ("invalid" if OFF else None), "var(--accent)", OFF["run"] if OFF else ""),
             (t["rungs"][2], ISO["v"] if ISO else None, "var(--accent)", ISO["run"] if ISO else ""),
             (t["rungs"][3], T["v"] if T else None, "var(--good)", T["run"] if T else "")]
     vmax = 1400
@@ -100,9 +128,12 @@ def ladder_svg(t):
     for i, (label, v, color, run) in enumerate(rows):
         y = 16 + 64 * i
         o.append(f'<text x="{x0}" y="{y + 10}" font-size="12.5" font-family="var(--font-sans)" fill="var(--ink-2)">{label}</text>')
-        if v is None:
+        if v is None or v == "invalid":
             o.append(f'<rect x="{x0}" y="{y + 18}" width="{X(600) - x0:.1f}" height="22" rx="2" fill="none" stroke="var(--line-strong)" stroke-dasharray="5 4"/>')
-            o.append(f'<text x="{x0 + 10}" y="{y + 33}" font-size="12.5" font-family="var(--font-sans)" fill="var(--ink-3)">{t["pending"]}</text>')
+            col, lab = ("var(--gap)", t["invalid"]) if v else ("var(--ink-3)", t["pending"])
+            o.append(f'<text x="{x0 + 10}" y="{y + 33}" font-size="12.5" font-family="var(--font-sans)" fill="{col}">{lab}</text>')
+            if run:
+                o.append(f'<text x="{x1 + 54}" y="{y + 33}" text-anchor="end" font-size="10.5" font-family="var(--font-mono)" fill="var(--ink-3)">{run}</text>')
         else:
             o.append(f'<rect x="{x0}" y="{y + 18}" width="{X(v) - x0:.1f}" height="22" rx="2" fill="{color}"/>')
             o.append(f'<text x="{X(v) + 8:.1f}" y="{y + 33}" font-size="13" font-family="var(--font-mono)" font-weight="500" fill="var(--ink)">{v:,}</text>')
@@ -128,6 +159,12 @@ def dose_table(t):
     return f'<div class="scroller"><table><caption>{t["capC"]}</caption><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>'
 
 
+def blind_table(t):
+    head = "".join(f"<th{' class=\"num\"' if i else ''}>{c}</th>" for i, c in enumerate(t["colsD"]))
+    body = "".join("<tr>" + "".join(f"<td{' class=\"num\"' if i else ''}>{c}</td>" for i, c in enumerate(r)) + "</tr>" for r in t["rowsD"])
+    return f'<div class="scroller"><table><caption>{t["capD"]}</caption><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>'
+
+
 def section(lang):
     t = TXT[lang]
     return ("<!-- subagent-gain -->\n"
@@ -135,6 +172,7 @@ def section(lang):
             f'<figure><figcaption style="margin:0 0 8px">{t["capA"]}</figcaption>{ladder_svg(t)}</figure>\n'
             f'{fix_table(t, lang)}\n<p style="font-size:13.5px;color:var(--ink-3)">{t["noteB"]}</p>\n'
             f'{dose_table(t)}\n<p style="font-size:13.5px;color:var(--ink-3)">{t["noteC"]}</p>\n'
+            f'{blind_table(t)}\n<p style="font-size:13.5px;color:var(--ink-3)">{t["noteD"]}</p>\n'
             "<!-- /subagent-gain -->")
 
 
