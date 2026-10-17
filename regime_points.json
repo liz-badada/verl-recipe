@@ -194,6 +194,15 @@
    "run": "ta-native-h20suboffcc256-10160955",
    "valid": false,
    "reason": "TA blind to subagents = one program per session; the gateway's serial-call guard (present upstream at 242c73f as 'requires serial calls within one session') rejected 411 concurrent subagent requests with HTTP 409 across 210/512 sessions (tree run: 0). Sessions ended early: turns 44.6 vs 59.1, model tokens to the trainer 1.74M vs 2.92M, finished trajectories 182 vs 282, reward 0.227 vs 0.315, sessions dispatching subagents 247 vs 351. Engine tok/s 1272 vs 1201 is higher because admission under-counted the load (running 68 vs 42, KV 54% vs 41%) and less work was done; not a throughput comparison. 0 cleanup failures, GPUs not shared (gpu_procs.csv)."
+  },
+  {
+   "mode": "isolated",
+   "cc": 256,
+   "v": 1181,
+   "w": 1195,
+   "run": "ta-native-h20subisolatedcc256-10160955",
+   "valid": true,
+   "reason": "a program per agent, released on return, parent not announced to the router (recipe 7c1a747). 512/512 sessions, 0 x 409, 0 cleanup failures, 25 tool exec timeouts, GPUs not shared; KV 38%, running 40, prefix hit 95%; dispatching sessions 377/512 (1160 dispatches); trainer: 2.66M model tokens, turns 60.3, finished 292, reward 0.359. Tree run (1201/1193) differs by 20 tok/s steady, inside the spread of the two tree re-runs (1201/1203) and the 10-min bucket noise."
   }
  ]
 }

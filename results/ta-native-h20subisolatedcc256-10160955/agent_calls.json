@@ -1,0 +1,4001 @@
+{
+ "summary": {
+  "sessions": 665,
+  "sessions_dispatching_subagents": 472,
+  "subagent_dispatches": 1460,
+  "dispatches_per_dispatching_session": 3.093220338983051,
+  "tool_calls_total": 18544
+ },
+ "sessions": [
+  {
+   "session": "session-sample-0-rollout-0-36e185edc81f4bd5b8b591f00253a919",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-0-922a75c35fa9461fa8cb462060e8d777",
+   "agent_calls": 4,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-1-3273749ed8c243b5b191010cc05c997e",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-1-c8bb6e29902a471c9065b1debee16a05",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-10-ce6498a4e0bc44eda43c3de622090983",
+   "agent_calls": 3,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-10-eade164ad9164cb0bd8c2b81da9a2482",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-11-cf87c5f003084746bb3863659b2fdef9",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-11-e1d526886f374219a853c802d7e1855b",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-12-bb49d194d32d4bc99a70e1120edd6634",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-12-c33c81a271b64954a27e085836dbddc9",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-13-15f8d4d4968548d298fcb0d1348d7ced",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-13-be107b4e720049919575702208ff28ec",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-14-99540a95d6374235bda4d0eee7060293",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-14-e679bf450d424b4bb4689ae062529a57",
+   "agent_calls": 0,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-15-0f40930b18d14e02ab5f0419cac9c0bf",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-15-aa14bb01619c4da5b80654c6a0013246",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-2-3dcf701587f44bd69ce107c5215e35a9",
+   "agent_calls": 4,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-2-c28b48adfbc846e2b5695b69810a1649",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-3-44bec7f71099468bbec90571e10cec90",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-4-85a622e8768e4f6f8a6a4bdaaab747b3",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-4-e95e217f7ed143e289196e4949299fe7",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-5-56c022036d0a4af5abb611ce32a4121e",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-6-d0a4ace958294576a46818d3890e2cb8",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-6-eb5a7fd3d9fa4e779cc02d3430cfe83f",
+   "agent_calls": 4,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-7-7c16521ce5fc42eaa454d7e9ca66b90a",
+   "agent_calls": 3,
+   "tool_calls": 32,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-7-b518ae68a6de476dbc617835e8093dcf",
+   "agent_calls": 4,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-8-194376361494407cbbbda1d81120a40e",
+   "agent_calls": 3,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-8-c3139e27a9c44385bc5f5b5ec7634080",
+   "agent_calls": 3,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-9-2b499661ce6f40f7920d7b770df439ba",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-0-rollout-9-5ffac5dd10b3499dac21516e3ec8c408",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-0-796c8089664c41a7b200fd5d9f72e972",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-0-c003ab67e00f4e71b02c92e59ed5f264",
+   "agent_calls": 0,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-1-1c4ccbefd820470bbd781f94607921dc",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-1-bae0aad993cb4618bddde3a8cd632638",
+   "agent_calls": 4,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-10-08e1628fbbce45d58ed935bd849fd243",
+   "agent_calls": 4,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-10-b75f2293b8b6451db2c515a3336628d0",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-11-44f2bc599ef14aee9cf824f7e06ee43f",
+   "agent_calls": 0,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-11-b0b5349aa2c04e72ad3b3f2862472cd6",
+   "agent_calls": 0,
+   "tool_calls": 13,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-12-6b35235051ac442fb6ecc58fc6208395",
+   "agent_calls": 0,
+   "tool_calls": 10,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-12-782a388d7d34415181226fc58772285f",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-13-76104e5bf79d48d081a3e88f36e303ee",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-13-80231004a0754900a36ee9411a40ca16",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-14-4c71227d990141ada3dd0e85eadae5d4",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-14-910f465eb2a9463c8a558c9aee6f69f8",
+   "agent_calls": 4,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-15-f25345d9fb6e4c5a9ada5ab8c835aa2b",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-2-1236f9fede3848abb4526608366bcf28",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-2-c447d94883674dc3baee6abcfb570c89",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-3-7f3215ad71644d7d923fcaf02e18f58c",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-3-c1423cd7a74f47008771223ac3d46b27",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-4-39c562fc35144d639d8cdeeb7dad560c",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-4-e51854c64ad74520a2af580479be6ae1",
+   "agent_calls": 0,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-5-310dff59d22e494596efc84c28295fbf",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-5-dd294f82539d4b3b87d929b548d34d34",
+   "agent_calls": 0,
+   "tool_calls": 14,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-6-29b1c33a958248e2a783152541780187",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-6-5d3cc4c787ce4212aaffae97928d8e3f",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-7-699e775725f3430b9f46dc95d40481e5",
+   "agent_calls": 0,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-7-cd671a7e8ea447128b299ffcdbba77c8",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-8-a41d19f07dad447089e1f70a22103875",
+   "agent_calls": 3,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-8-b3bf3aad1cb34c55b4da7b3400d4ad56",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-9-2c08423aca0d405e9f4d8562b57464f5",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-1-rollout-9-b26fe2371a234fbc98d306f43b3fd856",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-0-6113c1ef4330434fbcc92a652fae8fe9",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-1-042a510dbf434ad1b47ea62cc9fa1338",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-1-313280f23dee4bfd82a90c1d04dfd88f",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-10-c9fd8bd6a15b45cc8737a388ebe55f61",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-10-d524da42e2134b6f9b39da25584ab283",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-11-cfab99fb13fb422eaa44f2e1bf9366ee",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-12-f1c8455037444e1ea063e2766dfef61e",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-13-4b53baf26d464d3e9de0e8e5c91da23a",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-13-f6784d37980343998fe237b4330cc54e",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-14-d6093d2fcede4d5793d888c4ef42b235",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-15-31eb7a0325784a048bed5dc381d7e47e",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-15-dd351757d98a4dd58420ac8e97d5e3d8",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-2-28baa0de32a049aba1277d9e7aa1ed7c",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-2-d1ce7b4d03854269a0fde856814952b5",
+   "agent_calls": 0,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-3-d5fd6ee977e842d59a32622281cba2fa",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-3-f661deaf00e049b0b182ba1950ebac4f",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-4-1d32eb8b73c54521992c505983b7f553",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-4-ae577cffd9344c818cb24bf45de251c2",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-5-38c68f10719e4b1d802b679e929ff2ff",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-5-c455ec7067dc456ba2046f84da4c6087",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-6-62e173e7fa6442599de8e3ae4e7ca350",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-7-3ae0f5790e16473b903bc6c154704f52",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-7-d57bffccb1b4458d92cc9a5594e2c9f1",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-8-cbff3ebc49aa449ea3d41e1c0a6855c6",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-9-20c1fddcf8f748f9bc74538ebb12c8a5",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-10-rollout-9-ae98432d272745e380e601fd5765c8d9",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-0-48974ca19f4a4957b09cdec0bd41d505",
+   "agent_calls": 4,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-1-3ad9abd7eb9c476e98ce970cdf051884",
+   "agent_calls": 0,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-1-7147e4f342a84fce842a98a0657f4567",
+   "agent_calls": 4,
+   "tool_calls": 14,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-10-63b79990d24e4af99c748192783164dc",
+   "agent_calls": 0,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-10-d61b190529fd47eb8df943e4155d458a",
+   "agent_calls": 0,
+   "tool_calls": 102,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-11-f2e92749a34149e89677756ef3e6bb7e",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-12-1c8651fbea6c461480d474aab3059e5e",
+   "agent_calls": 0,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-13-9eb1c439a8de4babb4236391a105277f",
+   "agent_calls": 0,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-13-e520cccdf2404c459d6247ed495e8bcf",
+   "agent_calls": 0,
+   "tool_calls": 13,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-14-9ef5183de7e64e16999ef02d63e965c1",
+   "agent_calls": 3,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-15-8e81d349e0f54797bbf9c3dd3fc1ede0",
+   "agent_calls": 0,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-2-3b689b37f29b49438145d997d6e7a1f7",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-2-40559f37c9f4410a87f92c8c0e225485",
+   "agent_calls": 1,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-3-482d038129314a80ae0175071e7d3196",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-3-748f02d2f8b644d8a87c690c4b68b6cc",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-4-ccb29df99c7944ab83b4a25220e3a458",
+   "agent_calls": 0,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-4-e8d9796a4e4b432da128ffe3dfda8cd0",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-5-e96838c025704352b75640b9d578127d",
+   "agent_calls": 0,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-6-485c71eee7374027a998826a2101c97f",
+   "agent_calls": 0,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-6-650502c2b63249288d1e2cafb7697c46",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-7-6e7d2e61791b4e98ba57bd491a9e3a42",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-7-f81ef0ca5ed342b18389955b03b0ef7c",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-8-811bf6af99b84d12b317649534832600",
+   "agent_calls": 0,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-8-c5a8804d5881467fab07a8dfa29e1fe9",
+   "agent_calls": 0,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-9-d3c1b37f8fa7464188839f93cdea0af6",
+   "agent_calls": 0,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-11-rollout-9-de1c790df6d04f32b83a6b9f9123bae8",
+   "agent_calls": 0,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-0-bccb7354d9e54e58b665e818299ee6ea",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-0-cd6f973c824949c6aafbe70f2f339e7b",
+   "agent_calls": 0,
+   "tool_calls": 13,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-1-5fe921493221437ab62bc54c10610adf",
+   "agent_calls": 3,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-1-d589b597c3ed4ced8b5b37cbcad8170e",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-10-36eeae428f39488ba64be064c62bc3dd",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-11-7e3b9bae854f4d1a894b56e6439d5832",
+   "agent_calls": 0,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-12-5ea68dc26fad419fbefc0a2d9a7d11ca",
+   "agent_calls": 3,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-13-64141df2dce24cf29e0b840289fff903",
+   "agent_calls": 0,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-14-1521d2a201ce4187915960b695fef69b",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-14-1915d67d38ee423ab1d603e5ef392a33",
+   "agent_calls": 3,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-15-2b981d6eb0fc4d37a7b3d131f55adff5",
+   "agent_calls": 0,
+   "tool_calls": 13,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-2-b7452000f9004c1fb59644dccee85180",
+   "agent_calls": 1,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-3-32d0d97b4a6548e8b21fa9ebcaac3a37",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-3-aa058aedfb434fa08d5df57e2cef4cb1",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-4-253b521068ac4897829b9820c091bf84",
+   "agent_calls": 4,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-4-91deed3a4546411fa7955433f91aa9e2",
+   "agent_calls": 0,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-5-8b96118a0378402eae980713cd3397f6",
+   "agent_calls": 3,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-6-150dbbe9cead42de9366b2b858f0ca1f",
+   "agent_calls": 0,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-6-f0abea78d02046cb90b371d4e2acc9fd",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-7-8e8a47a998234d70937c0fac4a4514a9",
+   "agent_calls": 4,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-7-d8149f72cae3422f95ba134092169f7a",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-8-2fd712fd9bcd41598755634b838ba950",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-8-9677d3a231d24c92a785bef1c3a55b26",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-9-6d52508d497d4e048254eb0076221dba",
+   "agent_calls": 4,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-12-rollout-9-c919f9709ba9423e9c1ee7240ba096e6",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-0-8ec0794201d047a688bfdeeb03958b6e",
+   "agent_calls": 0,
+   "tool_calls": 92,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-1-f418f4790fb24521bb64676064472107",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-10-d7c36b61c48b43578cdd0ec751892c63",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-11-c30d09e4865641b7bbc8a52b8bb50f2d",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-11-d8b14c79b95f49f5a7ec22ed87a76237",
+   "agent_calls": 3,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-12-424ac59d35524f7fab540e3520a04f1f",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-13-3d0f9e9b8a964da097a86f557888cbc7",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-14-4b864395ced540c58403f79ad79b1045",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-15-99c75d5d99ef4751a274471d0a7fb68f",
+   "agent_calls": 3,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-2-03a8b32759384f55a8f2791ca49abc9c",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-2-28d8b819dc5943ea8463ce7ffdf3c067",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-3-fbfc71818f564a3e91b67733bbdc26e5",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-4-08e2b6727efe4b1796de7431288dd89d",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-4-2df2240f7a1e40c5bdab67155533570c",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-5-0d15f5a95c854894a3f6e727ba281543",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-6-14b96f8156994c7aa43587588223e9a8",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-7-26ecaf89cc97460b872dd5edcf59a4d0",
+   "agent_calls": 0,
+   "tool_calls": 336,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-8-9053806677a94d5aa7445d9315fc3652",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-13-rollout-9-84f39c3c02f04deda9551fc98295fb4b",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-0-ac12af5e74da4954ae51a64cccb4d06d",
+   "agent_calls": 4,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-1-d1d0dbeae3e74140a49aaafad3480d7d",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-10-358ded1e1da244df97de12f2f934d403",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-11-48f1ecf1497941c4960c5e1089a82ff6",
+   "agent_calls": 4,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-12-c61211f53291460e80caaadd005c6582",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-13-94a5419caf3b4653bd7dd2b70a6bdc03",
+   "agent_calls": 0,
+   "tool_calls": 12,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-14-df773cbf07e241918aa49650ad6abab1",
+   "agent_calls": 4,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-15-31012b242fc649de8b33c3e906242662",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-2-15c414e8fd234c23aecb4b9bba75d213",
+   "agent_calls": 0,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-3-208c6ce43d2440bfa26ddfe77641bc32",
+   "agent_calls": 0,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-4-965e452bb3304cbea98f4396b698c2a3",
+   "agent_calls": 3,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-5-6d98bc49eda04a3c8529d0e8b79cc912",
+   "agent_calls": 3,
+   "tool_calls": 14,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-5-7b44b5049ddd4e0daf6bf4a784b7e3ed",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-6-f07e6b1999ea4e19abfa8f42cb6af6d2",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-7-b9a3dd2717cc4b9dba960064a7ba3a64",
+   "agent_calls": 3,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-8-392c2f55a76640899a514ec9e0f1283b",
+   "agent_calls": 0,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-14-rollout-9-0e63fa875cf74b5180c944c3ab09080d",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-0-6814b132fe9c4bdca1d7e885f2731e71",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-1-f64286e0ba214906920134c596bd727b",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-10-3bb594f4b1e4470ca74cf0d353e9fe63",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-11-8e0fe2e4c2684b03929b0f9e9660b504",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-12-fbae1568b8a84430ac528a2410d422ed",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-13-2fd69498379e4976a481c9d5b5b07189",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-14-80a88a5dc73c4e1aa7a21bfd899de21a",
+   "agent_calls": 0,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-15-0dc52ac768774f018e173a4160b62f76",
+   "agent_calls": 2,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-2-1d2cbef745254482b0d35fd9bdb245da",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-3-f51dfd9e155e40e8a481c502313f7ade",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-4-f8ebe378f31d4c2b8ebf14d8fa35eec7",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-5-0ae0f49d654e460a87401024ad567249",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-6-cd984501ca614ef68354417b8bef50f5",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-7-5a97bbb267404254903bc46db4b615a8",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-8-2cb9c707b1df43cab0335c43cd8019d1",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-15-rollout-9-04ca3b5c921e4f4ea1b081b3f5f3706f",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-0-54f733603fef42c69c29dc934a0b15c7",
+   "agent_calls": 2,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-1-0d6e915949e64553832afc808ce705d7",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-10-09b0552d7be04255a7cfb5ab9c90ed12",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-11-b583bc4ca6d84a67a5063a745ee86427",
+   "agent_calls": 0,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-12-d3787afdf8684f47bae154d5b18dc562",
+   "agent_calls": 0,
+   "tool_calls": 12,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-13-acf7c0b9eb3f4a92b8141ca3c51162b6",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-14-53a85a98ee454839bf522320103ceee5",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-15-494bdb6f8ba24045b5123997cb2095dc",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-2-61d623410ef1401fbac730eb56f3d990",
+   "agent_calls": 0,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-3-1f526572f1204ce29e3079a269d6479a",
+   "agent_calls": 6,
+   "tool_calls": 33,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-4-44b9887644924ce9ba2d02260b7b9d43",
+   "agent_calls": 2,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-5-45164b9ecc874e28832dc678aadfbc41",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-6-8f226e883ca54b57af419adaaf702af9",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-7-f9f9a151220349578735257c271a8c8a",
+   "agent_calls": 2,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-8-e594ce3341104314ace45abe7b493b80",
+   "agent_calls": 1,
+   "tool_calls": 5,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-16-rollout-9-e234d004dbf940e8bb954554d775f40b",
+   "agent_calls": 3,
+   "tool_calls": 32,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-0-b480d626d3a540f5a147aef87a738f2e",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-1-0a70837b2e5d49d6a25e0a5769ba71a1",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-10-6ca9df166bca486fb5c1e0f036d1d632",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-11-b1f62fb4c35649c6888f4c8ee428c0ce",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-12-d0138962ea914c0c99afa3d8bdc51573",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-13-45b761ca1fae4282b747fb8dde6b82e8",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-14-423549c32e474f009f9c9febb2e62b55",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-15-70acef60ae14469cb7ffb88b12c0b865",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-2-c8cceadc27fb4774a13a9a352fbccca4",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-3-735e382cbb044121a59b54c8261057bc",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-4-8c7aa7d786da415a9a6c55359832cbdc",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-5-875a20996e4945079e07aec80a4e34a7",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-6-0a3a6702a7de4a52861a6f1f12d6364b",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-7-08fa5e24d6214cb0b927972948e0d029",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-8-df674fa6d5cc4e77adb511f43f88d3e1",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-17-rollout-9-c0f1f79f7ec6487d93ec340de63597c0",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-0-baf1e99207b44f0f827b09ac9c633962",
+   "agent_calls": 0,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-1-e783538a868747bf8278150b860e618d",
+   "agent_calls": 0,
+   "tool_calls": 116,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-10-8c4ef5bcdd5241f7a1df43a662eaad7d",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-11-fb68ff53569b4b28bec0231aec37ce18",
+   "agent_calls": 0,
+   "tool_calls": 45,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-12-42939b53f9814f639123ea343d82b253",
+   "agent_calls": 0,
+   "tool_calls": 32,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-13-7284190c87c34e9b99ea65f417764526",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-14-8cca3e6e4bea4d26ae3fb643c8e0ff0b",
+   "agent_calls": 2,
+   "tool_calls": 89,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-15-4ebb7f1b77a943a893b9a8f5a63465c1",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-2-d92af84ffb2d4d36a5e90ae014ea85fa",
+   "agent_calls": 0,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-3-9d492e2015ea4f2596201bc02e7781fb",
+   "agent_calls": 0,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-4-06349c80717a43e781cf4a3dd30a523b",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-5-656d1166ed2c47ccac9c96ce1c3be829",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-6-ba52dc8105484156bc69d45e6df6ae68",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-7-37f35a0973b6479b953337da79245a33",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-8-2b6e23286ef64c55b3207115cb2a51c8",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-18-rollout-9-f079374d7de9495a891b20b2410c4edf",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-0-c6b523e578a046648de7e1fd4e6d79b1",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-1-9aa0785e368445089c24a437474984fd",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-10-49308194040f4f1c91537f4d016f1eaf",
+   "agent_calls": 3,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-11-dc8b0c85eac84dab9a1bfb0847cf4b4e",
+   "agent_calls": 0,
+   "tool_calls": 31,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-12-cd5d244f654c4215b97f8bee7958e7a7",
+   "agent_calls": 0,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-13-01e5b99acd7549dab7326416bec7660e",
+   "agent_calls": 4,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-14-930a131c03974cc89059bf120bd59436",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-15-bff3ce427c4744bcbaa2dea7cd48b5c9",
+   "agent_calls": 0,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-2-2f3429cd7b6641948443b5754e022bf6",
+   "agent_calls": 0,
+   "tool_calls": 48,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-3-20b97e1e6be44c9da0b0d80b0b032a8e",
+   "agent_calls": 0,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-4-81eb3d1a58df4a6eaedc88b28555850e",
+   "agent_calls": 4,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-5-9875200b0b86413bac6d26a7c7eda9b3",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-6-5cb0d1f7728a4118af2db09f6a3ce9d8",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-7-f7ca7c424c754c98a71c422bd9df0c71",
+   "agent_calls": 0,
+   "tool_calls": 31,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-8-872a7bc41e2d47c09141498a5db083f5",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-19-rollout-9-be2c18d77c514b249a050a7fcae60765",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-0-9f48d28c496c4fba8b10d30009ae8cfe",
+   "agent_calls": 3,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-1-1b0f872422d74ab48ea0d7478084e7ea",
+   "agent_calls": 0,
+   "tool_calls": 12,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-1-a6f3e96b550f4230939306d1235d6d88",
+   "agent_calls": 0,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-10-9117b145b63f4665be7beca24fea8d74",
+   "agent_calls": 0,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-10-a3ff02aff6424b2a9eb6e6b6228577c6",
+   "agent_calls": 3,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-11-4b022323194042698686f534c500797f",
+   "agent_calls": 0,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-11-95eac59eab924a60b5a8d3a1609f1def",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-12-151ce43ebc9841d480b7e6f3afcfff8e",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-12-71df01b8586447a8b70542569fff5a90",
+   "agent_calls": 4,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-13-e9dc6075d3e34f5da93e00b0b7d56f65",
+   "agent_calls": 4,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-13-e9fe8fc2487045fbb05591a67e2e2c01",
+   "agent_calls": 0,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-14-506cc398be0b4b9e9464ed434bee94af",
+   "agent_calls": 0,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-14-7bcd89f00e4244b4840e01125c7407e4",
+   "agent_calls": 0,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-15-b0fb8ab98351427c992a2a7b32af12f1",
+   "agent_calls": 0,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-2-7f3e8227569a4d8f87c30e53e06875c7",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-2-eade63df9fb34f4980e29633975fca45",
+   "agent_calls": 0,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-3-716b75c8144b46c09c3ee50106bd299b",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-3-a994e844444a4e20bef730c87345193d",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-4-787c001c9457437cb17f3f4bda462d7b",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-4-c46ce983806d47aaab3142b32b827b8d",
+   "agent_calls": 4,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-5-5ab9feb255c7465da7834c64e04d0761",
+   "agent_calls": 0,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-5-6b557c88051b4901b01d673b9ebe872c",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-6-5b5e60eb95bd4c0b82335073544c0630",
+   "agent_calls": 0,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-6-8a3b6f6316c4490298f7aa87e9be4a32",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-7-4cc1710aaf9e46daa1fb4fe0dbb34a50",
+   "agent_calls": 4,
+   "tool_calls": 32,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-7-b707f750693849929be90db0b1a47e53",
+   "agent_calls": 3,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-8-09be30ad0f204c11b20184dbb17c741b",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-8-4eddd7e73fb24f2db6b3356ea3e397fa",
+   "agent_calls": 0,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-9-0f0ea1dc03534ebd930ca4bb89119468",
+   "agent_calls": 0,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-2-rollout-9-34d7df330fbc4b718610bfc25dc12ba3",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-0-60152f5285e744a3b844f8fcb9125c28",
+   "agent_calls": 0,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-1-a1a68beb460c4850a4a9c8a4c52d265d",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-10-c506b42eba5848f8b6cdcc0cfe5ab1f5",
+   "agent_calls": 0,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-11-4edb544725094d4d821815ecb1d82dff",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-12-371fc9bd96ec46c0a90f896324c24430",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-13-92c1e7251cff4c37b3cb6b9c0ae28abe",
+   "agent_calls": 3,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-14-3d4af128a27249af92921cdde6739ca3",
+   "agent_calls": 3,
+   "tool_calls": 32,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-15-296fd4e5bc4c4e6e8d18e281e70a9cfe",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-2-20c790de3b3d4564b72703f10480d223",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-3-6960dd52b6d4428499ace43f8b35f4b0",
+   "agent_calls": 0,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-4-5056417a64ff47ba91257650e64b8d1e",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-5-4fc71f940b3145b4bc7f3e6985074841",
+   "agent_calls": 0,
+   "tool_calls": 75,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-6-8c4eeeec258c444787932c22b0509088",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-7-fd47a16e47b64f189e6592b3688b17ea",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-8-0dede92799294769b3138b1537343c7b",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-20-rollout-9-dd944f51e99441e4a7c69cf2aff83ca9",
+   "agent_calls": 3,
+   "tool_calls": 32,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-0-012e6b7849674c41bd2c48e18a8af13f",
+   "agent_calls": 0,
+   "tool_calls": 13,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-1-af1cb42f42f242f7aac9bf01c13dd143",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-10-3ef177fbcd96429383e7e80f4e2936b2",
+   "agent_calls": 0,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-11-2821ad25d42d4765b375fba7e6e28f04",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-12-ff1747aebd254cc19c210e3d93118607",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-13-9d7ddc3a2e3f43d0ab0ba01bc933f591",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-14-8a93cc73c9044e3c970af4a88adad0ed",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-15-ffdf37db25c14ef1b76b2df7da13a989",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-2-1556e3be69a643db8ec42a3c10dfcb23",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-3-f0f6c2d2b31f40669da0cd769ccbfd8f",
+   "agent_calls": 0,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-4-70651e07b3da46baa08ceddc186c6f0b",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-5-127f160645cf4628a763d7cfa0d1e289",
+   "agent_calls": 3,
+   "tool_calls": 32,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-6-4ee8062ca9af4a0e871842118c172126",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-7-93c881687b4941e381d72faf163f3b40",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-8-b0cdb497636e4eb4b9b921081313f060",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-21-rollout-9-2c04246bc2494fccb8e8919f22350567",
+   "agent_calls": 0,
+   "tool_calls": 9,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-0-fbb8bf7d0a3c4ad48ef902a95417ccca",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-1-0198cdc2ebec401c8888db37728f384e",
+   "agent_calls": 0,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-10-9c25846701b543419b1ede3e497735f9",
+   "agent_calls": 2,
+   "tool_calls": 56,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-11-074e9d5c80d64671bbef5e015cb95528",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-12-fe316cb33b0a40a9a0667f031dae22d1",
+   "agent_calls": 0,
+   "tool_calls": 62,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-13-9605e8d54b114021accedc2bf1a1776b",
+   "agent_calls": 0,
+   "tool_calls": 10,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-14-7c68810279e444b3b6ac4e5084a9f8cf",
+   "agent_calls": 3,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-15-bc7fea1b645e4557af20a9f772a44896",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-2-52a66d23668f4e7eb9a9b046e680433e",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-3-ee664e6ea0bf412b9188cd410b78e6c8",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-4-46caecd796784638861af69c784b2d67",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-5-c0cf2adf692d424c93ba20544ac23c82",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-6-dea22b5cbfc9466caa19881036a43c07",
+   "agent_calls": 0,
+   "tool_calls": 9,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-7-3d053e21f6594f0ebf37fa2b7e59c143",
+   "agent_calls": 1,
+   "tool_calls": 35,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-8-af3ae64a9e9b4cc3876e470a02640cc9",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-22-rollout-9-69306c220b7b433286fc94c2911291a8",
+   "agent_calls": 0,
+   "tool_calls": 60,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-0-1ac1470a9caf4ff9ad744f2b1b4d2c01",
+   "agent_calls": 4,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-1-8991636e10634a758e71e452b1adee11",
+   "agent_calls": 0,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-10-be82a8166b7d4e109ad111806ad74352",
+   "agent_calls": 0,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-11-8ac84224f18149e088b34c1eb56c4ceb",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-12-4d1a8eae1da444eab9b1b4b87e2140cd",
+   "agent_calls": 2,
+   "tool_calls": 84,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-13-0ee52ad1fb6540a199736eb1f346d9bc",
+   "agent_calls": 0,
+   "tool_calls": 170,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-14-63e5c07ddba4492eb31ca6ac69701bca",
+   "agent_calls": 0,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-15-7e05c8a30e0f46628c572a044be1ddbb",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-2-a2270a84ce73405b82f55d52e79aaf1c",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-3-338103328c5746ba9596a52601ec5296",
+   "agent_calls": 0,
+   "tool_calls": 95,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-4-109ee2e2c5d149d8b66008697798701d",
+   "agent_calls": 0,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-5-79bbce54f1b84d90b193e821ebbb4c98",
+   "agent_calls": 0,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-6-adeee527dbcd4541a09327a03139ea24",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-7-e493085271f0458ba666e0b61f266285",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-8-7d8ec15b55884efbac5f4dd0c0e48f44",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-23-rollout-9-0ad79e55be7942d39186a358956dfd84",
+   "agent_calls": 0,
+   "tool_calls": 184,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-0-580e1a20542b4a30bee109b36f612d09",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-1-2e215b699eee49e0890ab91128b28d26",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-10-068217c443954f0cb772e9884623a8f0",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-11-0c87c535fd5d45e6a9eeea2283cad521",
+   "agent_calls": 4,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-12-e2045b50fa9241cfbcb9f8ce16001e0a",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-13-f5760b0f65eb41f2923f425cacff8418",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-14-cf2228ae8a8e4d33825092939e972e86",
+   "agent_calls": 1,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-15-5345bc1e92cf44a8ba00fefaa51bea8d",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-2-f90c47f1c1024a75a4667c2d36442039",
+   "agent_calls": 4,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-3-302bcc78337c46c5926a93eb414942f7",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-4-bf6085750e014f02bf118d557afd7766",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-5-2089eb79674d459892e56f191b317ba4",
+   "agent_calls": 1,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-6-c3e3b5a31af246958187b0ebd4bb33d0",
+   "agent_calls": 7,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-7-a88bcb1b1ec54e7ea7b199957cae2c7a",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-8-4ed7c36831314ecaac45ee4a3436bca8",
+   "agent_calls": 1,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-24-rollout-9-092a0c036d7e4786b2302e6f43d0120a",
+   "agent_calls": 0,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-0-181e84031a2a4c29ab41e3f82149305e",
+   "agent_calls": 0,
+   "tool_calls": 232,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-1-1d5d84fe78904584898c12c239c21153",
+   "agent_calls": 3,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-10-e7b18f68c5e044aba77905d64da8acbb",
+   "agent_calls": 0,
+   "tool_calls": 13,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-11-aef3f80968f844d8adafda28a30e95e6",
+   "agent_calls": 0,
+   "tool_calls": 14,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-12-102f1f12f5a74e7da8615dc8eefc99d0",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-13-9a74e7df5d3d4960bb6a1d9d2b284166",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-14-cdc70ba9fb4042bb9a239b81481c0393",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-15-6d2b9fd4221a470a9879f2f508d5612f",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-2-84f850afbe334abc85287f1a71eada1f",
+   "agent_calls": 3,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-3-d5921478506b45488e801b1438b16f39",
+   "agent_calls": 0,
+   "tool_calls": 8,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-4-6563c6f4bdd2400ca90bac5b699a497c",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-5-1559eba2271b44daab9f8f00ff335eb4",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-6-972c2d555dec418fa6bbed21b6426706",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-7-1f6cd28b1b684c9dbb7702b0d0e6fccd",
+   "agent_calls": 3,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-8-7da747dbdafa4f4682f378bbb94028e9",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-25-rollout-9-17c88faa80134b09909bf6f2b25b692f",
+   "agent_calls": 0,
+   "tool_calls": 80,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-0-81029f1858834c409357e2236136bf1c",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-1-20327cb10126479e8e905e44b9530f15",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-10-90a6cbe4a28a4667a649d5c56957fb02",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-11-fff8660b17a64b3a95c43d5f7d6f435f",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-12-c75c7c6b773d4c72b8571be555ad3af2",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-13-68516c2040c24ba6a137bef41c59a5cb",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-14-4e19ea29dc7b4f199df5e3bdfdcc608a",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-15-833e3ab6299e45db8aed6e48ceae8069",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-2-2365decd5b0b47259340eca7301849ce",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-3-25f0fde297564c91b2debcbb7e5d8dbd",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-4-460d0483a8da4738b0865c9da141c823",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-5-d04e74bb6a28474481095bcc056e46f9",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-6-96e5477c40234ec48778ae88dea3837a",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-7-cd30b6ac3ad24b2da4ae288413c43351",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-8-7eb2c46fe029429aaf7faf4f61e0f568",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-26-rollout-9-6896d19511134604a84f300aa3e11572",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-0-26f43e74e1144c41b5787703b4a5111a",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-1-63d13b41188c4c8a8a947a787559db38",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-10-b8839f3958cc41f8abf3f39b4d2538e6",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-11-9cfeebd8e64240998e7d167903955d0a",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-12-8ec923f833e341bfabbc73cf84aba9c2",
+   "agent_calls": 0,
+   "tool_calls": 235,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-13-feafe67dc6194404a428deefcb3cecd7",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-14-2ee1a600f3794b90b7b56edfd480e0eb",
+   "agent_calls": 3,
+   "tool_calls": 32,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-15-efa9c6f55415465bb4de2664c5d4a324",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-2-df78ee8fc2c847ea8b87941bd7856a29",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-3-ef75e47acd2f479fbf257a2210fba2c0",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-4-9c7e8a2ec43d43dcb41986a569bec16b",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-5-b0c77711925942a8adf688c8c1060344",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-6-c6947e44670f4e90b86e04e2a7296237",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-7-6cd21bfbaf2a4bee8bf3aa7e817594aa",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-8-22fe9266719043d688d82e442c043a4d",
+   "agent_calls": 0,
+   "tool_calls": 160,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-27-rollout-9-99da2402d24a4e4cb59e93a42cd0a345",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-0-7db677724401407a83401c8b6cc5910b",
+   "agent_calls": 3,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-1-7ababfcea2004f9eb16038017b9b3fc4",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-10-f60632d2cc7b4a90bb91015b86015b3d",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-11-e5755a1700e64eaf8f205d1b33df93e5",
+   "agent_calls": 0,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-12-b40a2d258b63465abf3b3ddfc413f524",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-13-1f6a175662c345a0a3ca2c6d23585204",
+   "agent_calls": 4,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-14-7fa03de92ce64ed59b2d6496368c3892",
+   "agent_calls": 0,
+   "tool_calls": 14,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-15-84c0906312404b9d91a92ffc69fc61f3",
+   "agent_calls": 1,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-2-cd6fad87d5d1437cb028c36295458e83",
+   "agent_calls": 0,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-3-95525799ed2f4f2a9755d65822a74b07",
+   "agent_calls": 0,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-4-e025f0719d07433c8413f80def4441e9",
+   "agent_calls": 1,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-5-216077326016477ca5c567c0d4431e93",
+   "agent_calls": 4,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-6-ca4a576884f04fb7996cedf4140254b2",
+   "agent_calls": 3,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-7-f1574c38ba334a67b466ffce23741238",
+   "agent_calls": 4,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-8-252e4755a95e4d34b36858b0e8cd38ed",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-28-rollout-9-24f874e65bf7466ab95ee3abddb8aa06",
+   "agent_calls": 3,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-0-84cf4c6f54d1483c9ff4b22f99e4573f",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-1-a649e049610d4667a67a765067864405",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-10-f33cd704762344b6ba855ba0319d1f8e",
+   "agent_calls": 0,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-11-da7b871851604dde9684de90a1eebb07",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-12-7729700191154e2b8a916fea220cbb72",
+   "agent_calls": 4,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-13-faf548771797471ab2c8ace6a8fa4f67",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-14-fac9120a755f4a3781f03ad9c7d262e2",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-15-8ecfadb204194a1b9c73ce4c47d86017",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-2-0c0075ad28da4be2bbbd3d60d969ceed",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-3-d68efd4aacfc47c593ea0a830a3fa3ae",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-4-dbd723d17ee941cc98bc7deba2a9c9c7",
+   "agent_calls": 0,
+   "tool_calls": 31,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-5-f2f8c1947c4b468f9a7245cab9146ad7",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-6-2a54415b877c49f49bbbaea616f8ae78",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-7-a41a4313448346bf9c0ead81eddeef94",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-8-77c295b4ac894a45b3ef44604531c1f6",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-29-rollout-9-0327380bb581490ba270923ca7b3b16d",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-0-eeb6e9e34b01487d8ae472a9d6bd711f",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-0-eeeeedc93a2d49c0bff79ef61b419c4e",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-1-972072f666bc4ec7ab8299e2d12ffe6f",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-10-3fe8fdcd161e4f2dbe7fb97cb7a042a0",
+   "agent_calls": 3,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-10-78121a32a938479a9cb2b5d8d56250b5",
+   "agent_calls": 0,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-11-af374c8d520843f3883ffd3d341fa27e",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-11-dc869c42380b439a9a7cfdfc52627b18",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-12-6dc8d60c0b3346e2bcbba1ed11fba91b",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-12-95d73d7eee384403b20430abe48c1cf9",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-13-3b90b6ef28f14faf83fa15f49d7bfeb0",
+   "agent_calls": 0,
+   "tool_calls": 13,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-13-c8bde28a3a7643de89dd13d728628ef9",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-14-94ff98419d79407192f656dcb11948a3",
+   "agent_calls": 3,
+   "tool_calls": 32,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-14-fde539a349c24fe48d693717a096006b",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-15-7ed8a606744d4d6d886b6608bff5c06b",
+   "agent_calls": 3,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-15-c0da97a413234ece8fe57fdab6be0b3a",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-2-a3007c4e69df47f193d8b7be997fe47d",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-2-c72bd753ce2d4421965de71f6076f1dc",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-3-6755f082c221411fb1dea4184d22688e",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-3-b45dcba7aa1b435db9054230a5437d81",
+   "agent_calls": 3,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-4-2a4d4b761f764487a45555b88ade3737",
+   "agent_calls": 0,
+   "tool_calls": 13,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-4-97b70ae0dd75460ca32a534d060b68bf",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-5-19b602839dc0432ebe933caf3b0f7adc",
+   "agent_calls": 0,
+   "tool_calls": 11,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-5-6842778130154c3085d06516946803b1",
+   "agent_calls": 0,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-6-38620126bfc44c4995c39d978e5e8ee9",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-6-a30b7a7e4cf14cea81aead43c7a1900d",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-7-a70739b53dad422c848b78cbe6204d80",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-8-c0ddf4c6db344c14823e2b96acb7efd2",
+   "agent_calls": 4,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-8-d5760b6b32384c2fb751218d0c87a81c",
+   "agent_calls": 0,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-9-082311a166214bf4aea799fbac2271d9",
+   "agent_calls": 3,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-3-rollout-9-0f2b438e0e3d4e67b547b76d00532642",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-0-f14b76e617ca44ad8d901fa7fb0ff487",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-1-20cce93401ad4bcdbdd487b42356a5d0",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-10-52866fd2ff9c45a19117687fc8242562",
+   "agent_calls": 3,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-11-8da6dda2e1044b65a22ba61633322d9b",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-12-b802c4bbc6a04206a783f7f064418254",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-13-eccc63a9b7994d87b3fa498ee60c82d5",
+   "agent_calls": 3,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-14-c38cdf7b63e640e0b7e74e0397dbc8e8",
+   "agent_calls": 1,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-15-1c8969cdb6a24afc81766cf69ed1217f",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-2-d814bac130ad4576906320dbcc461097",
+   "agent_calls": 1,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-3-f7fa8178a30548e0827cfdb00afa240b",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-4-cfecd9876ef74343b69c6e7e1f73a3b1",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-5-caf97ff2831b4fb68b11e03663330aab",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-6-df00cc6435734d7f8a473edff94652ae",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-7-0510dd8c372e49efbc0ec110b6b6493a",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-8-fc19fbea3aff4635abf92893a7a3f034",
+   "agent_calls": 0,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-30-rollout-9-299d3944ce5e43bd8fbef0291197d94a",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-0-08cbef929cd1436aa7e11f42ece534c7",
+   "agent_calls": 0,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-1-8e71c7b8c54d4d9d8df0f5b61a35cf06",
+   "agent_calls": 1,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-10-c3387d5a3d7843f8a82c6c7015bfe520",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-11-f3fcac75cd794021b9680ba49bf12547",
+   "agent_calls": 0,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-12-0562603fb20b4348988d2d453b6fc3ed",
+   "agent_calls": 2,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-13-4aa40de7511042a8a5a17f87914d2255",
+   "agent_calls": 0,
+   "tool_calls": 31,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-14-5b3e5ecf24b5422fb47315dec443d52a",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-15-3389d44c32bb4328a64ac8cdc29b9ace",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-2-e02dc31347bc44e4bf11a49ab416f261",
+   "agent_calls": 0,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-3-4e2b4bc4db764d59aa1f94f4987d80bf",
+   "agent_calls": 0,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-4-0212622976ae491984538e6cb96dbf41",
+   "agent_calls": 0,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-5-9b00a6b251904d7cbe8fd90be766b75e",
+   "agent_calls": 0,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-6-ceeefce8ee8e42be8ee553acf0d54c62",
+   "agent_calls": 4,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-7-e6dc34ebee2c41aca78e6682c782b307",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-8-788a4f3d304a457abfe31c3720ce54e0",
+   "agent_calls": 0,
+   "tool_calls": 9,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-31-rollout-9-fcb63a1ae5404473947468fd042be386",
+   "agent_calls": 1,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-0-fa58c888581b433bb906595621e6a187",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-1-269ae6cbb5fb40e382b8495946538389",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-1-835402148adb45cb8c8279fcd793dc55",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-10-fe877e99f7994d47b34e0d4abd762a08",
+   "agent_calls": 4,
+   "tool_calls": 9,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-11-95ee5163f76c4a6b9a881a0631d6350a",
+   "agent_calls": 0,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-11-a81d6723f7e54abeb67c7f5e9c392248",
+   "agent_calls": 0,
+   "tool_calls": 12,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-12-051909fc112e44af805a747986997582",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-13-038c04befb1d434f9c57420915e1a323",
+   "agent_calls": 0,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-14-5d6b8b940bcd4f829ab6ce8b9af4d460",
+   "agent_calls": 4,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-14-c653c994b29e4563a5351378d86cf35b",
+   "agent_calls": 0,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-15-929d47e67fb842edaeed46eb3d8b64fa",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-15-aa900876528e4c8db2cf5a0551f1944e",
+   "agent_calls": 0,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-2-ee184e8b2af746e3bf04e3de0640a8dc",
+   "agent_calls": 4,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-3-998ac41c50884b55ae5c53685472a7af",
+   "agent_calls": 4,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-4-761068040f5f4c14ba660514b6c61ae4",
+   "agent_calls": 0,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-4-afd9496bcc9343229ac04f1718a5b693",
+   "agent_calls": 0,
+   "tool_calls": 50,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-5-5f179203ec8e4c7b9240d0951fe6462c",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-5-de35548bceb242d8b073d1a767d03ff7",
+   "agent_calls": 0,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-6-2ca996a8afa14b4e82c65f73432ffb44",
+   "agent_calls": 4,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-6-96899f7deaea4fda84c358bb04816463",
+   "agent_calls": 0,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-7-4fd9f491fb5c4c88a2dec4b78358bb2d",
+   "agent_calls": 0,
+   "tool_calls": 342,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-7-a7f833c3d54c4fa09491fa6cb57880e6",
+   "agent_calls": 4,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-8-c0fe7fd50b514aca8fbdc0b5a93e1b28",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-9-999b69f71a16447db6bbb9443af16f2e",
+   "agent_calls": 0,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-4-rollout-9-c56381496dfd4174b79377cc5fa49c1c",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-0-08d7bf63f5bd44fc88c4f5d8134139d7",
+   "agent_calls": 0,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-0-dc03bcb7c3e44ccab4462ee0a2c2988a",
+   "agent_calls": 0,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-1-2b3e6fdf316b4968a1af0d7908395922",
+   "agent_calls": 0,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-1-cad10ba93b6a48f79aa6e99b1115289e",
+   "agent_calls": 0,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-10-22087900c0d947a090c441bd4eba6bb2",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-11-45a25619cb4d40e3b5feeec63062aa11",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-11-7bcd04aa313a4e27b8f110b14feeb56c",
+   "agent_calls": 0,
+   "tool_calls": 34,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-12-161e6259bf644bf7b7e5f234738868e8",
+   "agent_calls": 0,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-12-61b50128f65647668f0da026ec7d4503",
+   "agent_calls": 0,
+   "tool_calls": 91,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-13-f4ba10879b6f45e0a2f83b37b7e4e59d",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-14-2f1faa8d37d742539e6b05c16992a3b3",
+   "agent_calls": 0,
+   "tool_calls": 35,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-14-b39734e67ee542a39e8f9913bdf5bd0d",
+   "agent_calls": 0,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-15-297b81a542784fa0a43a437559ee5501",
+   "agent_calls": 3,
+   "tool_calls": 13,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-15-791c8088aba14efbae06f3b8ddaeaacf",
+   "agent_calls": 0,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-2-654a71e1936a43c4bf3e6a25ca1c6f61",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-3-16f5a2d4b93448b5972813fc8974844e",
+   "agent_calls": 4,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-3-eca948e25b264a7b8cb8df74c5623968",
+   "agent_calls": 2,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-4-0c4ba2f1a55543c3a8b0a23506ec518a",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-4-575954ce1a43489ebf3416a2c55f067d",
+   "agent_calls": 3,
+   "tool_calls": 8,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-5-4bb3f490e7834114afb9f9305284b4dd",
+   "agent_calls": 0,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-6-58ae6ed21e204ed58a133d130651590c",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-7-0061acfa779549b3864ff80fcb48b61b",
+   "agent_calls": 0,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-7-3a2cd9d7ead4436fa81fbe20ba737c0d",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-8-9f83aa6875d642a08651326d2b38f4fd",
+   "agent_calls": 0,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-8-e15964cb0a0e4a47b213ef30252cfd7d",
+   "agent_calls": 0,
+   "tool_calls": 17,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-9-9d781862f80c470c8742a5bdbcccb651",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-5-rollout-9-c6ac8368ef694d44a5a8efbe302e63aa",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-0-3ab32050a8dc4f859d3bb995c11b0fac",
+   "agent_calls": 0,
+   "tool_calls": 102,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-0-ab05562afeda44c1a4f3e77de4b41608",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-1-3b98f6f41c5c474c959c3177a198dea3",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-1-704550bc349c437380570437b927fc81",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-10-506c49e4c09c4d5aad4e15f5e483075f",
+   "agent_calls": 4,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-10-938f73687044426b9fb6150da843ffdf",
+   "agent_calls": 0,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-11-2a74ac26eefc48b9a30e7c4f95bdf8b4",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-11-4c3d4ad89b684fad885d9d877e3d1a3e",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-12-97e5a6ecd74e4f6d9cde5c58f90141b6",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-12-fb922b96745c46b49142ee179b5a6427",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-13-27ff0513440c488280f2c5faca0afd9f",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-13-4c911e06c44f4a188668a9522b965d8e",
+   "agent_calls": 3,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-14-d98f8df15ba74fd3b3e667caf5e99875",
+   "agent_calls": 4,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-14-db2836a1719244f884e902e417c357dc",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-15-0b309be5387a4ec08651ef0fa08813bb",
+   "agent_calls": 0,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-15-ba2cf77da40f46a090a5ec38f63b1b97",
+   "agent_calls": 5,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-2-913d0466e5344fd890722cbf9b4b4ba9",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-2-f40297a5be814af5a25f4321bf86e6bd",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-3-05ed22ec98b347f4974f91c83ac1488b",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-3-08097d5fbc3446e5ae20ecb656732fba",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-4-3a8e6a02bd44475bb4dfc6da2faccf98",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-4-d59d25f14bf64d4e8c7b541059fbface",
+   "agent_calls": 3,
+   "tool_calls": 32,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-5-7149ded2102543258e01643d68531dc3",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-5-b4ce5c17a7144e319fca209c7c72fa8c",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-6-9a9662e62ee24c1b84a1b7b159a3eef4",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-6-a1d949ee59ee4ae3af82fd4bd187caf2",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-7-dcb8dc5b3cc0461b8069dc156aa12c43",
+   "agent_calls": 5,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-7-f93b6f2b3a5e4b4a906666b58918f73a",
+   "agent_calls": 4,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-8-2e0d71c2a0bf456e8e1bcbc4c76425c9",
+   "agent_calls": 4,
+   "tool_calls": 32,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-8-d429ed3d17314f31ada5007c9fa816ce",
+   "agent_calls": 0,
+   "tool_calls": 80,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-9-96e08b3da66e41718a5ed32f3034fe1b",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-6-rollout-9-ca1cf82971eb49199ccf1a2d27b83cbb",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-0-119459958fab409baeb87391dcfa4c86",
+   "agent_calls": 0,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-1-cc4456c348dc48009f40bf504252bf27",
+   "agent_calls": 0,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-1-f748463d1c5d49a79293952c283b98ad",
+   "agent_calls": 4,
+   "tool_calls": 32,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-10-10fe7218c9ab4da09176eff3ff7edb3b",
+   "agent_calls": 0,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-10-f00c1ef3b1ee4d5488cccf25cb89e24e",
+   "agent_calls": 1,
+   "tool_calls": 10,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-11-1eee9fbdf37e4c44a55745103130a3d0",
+   "agent_calls": 0,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-11-713548a8e23540c993b5483af3eb5717",
+   "agent_calls": 0,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-12-8304e593dfc6483daed874701acf3b4a",
+   "agent_calls": 0,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-12-91169596c575405882870f9d97582d3f",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-13-1d25ec0c7781418e89b3925467d222b5",
+   "agent_calls": 0,
+   "tool_calls": 134,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-13-4c53a1c01f014bc688bb22182592c411",
+   "agent_calls": 0,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-14-1c69d2dd399341b5b69da0da04300e06",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-14-3d40470101b04324b996df38c1cb018d",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-15-4db49858665d491d95e9c074d13732f4",
+   "agent_calls": 0,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-2-0314485ee2e341b6b225ed0bcfca1f7c",
+   "agent_calls": 2,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-2-c3deb44c31f049e086368c162329e237",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-3-5e727a8c09704843acbbd60b5f5485a7",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-3-75ba0bae881242a89e75c175f425f285",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-4-4290fe981ed44a34a74d8012ff07c7a1",
+   "agent_calls": 3,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-4-eeb52c9aed994457b32191d943c06bef",
+   "agent_calls": 1,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-5-30e14137f9ef4299b6ea881b0304ce98",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-5-4056071543d842b38c1eaa99c8a6b7aa",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-6-6ca9d3acca764894862de00cc89c0ce8",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-6-f3cc44e25ae9451791a214606eb72b6e",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-7-bb014cf3b2294ac19098a33f68f95ac2",
+   "agent_calls": 2,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-7-f4646390a080402a9c092eafb6054376",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-8-71854fd0225d45cea0e15667453112af",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-8-f414fd6041d34d1585fadae1962f3e42",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-7-rollout-9-d54bc007bf0f4fb5bbabb92e386b0259",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-0-0ebf22e3879945c5913de64926ad24aa",
+   "agent_calls": 0,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-0-198adccd128647a6a26cea794bb85c6b",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-1-2891bd6184684c3597db8fa7aa4de9f9",
+   "agent_calls": 0,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-1-8f9738d399dc4d30b56b1430fd4f8475",
+   "agent_calls": 4,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-10-b9a6cfa63fc9490cb1499a4b4eaa9624",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-11-c6f3527937f84585b2b11e485a07864c",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-11-fe6d8c585b6741668fa24fb788af00a4",
+   "agent_calls": 4,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-12-0799947eb6344e09a9fc97c94faf37d3",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-13-703415941f1c48af9eb7767fcacc5803",
+   "agent_calls": 3,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-14-95f229f0e6d6442f91a7eb596606341f",
+   "agent_calls": 3,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-15-8b3bb2c8f95f43a7b248327381f84cb2",
+   "agent_calls": 0,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-2-24f6b9416dc945af83a677681b945130",
+   "agent_calls": 3,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-3-738312ef894d41e0aa7b30e321389dcb",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-4-80b305d29ec54e30a36c23d373c85923",
+   "agent_calls": 3,
+   "tool_calls": 21,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-4-f840523205be47e9b9f34a0ba25310f4",
+   "agent_calls": 4,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-5-2c426bee57374eca8285dd752a749f7c",
+   "agent_calls": 3,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-5-8ac895774d734164954149fed4634458",
+   "agent_calls": 0,
+   "tool_calls": 20,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-6-08a7275ae743437cb32c7a55be506634",
+   "agent_calls": 2,
+   "tool_calls": 30,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-6-e2c3c4f06e08463a9cdf6d6a6db9e7a9",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-7-f12e0565fc2c48d486594937a00b86eb",
+   "agent_calls": 0,
+   "tool_calls": 14,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-8-5663e85a068e4aaaa36fa614216d724e",
+   "agent_calls": 2,
+   "tool_calls": 24,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-8-dd5456af6bd9438ca136f013bf4a8b22",
+   "agent_calls": 4,
+   "tool_calls": 29,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-9-a72a508f2eda479b888b1354aca3c170",
+   "agent_calls": 3,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-8-rollout-9-f00a5f67679549c8bbdd3e75325af037",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-0-7da5c99abc444ff5a0aa0f94d1d86691",
+   "agent_calls": 4,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-1-99e3b8d28b68441ea8e4a4df669883e9",
+   "agent_calls": 1,
+   "tool_calls": 51,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-10-184d8f5304be48acbada7f41508d25d0",
+   "agent_calls": 0,
+   "tool_calls": 16,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-11-68a5be5cbe594cd082d9a4e3776f3c7d",
+   "agent_calls": 3,
+   "tool_calls": 22,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-11-d165794a5ca049f0ae2d7e4887fdcd86",
+   "agent_calls": 0,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-12-f8bce3ee8a8248bcb19aa6de9aa2dc5e",
+   "agent_calls": 0,
+   "tool_calls": 23,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-13-c025f23e054f41b79d13cd0b4a1ea6bc",
+   "agent_calls": 2,
+   "tool_calls": 75,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-14-4cdbf24b06a5418a9820abd33cc9a661",
+   "agent_calls": 0,
+   "tool_calls": 13,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-14-710c976941974b24b79a3e9f191c56b8",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-15-fa438863c0604a8cb88938b0ff2dc3d4",
+   "agent_calls": 4,
+   "tool_calls": 26,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-2-7cc7faeb30c646c89186d38b9bca7f26",
+   "agent_calls": 0,
+   "tool_calls": 13,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-2-dc75cca86bda418f972c9faf97dfe672",
+   "agent_calls": 0,
+   "tool_calls": 18,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-3-f5178fc47d4741109a25765ebada32d2",
+   "agent_calls": 4,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-4-2980d51502b1405c8b77d264d3e5e379",
+   "agent_calls": 0,
+   "tool_calls": 12,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-4-c1ac7ac7982c46b5be2d6166f562fdbc",
+   "agent_calls": 3,
+   "tool_calls": 25,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-5-a274f57c745248b18eb4da384505d1f5",
+   "agent_calls": 0,
+   "tool_calls": 15,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-6-5cb3d61c094a43a7921224fd390157af",
+   "agent_calls": 4,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-7-9d411f203f4e4b098e65c18fca733950",
+   "agent_calls": 3,
+   "tool_calls": 28,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-7-a20a181938564efa84a2b58444a70899",
+   "agent_calls": 5,
+   "tool_calls": 27,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-8-98b1518afaf6423e850f8a92c4e5ccb9",
+   "agent_calls": 3,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-8-b5eb79ed953148d2a548578c2b3d65ec",
+   "agent_calls": 1,
+   "tool_calls": 19,
+   "trajectories": 1
+  },
+  {
+   "session": "session-sample-9-rollout-9-1b4ba9e6404644b484d95eb064a104fc",
+   "agent_calls": 3,
+   "tool_calls": 29,
+   "trajectories": 1
+  }
+ ]
+}

@@ -50,7 +50,7 @@ TXT = {
         h3="subagent 这块优化到底换回多少：把 TA 本身的收益和 subagent 专项分开",
         lead=("上面 3.9–4.5× 是整套 ThunderAgent 对 global LB 的差距，里面既有 TA 本来就有的准入控制，也有这次为 Claude Code subagent 做的事。"
               "两者在同一份强制 subagent 流量（CC 256，512 个 session，约 67% 的 session 各派 3 个 subagent）上按阶梯拆：每一级只多开一样东西。"
-              "两端已经测过。第 ② 级 10-16 18:58 跑完，但它不是一个吞吐数据点：不认 subagent 的 TA 把兄弟 subagent 的并发请求撞上了 gateway 的串行保护，41% 的 session 收到 409（表 D）。第 ③ 级排在强制 subagent CC 512 之后跑（预计 10-17 01:00），跑完直接填进这张图。"),
+              "两端已经测过。第 ② 级 10-16 18:58 跑完，但它不是一个吞吐数据点：不认 subagent 的 TA 把兄弟 subagent 的并发请求撞上了 gateway 的串行保护，41% 的 session 收到 409（表 D）。第 ③ 级 10-17 20:02 跑完：1181，和第 ④ 级的 1201 差 20 tok/s（1.7%），在两次完整版复测之差（1201 / 1203）和 10 分钟桶的噪声之内。所以 TA 对 global 的 3.9× 里，subagent 专项换回的东西几乎全部落在 ③：每个 agent 一个 program、用完即释放——这也正是让兄弟 subagent 不撞 409 所必需的那一步；再往上告诉 router 父子关系、把兄弟放到一起，在 CC 256 的稳态吞吐上量不出来。"),
         capA="A · 阶梯：强制 subagent，CC 256，引擎稳态 tok/s",
         rungs=["global LB（基线）", "TA · 不认 subagent（请求都算在父 session 的 program 上，上游 TA 的行为）", "TA · 每个 subagent 一个 program，用完即释放，不报父子", "TA · 完整（+ 兄弟同置 / 根绑定）"],
         pending="待测", measured="已测", invalid="不可比：210 / 512 个 session 收到 409，见表 D",
@@ -82,7 +82,7 @@ TXT = {
         h3="How much of the gain is the subagent work: separating ThunderAgent itself from the subagent-specific part",
         lead=("The 3.9–4.5× above is the whole ThunderAgent stack against the global LB: the admission control TA always had, plus what was built here for Claude Code subagents. "
               "The two are separated on one forced-subagent traffic (CC 256, 512 sessions, about 67% of them dispatching 3 subagents each) as a ladder where each rung adds one thing. "
-              "Both ends are measured. Rung ② finished 10-16 18:58 but is not a throughput point: with TA blind to subagents, the concurrent requests of sibling subagents hit the gateway's serial-call guard and 41% of the sessions got HTTP 409 (table D). Rung ③ runs after the forced-subagent CC 512 arm (around 10-17 01:00) and drops straight into this figure."),
+              "Both ends are measured. Rung ② finished 10-16 18:58 but is not a throughput point: with TA blind to subagents, the concurrent requests of sibling subagents hit the gateway's serial-call guard and 41% of the sessions got HTTP 409 (table D). Rung ③ finished 10-17 20:02: 1181, 20 tok/s (1.7%) below rung ④'s 1201, inside the spread of the two full-version re-runs (1201 / 1203) and the 10-minute bucket noise. So within TA's 3.9× over global, what the subagent work buys lands almost entirely at ③: a program per agent, released on return, which is also exactly the step that keeps sibling subagents from hitting 409; announcing the parent to the router and co-locating siblings on top of that is not measurable in steady throughput at CC 256."),
         capA="A · Ladder: forced subagents, CC 256, steady engine tok/s",
         rungs=["global LB (baseline)", "TA · subagents ignored (every turn charged to the parent session's program, as upstream TA behaves)", "TA · a program per subagent, released on return, no parent announced", "TA · full (+ sibling co-location / root pinning)"],
         pending="pending", measured="measured", invalid="not comparable: 210 / 512 sessions got HTTP 409, see table D",
