@@ -156,6 +156,15 @@
    "sessions_done": 512,
    "wall_s": 9215,
    "note": "clean 512-trajectory run; rendered once the TA CC 64 re-run lands"
+  },
+  {
+   "cc": 512,
+   "v": 964,
+   "w": 1120,
+   "run": "ta-native-h20subcc512-10160955",
+   "arm": "ta-native",
+   "subagent_prompt": true,
+   "reason": "forced-subagent CC 512 tree arm (7c1a747), meant as the pair of off@512 which was dropped; no global or off pair exists so it is not rendered. 511/512 sessions, 0 409s, 0 cleanup failures, GPUs not shared. Buckets 1337/1255/1376/1346 for 40 min then 1032/884/964/948/953: the engines were under-loaded in the second half (running 2-16, KV 3-20%, waiting 0) while sessions were still alive; 289 Claude Code tool exec timeouts (CC 256 tree run: 42; default-prompt TA 512: 74) and 86 sessions at the 90-min cap point at host-side tool execution with 512 sandboxes plus subagents as the bottleneck, not the router."
   }
  ],
  "superseded": [

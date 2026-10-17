@@ -1,0 +1,4 @@
+Forced-subagent task, CC 512, subagent_programs=tree (7c1a747). Steady 964 / window 1120 engine tok/s.
+Not rendered: its intended pair (off at CC 512) was dropped after the off arm at CC 256 reproduced the gateway's
+serial-call guard, and no global arm exists for this traffic. Second half under-loaded (running 2-16, KV 3-20%)
+with 289 tool exec timeouts and 86 sessions at the 90-min cap: host-side tool execution, not the router, bounds it.
