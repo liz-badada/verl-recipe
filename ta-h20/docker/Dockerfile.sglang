@@ -40,3 +40,7 @@ RUN cd "$(python -c 'import sysconfig;print(sysconfig.get_paths()["purelib"])')"
     && grep -E '^(torch|transformers|triton|sglang)==' /tmp/base-core.txt | sort > /tmp/before-core.txt \
     && cmp /tmp/before-core.txt /tmp/after-core.txt && echo "base pins intact"
 RUN groupadd -g 1015 jinyanc && useradd -u 1015 -g 1015 -m jinyanc
+# The recipe spawns etcd and nats-server itself; the sglang base ships neither (the vLLM bench image inherits both).
+# Appended last so the layers above stay cached (2026-10-18).
+COPY --from=vllm-bench /usr/local/bin/etcd/etcd /usr/local/bin/etcd
+COPY --from=vllm-bench /usr/bin/nats-server /usr/bin/nats-server
