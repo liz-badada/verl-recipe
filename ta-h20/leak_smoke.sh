@@ -2,7 +2,8 @@
 # leak_smoke.sh [tag]: ThunderAgent arm at small scale with a 4-minute Claude Code timeout, so most sessions
 # end mid-turn. Passes when no "program was not released" error appears and the router's program
 # count returns to the sessions still alive. Env: TASK_CONFIG, KV_BYTES, GPU_MEM, TP, SITE (see run_arm.sh).
-# An attempt whose engines never started (another job took the GPUs while we were loading) is retried.
+# An attempt whose engines never started (another job took the GPUs while we were loading) is retried;
+# a trainer that dies inside two minutes failed on its config, which no retry fixes, so that ends the smoke.
 set -uo pipefail
 H=${TA_H20_ROOT:-/lustre/raplab/client/jinyanc/workspace/jinyanc/ci/ta-h20}; TAG=${1:-$(date +%m%d%H%M)}
 export DOCKER_CONFIG=${DOCKER_CONFIG:-/lustre/raplab/client/jinyanc/workspace/jinyanc/ci/dockerconfig} KV_BYTES=${KV_BYTES:-64424509440}
@@ -17,6 +18,11 @@ for attempt in 1 2 3 4 5 6 7 8; do
   log "smoke attempt $attempt ($name)"
   BATCH=8 N=4 CONCURRENCY=32 RAY_NUM_CPUS=320 ROLLOUT_MAX_S=2400 bash $H/run_arm.sh ta-native $name > /dev/null 2>&1
   grep -q '"sessions_done": [1-9]' $R/summary.txt 2>/dev/null && break
+  t0=$(grep -oE 'START_EPOCH=[0-9]+' $R/command.txt | cut -d= -f2); t1=$(grep -oE 'END_EPOCH=[0-9]+' $R/command.txt | cut -d= -f2)
+  if [ -n "$t0" ] && [ -n "$t1" ] && [ $((t1 - t0)) -lt 120 ] && grep -q 'Error executing job' $R/console.log 2>/dev/null; then
+    log "trainer failed on its config after $((t1 - t0)) s: $(grep -oE '^[A-Za-z]*Error: .*' $R/console.log | tail -1 | cut -c1-200)"
+    break
+  fi
   log "no sessions ran (GPUs taken during startup?); will retry"
   docker ps -q --filter name=uni-agent- | xargs -r docker rm -f >/dev/null 2>&1
 done

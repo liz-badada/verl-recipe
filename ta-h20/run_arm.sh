@@ -12,10 +12,11 @@ UNIAGENT=${UNIAGENT:-/home/jinyanc/workspace/jinyanc/github/uni-agent}
 RECIPE=${RECIPE:-/home/jinyanc/workspace/jinyanc/github/verl-recipe}
 ENGINE=${ENGINE:-vllm}            # vllm | sglang: the inference engine behind every arm (image, trainer config and engine flags follow)
 case $ENGINE in
-  vllm)   IMAGE=${IMAGE:-verl-recipe-thunderagent:rust-ta-uniagent-20261012}; FSDP_RMPAD=true;;
-  # The SGLang image (torch 2.13 + cu130) has no flash-attn wheel, so the FSDP actor loads with SDPA and without
-  # remove-padding there; the rollout engine, whose throughput is what the bench measures, is unaffected.
-  sglang) IMAGE=${IMAGE:-verl-recipe-thunderagent:rust-ta-uniagent-sglang-20261015}; FSDP_RMPAD=false;;
+  vllm)   IMAGE=${IMAGE:-verl-recipe-thunderagent:rust-ta-uniagent-20261012}; FSDP_RMPAD=true; SP=4;;
+  # The SGLang image (torch 2.13 + cu130) has no flash-attn wheel, so the FSDP actor loads with SDPA, without
+  # remove-padding and therefore without sequence parallel (verl rejects SP>1 with padding). The train step never
+  # runs in this rollout-only bench, so neither setting touches the measured rollout engine.
+  sglang) IMAGE=${IMAGE:-verl-recipe-thunderagent:rust-ta-uniagent-sglang-20261015}; FSDP_RMPAD=false; SP=1;;
   *) echo "ENGINE must be vllm or sglang, got $ENGINE" >&2; exit 2;;
 esac
 MODEL_DIR=${MODEL_DIR:-/home/jinyanc/workspace/model/hub/Qwen3-Coder-30B-A3B-Instruct}
@@ -65,7 +66,7 @@ common=(
   "actor_rollout_ref.actor.ppo_mini_batch_size=$BATCH"
   actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=1
   "actor_rollout_ref.actor.ppo_max_token_len_per_gpu=$((MAX_PROMPT + MAX_RESP))"
-  actor_rollout_ref.actor.ulysses_sequence_parallel_size=4
+  "actor_rollout_ref.actor.ulysses_sequence_parallel_size=$SP"
   actor_rollout_ref.actor.use_torch_compile=false
   actor_rollout_ref.actor.entropy_from_logits_with_chunking=true
   actor_rollout_ref.actor.fsdp_config.use_torch_compile=false
