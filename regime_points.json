@@ -3,6 +3,12 @@
  "default": {
   "global": [
    {
+    "cc": 64,
+    "v": 1240,
+    "w": 1241,
+    "run": "global-h20cc64-10150700"
+   },
+   {
     "cc": 95,
     "v": 1282,
     "w": 1291,
@@ -35,6 +41,12 @@
    }
   ],
   "ta-native": [
+   {
+    "cc": 64,
+    "v": 1216,
+    "w": 1240,
+    "run": "ta-native-h20cc64-10160955"
+   },
    {
     "cc": 95,
     "v": 1272,
@@ -147,16 +159,6 @@
   }
  ],
  "awaiting_pair": [
-  {
-   "cc": 64,
-   "v": 1240,
-   "w": 1241,
-   "run": "global-h20cc64-10150700",
-   "arm": "global",
-   "sessions_done": 512,
-   "wall_s": 9215,
-   "note": "clean 512-trajectory run; rendered once the TA CC 64 re-run lands"
-  },
   {
    "cc": 512,
    "v": 964,
