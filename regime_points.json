@@ -74,9 +74,9 @@
    },
    {
     "cc": 512,
-    "v": 1229,
-    "w": 1196,
-    "run": "ta-native-h20cc512-10141340"
+    "v": 1215,
+    "w": 1242,
+    "run": "ta-native-h20cc512-10160955"
    }
   ]
  },
@@ -185,6 +185,14 @@
    "run": "ta-native-h20subcc256-10141340",
    "arm": "ta-native",
    "reason": "804b377 run replaced by the 33fac10 re-run ta-native-h20subcc256-10150700 (1201 / 1193, 511 / 512 sessions, 0 leaks, GPUs not shared); same code line as the ablation arms"
+  },
+  {
+   "cc": 512,
+   "v": 1229,
+   "w": 1196,
+   "run": "ta-native-h20cc512-10141340",
+   "arm": "ta-native",
+   "reason": "804b377 run replaced by the 33fac10 re-run ta-native-h20cc512-10160955 (1215 / 1242, 511 / 512 sessions, 0 release failures, 0 x 409, GPUs not shared); same code line as the other re-measured TA points"
   }
  ],
  "ablation": [

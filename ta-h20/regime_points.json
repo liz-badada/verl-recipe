@@ -1,7 +1,13 @@
 {
- "note": "v = steady-state engine-side generation tok/s (median of 10-min buckets, both engines, from vLLM scheduler stats); w = window average (sampled time between first and last active engine stats line, gaps capped at 30 s); default Claude Code prompt unless flagged; pre_fix = TA run measured before fix 9f32e49 (program leak at session close), re-measurement pending; finalize_pause = on TA arms, sessions closing after the step-end abort_all_requests lost their trajectories to the 60 s final-request timeout (native plugin final parks on the paused engine; 2-3% of sessions per run, fixed in 33fac10): TA session counts are lower bounds, engine rates unaffected; excluded = points removed from the pages (see reason), kept here for provenance; awaiting_pair = clean 512-trajectory re-measurements whose other arm has not landed yet (not rendered until both arms exist); superseded = points replaced by a re-measurement of the same arm and CC",
+ "note": "v = steady-state engine-side generation tok/s (median of 10-min buckets, both engines, from vLLM scheduler stats); w = window average (sampled time between first and last active engine stats line, gaps capped at 30 s); default Claude Code prompt unless flagged; pre_fix = TA run measured before fix 9f32e49 (program leak at session close), re-measurement pending; finalize_pause = on TA arms, sessions closing after the step-end abort_all_requests lost their trajectories to the 60 s final-request timeout (native plugin final parks on the paused engine; 2-3% of sessions per run, fixed in 33fac10): TA session counts are lower bounds, engine rates unaffected; excluded = points removed from the pages (see reason), kept here for provenance; awaiting_pair = clean 512-trajectory re-measurements whose other arm has not landed yet (not rendered until both arms exist); superseded = points replaced by a re-measurement of the same arm and CC; ablation = subagent_programs arms (recipe 7c1a747, forced-subagent task); valid=false marks an arm whose engine rate is not a comparable throughput point (reason says why), rendered on the ladder without a bar",
  "default": {
   "global": [
+   {
+    "cc": 64,
+    "v": 1240,
+    "w": 1241,
+    "run": "global-h20cc64-10150700"
+   },
    {
     "cc": 95,
     "v": 1282,
@@ -36,6 +42,12 @@
   ],
   "ta-native": [
    {
+    "cc": 64,
+    "v": 1216,
+    "w": 1240,
+    "run": "ta-native-h20cc64-10160955"
+   },
+   {
     "cc": 95,
     "v": 1272,
     "w": 1280,
@@ -62,9 +74,9 @@
    },
    {
     "cc": 512,
-    "v": 1229,
-    "w": 1196,
-    "run": "ta-native-h20cc512-10141340"
+    "v": 1215,
+    "w": 1242,
+    "run": "ta-native-h20cc512-10160955"
    }
   ]
  },
@@ -80,9 +92,9 @@
   "ta-native": [
    {
     "cc": 256,
-    "v": 1203,
-    "w": 1200,
-    "run": "ta-native-h20subcc256-10141340"
+    "v": 1201,
+    "w": 1193,
+    "run": "ta-native-h20subcc256-10150700"
    }
   ],
   "kv": [
@@ -136,18 +148,25 @@
    "run": "ta-native-h20cc64-10150700",
    "arm": "ta-native",
    "reason": "from minute 27 on, GPUs 0-3 (replica0) were shared with an unrelated job on the node (venv-tpmoe bench, 100% SM, 3.8 GiB): replica0 fell to ~150 tok/s at 38 running requests while replica1 stayed at ~600; re-run queued (after_tail.sh, after the TA 512 / forced-subagent arms)"
+  },
+  {
+   "cc": 512,
+   "v": 1145,
+   "w": 1160,
+   "run": "ta-native-h20cc512-10150700",
+   "arm": "ta-native",
+   "reason": "re-run of the CC 512 TA arm on 33fac10: from minute 27 to 48 another process on this box held ~23 GB on all 8 GPUs (10-min buckets 891 / 1088 vs 1219-1361 around them); the 804b377 point (1229) stays, a second re-run is queued as tag 10160955"
   }
  ],
  "awaiting_pair": [
   {
-   "cc": 64,
-   "v": 1240,
-   "w": 1241,
-   "run": "global-h20cc64-10150700",
-   "arm": "global",
-   "sessions_done": 512,
-   "wall_s": 9215,
-   "note": "clean 512-trajectory run; rendered once the TA CC 64 re-run lands"
+   "cc": 512,
+   "v": 964,
+   "w": 1120,
+   "run": "ta-native-h20subcc512-10160955",
+   "arm": "ta-native",
+   "subagent_prompt": true,
+   "reason": "forced-subagent CC 512 tree arm (7c1a747), meant as the pair of off@512 which was dropped; no global or off pair exists so it is not rendered. 511/512 sessions, 0 409s, 0 cleanup failures, GPUs not shared. Buckets 1337/1255/1376/1346 for 40 min then 1032/884/964/948/953: the engines were under-loaded in the second half (running 2-16, KV 3-20%, waiting 0) while sessions were still alive; 289 Claude Code tool exec timeouts (CC 256 tree run: 42; default-prompt TA 512: 74) and 86 sessions at the 90-min cap point at host-side tool execution with 512 sandboxes plus subagents as the bottleneck, not the router."
   }
  ],
  "superseded": [
@@ -158,6 +177,42 @@
    "run": "global-h20cc512-10130706",
    "arm": "global",
    "reason": "replaced by global-h20cc512-10141340 (same run as the 256/384 re-measurements)"
+  },
+  {
+   "cc": 256,
+   "v": 1203,
+   "w": 1200,
+   "run": "ta-native-h20subcc256-10141340",
+   "arm": "ta-native",
+   "reason": "804b377 run replaced by the 33fac10 re-run ta-native-h20subcc256-10150700 (1201 / 1193, 511 / 512 sessions, 0 leaks, GPUs not shared); same code line as the ablation arms"
+  },
+  {
+   "cc": 512,
+   "v": 1229,
+   "w": 1196,
+   "run": "ta-native-h20cc512-10141340",
+   "arm": "ta-native",
+   "reason": "804b377 run replaced by the 33fac10 re-run ta-native-h20cc512-10160955 (1215 / 1242, 511 / 512 sessions, 0 release failures, 0 x 409, GPUs not shared); same code line as the other re-measured TA points"
+  }
+ ],
+ "ablation": [
+  {
+   "mode": "off",
+   "cc": 256,
+   "v": 1272,
+   "w": 1261,
+   "run": "ta-native-h20suboffcc256-10160955",
+   "valid": false,
+   "reason": "TA blind to subagents = one program per session; the gateway's serial-call guard (present upstream at 242c73f as 'requires serial calls within one session') rejected 411 concurrent subagent requests with HTTP 409 across 210/512 sessions (tree run: 0). Sessions ended early: turns 44.6 vs 59.1, model tokens to the trainer 1.74M vs 2.92M, finished trajectories 182 vs 282, reward 0.227 vs 0.315, sessions dispatching subagents 247 vs 351. Engine tok/s 1272 vs 1201 is higher because admission under-counted the load (running 68 vs 42, KV 54% vs 41%) and less work was done; not a throughput comparison. 0 cleanup failures, GPUs not shared (gpu_procs.csv)."
+  },
+  {
+   "mode": "isolated",
+   "cc": 256,
+   "v": 1181,
+   "w": 1195,
+   "run": "ta-native-h20subisolatedcc256-10160955",
+   "valid": true,
+   "reason": "a program per agent, released on return, parent not announced to the router (recipe 7c1a747). 512/512 sessions, 0 x 409, 0 cleanup failures, 25 tool exec timeouts, GPUs not shared; KV 38%, running 40, prefix hit 95%; dispatching sessions 377/512 (1160 dispatches); trainer: 2.66M model tokens, turns 60.3, finished 292, reward 0.359. Tree run (1201/1193) differs by 20 tok/s steady, inside the spread of the two tree re-runs (1201/1203) and the 10-min bucket noise."
   }
  ]
 }

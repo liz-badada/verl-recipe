@@ -114,7 +114,11 @@ common=(
   ++ray_kwargs.ray_init.runtime_env.py_executable=null
   "hydra.run.dir=/bench_run/hydra"
 )
-[ "$ENGINE" = sglang ] && common+=(+actor_rollout_ref.model.override_config.attn_implementation=sdpa)
+# sglang weight sync: the recipe posts every bucket's CUDA-IPC handles as JSON to the dynamo worker's system server,
+# with all TP ranks' handles in each of TP blobs (payload ~ TP^2 x tensors x 260 B). Behind axum's 2 MiB body limit
+# a 2048 MiB bucket of this MoE's 3 MiB expert tensors is HTTP 413; 256 MiB keeps every request under 0.5 MiB.
+[ "$ENGINE" = sglang ] && common+=(+actor_rollout_ref.model.override_config.attn_implementation=sdpa
+                                   "actor_rollout_ref.rollout.checkpoint_engine.update_weights_bucket_megabytes=${WEIGHT_BUCKET_MB:-256}")
 PYPATH=/workspace/recipe-root:/workspace/uni-agent/verl:/workspace/uni-agent
 env=(-e HOME=/bench_run/home -e USER=$(id -un) -e LOGNAME=$(id -un) -e "PYTHONPATH=$PYPATH" -e TOKENIZERS_PARALLELISM=false -e OMP_NUM_THREADS=1 -e OPENBLAS_NUM_THREADS=1
      -e RAY_DEDUP_LOGS=0 -e HYDRA_FULL_ERROR=1 -e VERL_DYNAMO_LOG_DIR=/bench_run/dynamo -e VERL_DYNAMO_WORKER_METRICS_DIR=/bench_run/worker_metrics
