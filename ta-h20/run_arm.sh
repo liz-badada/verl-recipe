@@ -16,7 +16,7 @@ case $ENGINE in
   # The SGLang image (torch 2.13 + cu130) has no flash-attn wheel, so the FSDP actor loads with SDPA, without
   # remove-padding and therefore without sequence parallel (verl rejects SP>1 with padding). The train step never
   # runs in this rollout-only bench, so neither setting touches the measured rollout engine.
-  sglang) IMAGE=${IMAGE:-verl-recipe-thunderagent:rust-ta-uniagent-sglang-20261018}; FSDP_RMPAD=false; SP=1;;
+  sglang) IMAGE=${IMAGE:-verl-recipe-thunderagent:rust-ta-uniagent-sglang-20261018b}; FSDP_RMPAD=false; SP=1;;
   *) echo "ENGINE must be vllm or sglang, got $ENGINE" >&2; exit 2;;
 esac
 MODEL_DIR=${MODEL_DIR:-/home/jinyanc/workspace/model/hub/Qwen3-Coder-30B-A3B-Instruct}

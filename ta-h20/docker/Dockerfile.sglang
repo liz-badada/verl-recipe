@@ -44,3 +44,7 @@ RUN groupadd -g 1015 jinyanc && useradd -u 1015 -g 1015 -m jinyanc
 # Appended last so the layers above stay cached (2026-10-18).
 COPY --from=vllm-bench /usr/local/bin/etcd/etcd /usr/local/bin/etcd
 COPY --from=vllm-bench /usr/bin/nats-server /usr/bin/nats-server
+# Unpinned above, swebench resolved to 5.0.2, which dropped MAP_REPO_VERSION_TO_SPECS that Uni-Agent's SWE-bench
+# reward imports; the vLLM bench image has 4.1.0. Pinned here so the layers above stay cached (2026-10-18).
+RUN python -m pip install --no-cache-dir swebench==4.1.0 \
+    && python -c "from swebench.harness.constants import MAP_REPO_VERSION_TO_SPECS"

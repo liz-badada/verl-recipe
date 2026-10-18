@@ -3,7 +3,8 @@
 # end mid-turn. Passes when no "program was not released" error appears and the router's program
 # count returns to the sessions still alive. Env: TASK_CONFIG, KV_BYTES, GPU_MEM, TP, SITE (see run_arm.sh).
 # An attempt whose engines never started (another job took the GPUs while we were loading) is retried;
-# a trainer that dies inside two minutes failed on its config, which no retry fixes, so that ends the smoke.
+# a trainer that dies inside two minutes failed on its config, and one whose rollouts all fail did so in the
+# image (reward import, sandbox); neither is fixed by a retry, so either ends the smoke.
 set -uo pipefail
 H=${TA_H20_ROOT:-/lustre/raplab/client/jinyanc/workspace/jinyanc/ci/ta-h20}; TAG=${1:-$(date +%m%d%H%M)}
 export DOCKER_CONFIG=${DOCKER_CONFIG:-/lustre/raplab/client/jinyanc/workspace/jinyanc/ci/dockerconfig} KV_BYTES=${KV_BYTES:-64424509440}
@@ -21,6 +22,10 @@ for attempt in 1 2 3 4 5 6 7 8; do
   t0=$(grep -oE 'START_EPOCH=[0-9]+' $R/command.txt | cut -d= -f2); t1=$(grep -oE 'END_EPOCH=[0-9]+' $R/command.txt | cut -d= -f2)
   if [ -n "$t0" ] && [ -n "$t1" ] && [ $((t1 - t0)) -lt 120 ] && grep -q 'Error executing job' $R/console.log 2>/dev/null; then
     log "trainer failed on its config after $((t1 - t0)) s: $(grep -oE '^[A-Za-z]*Error: .*' $R/console.log | tail -1 | cut -c1-200)"
+    break
+  fi
+  if grep -q 'All rollouts failed' $R/console.log 2>/dev/null; then
+    log "all rollouts failed: $(grep -oE '[A-Za-z._]*(Error|Exception): .*' $R/console.log | grep -v CancelledError | sort | uniq -c | sort -rn | head -1 | cut -c1-220)"
     break
   fi
   log "no sessions ran (GPUs taken during startup?); will retry"
