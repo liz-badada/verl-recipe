@@ -57,7 +57,7 @@ TXT = {
    pending=("global 臂复测中：首跑 10-18 11:18–13:22 完成 508 / 512 个 session（收齐 512 条轨迹 3925 s、完成 246 条，trainer 口径 319 tok/s），但 verl 原生 sglang server 以 <code>log_level=error</code> 启动，没有留下引擎统计，不能进表；"
             "已改为 <code>engine_kwargs.sglang.log_level=info</code> 于 13:36 重跑，预计 15:45 出结果。首跑数据保留在 <code>runs/global-h20sgcc256-10160955-nostats</code>。"),
    result=("SGLang 上 TA 对 global 的引擎稳态倍数是 <strong>{ratio:.2f}×</strong>（{ta_v:,} 对 {gl_v:,}），vLLM 上是 {vratio:.2f}×（{vta_v:,} 对 {vgl_v:,}）。差别全在 global 臂：vLLM 的 global 臂在 CC 256 跑在 KV {vgl_kv}%、prefix 命中 {vgl_hit}%、平均 running {vgl_run} 的状态，"
-           "SGLang 的 global 臂为 KV {gl_kv}%、命中 {gl_hit}%、running {gl_run}；TA 在两种引擎上都把引擎维持在 KV {ta_kv}–{vta_kv}%、命中 {ta_hit}–{vta_hit}%、running {ta_run}–{vta_run}。"
+           "SGLang 的 global 臂为 KV {gl_kv}%、命中 {gl_hit}%、running {gl_run}；TA 在两种引擎上都把引擎维持在 KV {ta_kv}%、命中 {ta_hit}%、running {ta_run}。"
            "以 trainer 口径看，SGLang 上 TA 收齐 512 条轨迹用 {ta_w:.0f} s，global 用 {gl_w:.0f} s（{dw:+.0%}），其中完成的轨迹 {ta_f} 对 {gl_f}；派生过 subagent 的 session 完成率 {ta_fw:.0%} 对 {gl_fw:.0%}。"
            "结论：TA 的引擎侧收益大小取决于引擎本身在无准入控制时的表现；vLLM 0.24 上的 4 倍主要是 global 臂在这台机器上的 KV 占满状态造成的，SGLang 0.5.19 上同一负载下 global 没有进入那种状态，TA 的收益收敛为 {ratio:.2f}× 的引擎吞吐和 {dwabs:.0%} 的收齐时间。"),
  ),
@@ -73,7 +73,7 @@ TXT = {
    pending=("The global arm is being re-run: the first run (10-18 11:18–13:22) completed 508 / 512 sessions (512 trajectories in 3925 s, 246 finished, 319 tok/s by the trainer's rule) but verl's native sglang server starts with <code>log_level=error</code> and left no engine stats, so it cannot enter the table; "
             "it restarted at 13:36 with <code>engine_kwargs.sglang.log_level=info</code>, result expected around 15:45. The first run is kept under <code>runs/global-h20sgcc256-10160955-nostats</code>."),
    result=("On SGLang the TA / global ratio of engine steady state is <strong>{ratio:.2f}×</strong> ({ta_v:,} vs {gl_v:,}); on vLLM it is {vratio:.2f}× ({vta_v:,} vs {vgl_v:,}). The whole difference sits in the global arm: on vLLM it runs CC 256 at KV {vgl_kv}%, prefix hit {vgl_hit}%, mean running {vgl_run}; "
-           "on SGLang at KV {gl_kv}%, hit {gl_hit}%, running {gl_run}. TA keeps the engines at KV {ta_kv}–{vta_kv}%, hit {ta_hit}–{vta_hit}%, running {ta_run}–{vta_run} on both. "
+           "on SGLang at KV {gl_kv}%, hit {gl_hit}%, running {gl_run}. TA keeps the engines at KV {ta_kv}%, hit {ta_hit}%, running {ta_run} on both. "
            "By the trainer's rule, TA on SGLang collects 512 trajectories in {ta_w:.0f} s against {gl_w:.0f} s for global ({dw:+.0%}), with {ta_f} vs {gl_f} finished among them; sessions that dispatched subagents finish at {ta_fw:.0%} vs {gl_fw:.0%}. "
            "Conclusion: the size of TA's engine-side gain depends on how the engine behaves without admission control. The 4× on vLLM 0.24 comes from the global arm's saturated-KV state on this machine; on sglang 0.5.19 the same load does not put global into that state, and TA's gain narrows to {ratio:.2f}× in engine throughput and {dwabs:.0%} in time to 512 trajectories."),
  ),
@@ -111,14 +111,16 @@ def table(lang, A):
     body = "".join(f'<tr><td>{name}</td>' + "".join(f'<td class="num">{c}</td>' for c in row) + "</tr>" for name, row in zip(t["rows"], cells))
     return f'<div class="scroller"><table><caption>{t["cap"]}</caption><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>'
 
+def rng(a, b):
+    a, b = sorted((a, b)); return str(a) if a == b else f"{a}–{b}"
+
 def section(lang, A):
     t = TXT[lang]; sg_ta, sg_gl, v_ta, v_gl = A["sg_ta"], A["sg_gl"], A["v_ta"], A["v_gl"]
     if sg_ta and sg_gl:
         gl_w = sg_gl["t"]["wall"]; ta_w = sg_ta["t"]["wall"]
         txt = t["result"].format(ratio=sg_ta["p"]["v"] / sg_gl["p"]["v"], ta_v=sg_ta["p"]["v"], gl_v=sg_gl["p"]["v"], vratio=v_ta["p"]["v"] / v_gl["p"]["v"], vta_v=v_ta["p"]["v"], vgl_v=v_gl["p"]["v"],
                                  vgl_kv=v_gl["e"]["kv"], vgl_hit=v_gl["e"]["hit"], vgl_run=v_gl["e"]["running"], gl_kv=sg_gl["e"]["kv"], gl_hit=sg_gl["e"]["hit"], gl_run=sg_gl["e"]["running"],
-                                 ta_kv=min(sg_ta["e"]["kv"], v_ta["e"]["kv"]), vta_kv=max(sg_ta["e"]["kv"], v_ta["e"]["kv"]), ta_hit=min(sg_ta["e"]["hit"], v_ta["e"]["hit"]), vta_hit=max(sg_ta["e"]["hit"], v_ta["e"]["hit"]),
-                                 ta_run=min(sg_ta["e"]["running"], v_ta["e"]["running"]), vta_run=max(sg_ta["e"]["running"], v_ta["e"]["running"]),
+                                 ta_kv=rng(sg_ta["e"]["kv"], v_ta["e"]["kv"]), ta_hit=rng(sg_ta["e"]["hit"], v_ta["e"]["hit"]), ta_run=rng(sg_ta["e"]["running"], v_ta["e"]["running"]),
                                  ta_w=ta_w, gl_w=gl_w, dw=(ta_w - gl_w) / gl_w, dwabs=(gl_w - ta_w) / gl_w, ta_f=sg_ta["t"]["finished"], gl_f=sg_gl["t"]["finished"],
                                  ta_fw=sg_ta["sp"]["with_subagents"]["finished_rate"], gl_fw=sg_gl["sp"]["with_subagents"]["finished_rate"])
     else:
