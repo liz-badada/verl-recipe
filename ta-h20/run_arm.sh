@@ -142,6 +142,9 @@ case $ARM in
          ++actor_rollout_ref.rollout.agent.agent_loop_manager_class=uni_agent.framework.entry.AgentFrameworkRolloutAdapter)
     [ "$ENGINE" = vllm ] && [ -n "$KV_BYTES" ] && arm+=("+actor_rollout_ref.rollout.engine_kwargs.vllm.kv_cache_memory_bytes=$KV_BYTES")
     [ -n "${DISABLE_CUSTOM_AR:-}" ] && arm+=("+actor_rollout_ref.rollout.engine_kwargs.$ENGINE.disable_custom_all_reduce=true")
+    # verl's native sglang server hardcodes log_level=error, which silences the scheduler's throughput lines that
+    # engine_rate.py reads (the dynamo arms log them at info); engine_kwargs is merged last, so this wins.
+    [ "$ENGINE" = sglang ] && arm+=("+actor_rollout_ref.rollout.engine_kwargs.sglang.log_level=info")
     ;;
   kv|ta-native)
     env+=(-e VERL_USE_EXTERNAL_MODULES=recipe.dynamo.register)
