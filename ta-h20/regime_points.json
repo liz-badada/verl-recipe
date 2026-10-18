@@ -1,5 +1,5 @@
 {
- "note": "v = steady-state engine-side generation tok/s (median of 10-min buckets, both engines, from vLLM scheduler stats); w = window average (sampled time between first and last active engine stats line, gaps capped at 30 s); default Claude Code prompt unless flagged; pre_fix = TA run measured before fix 9f32e49 (program leak at session close), re-measurement pending; finalize_pause = on TA arms, sessions closing after the step-end abort_all_requests lost their trajectories to the 60 s final-request timeout (native plugin final parks on the paused engine; 2-3% of sessions per run, fixed in 33fac10): TA session counts are lower bounds, engine rates unaffected; excluded = points removed from the pages (see reason), kept here for provenance; awaiting_pair = clean 512-trajectory re-measurements whose other arm has not landed yet (not rendered until both arms exist); superseded = points replaced by a re-measurement of the same arm and CC; ablation = subagent_programs arms (recipe 7c1a747, forced-subagent task); valid=false marks an arm whose engine rate is not a comparable throughput point (reason says why), rendered on the ladder without a bar",
+ "note": "v = steady-state engine-side generation tok/s (median of 10-min buckets, both engines, from vLLM scheduler stats); w = window average (sampled time between first and last active engine stats line, gaps capped at 30 s); default Claude Code prompt unless flagged; pre_fix = TA run measured before fix 9f32e49 (program leak at session close), re-measurement pending; finalize_pause = on TA arms, sessions closing after the step-end abort_all_requests lost their trajectories to the 60 s final-request timeout (native plugin final parks on the paused engine; 2-3% of sessions per run, fixed in 33fac10): TA session counts are lower bounds, engine rates unaffected; excluded = points removed from the pages (see reason), kept here for provenance; awaiting_pair = clean 512-trajectory re-measurements whose other arm has not landed yet (not rendered until both arms exist); superseded = points replaced by a re-measurement of the same arm and CC; ablation = subagent_programs arms (recipe 7c1a747, forced-subagent task); valid=false marks an arm whose engine rate is not a comparable throughput point (reason says why), rendered on the ladder without a bar sglang = the same arms on the SGLang bench image (sglang 0.5.19, image rust-ta-uniagent-sglang-20261018b), v/w from the SGLang scheduler's decode stats; rendered as a table inside section 三/3, not on the chart.",
  "default": {
   "global": [
    {
@@ -105,6 +105,17 @@
     "run": "kv-h20sub-kv-10130401"
    }
   ]
+ },
+ "sglang": {
+  "ta-native": [
+   {
+    "cc": 256,
+    "v": 1758,
+    "w": 1732,
+    "run": "ta-native-h20sgcc256-10160955"
+   }
+  ],
+  "global": []
  },
  "pending": [],
  "pending_global": [],

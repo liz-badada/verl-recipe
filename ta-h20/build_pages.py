@@ -2,7 +2,8 @@
 
 Reads regime_points.json and each run's summary.txt. The zh page gets the section inserted before the
 old section 二 on first run (renumbering the rest); the en page carries a <!-- sweep-section --> placeholder.
-Re-running replaces the section between <!-- sweep-section --> and <!-- /sweep-section -->.
+Re-running replaces the section between <!-- sweep-section --> and <!-- /sweep-section -->; sglang_section.py then
+fills <!-- sglang-table -->, subagent_gain.py <!-- subagent-gain -->.
 """
 import json, os, re, sys
 sys.path.insert(0, os.path.dirname(__file__))
@@ -21,7 +22,7 @@ def pt(series, cc): return next((d for d in P["default"][series] if d["cc"] == c
 TXT = {
  "zh": dict(h2="三 · 并发扫描：blog 口径的折线图", lead=(
    "按 blog 的做法扫并发（默认 prompt，每卡 KV 60 GiB，其余配置与第三轮相同），每个点 32×16=512 个 session，每个臂 3 小时墙钟上限。"
-   "CC 128 两臂已按 512 条轨迹重测并回到本页；CC 64 的 global 臂（1240 tok/s）已测完，TA 臂的重测从第 27 分钟起与本机另一个无关任务共用了 GPU 0–3（replica0 掉到约 150 tok/s），按规则剔除、重新排队，两臂齐了再加回。纵轴用<strong>引擎侧生成吞吐</strong>：两台 vLLM 引擎每 10 秒上报的调度器统计里的 "
+   "CC 128 和 CC 64 两臂都已按 512 条轨迹重测并回到本页（CC 64 的 TA 臂重测了四次：前三次分别只有 128 条轨迹、与本机另一个任务共用了 GPU 0–3、被我排到了别的臂后面，第四次 10-17 干净跑完）。纵轴用<strong>引擎侧生成吞吐</strong>：两台 vLLM 引擎每 10 秒上报的调度器统计里的 "
    "generation tok/s，计入每一个生成的 token，与 session 是否结束无关；“稳态”取 10 分钟桶的中位数，“全程均值”把首尾爬坡和空转尾巴也算进去。"),
    cap="并发扫描：引擎侧吞吐与 session 结果", cols=["并发 CC", "TA 引擎 tok/s 稳态（全程）", "global 引擎 tok/s 稳态（全程）", "TA / global", "TA session 结束 / 完成", "global session 结束 / 完成", "TA session 均时", "global session 均时"],
    running="运行中", note95="≈95*", foot95="* 第一轮：名义 512 并发，被 Ray 槽位压到约 95 个 sandbox 同时在跑。512 行取第三轮，session 列按“前 512 个按开始时间”规则，trainer 口径见第五节。‡ TA 各轮有 2–3% 的 session 在 step 结束、引擎暂停之后关闭：native 插件的 final 请求停在暂停的引擎上，gateway 60 s 后放弃了这些 session，轨迹丢失（CC 512 为 13 / 512，强制 subagent CC 256 为 12 / 512；global 为 0）。33fac10 改为推迟释放。表里 TA 的 session 数因此是下界，引擎吞吐不受影响。",
@@ -34,7 +35,7 @@ TXT = {
         "两套口径都保留在表里；session 口径的数字仍是 trainer 真正拿到的训练数据的速度，对比第三、四、五节。")),
  "en": dict(h2="3 · Concurrency scan: the blog-style regime chart", lead=(
    "Following the blog, concurrency is swept (default prompt, 60 GiB KV per GPU, otherwise the sweep-3 configuration); every point runs the full 32×16=512 sessions with a 3-hour wall-clock cap per arm. "
-   "CC 128 has been re-measured on both arms with 512 trajectories and is back on this page. At CC 64 the global arm (1240 tok/s) is done, but the TA re-run shared GPUs 0–3 with an unrelated job on the node from minute 27 on (replica0 fell to about 150 tok/s), so it is excluded and queued again; CC 64 returns once both arms are clean. The y axis is <strong>engine-side generation throughput</strong>: the generation tok/s in the scheduler stats "
+   "CC 128 and CC 64 have been re-measured on both arms with 512 trajectories and are back on this page (the TA arm at CC 64 took four runs: the first three had only 128 trajectories, shared GPUs 0–3 with another job on the node, or were queued by me behind other arms; the fourth ran clean on 10-17). The y axis is <strong>engine-side generation throughput</strong>: the generation tok/s in the scheduler stats "
    "both vLLM engines log every 10 s, counting every generated token regardless of whether its session ended. \"Steady\" is the median of 10-minute buckets; \"window\" averages over the whole run including ramp-up and the idle tail."),
    cap="Concurrency scan: engine-side throughput and session outcomes", cols=["CC", "TA engine tok/s steady (window)", "global engine tok/s steady (window)", "TA / global", "TA sessions ended / finished", "global sessions ended / finished", "TA mean session", "global mean session"],
    running="running", note95="≈95*", foot95="* Sweep 1: nominally CC 512, capped by Ray slots at about 95 live sandboxes. The 512 row is sweep 3; its session columns follow the first-512-by-start rule, the trainer-faithful numbers are in section 5. ‡ On every TA run 2–3% of the sessions closed after the step-end engine pause: the native plugin's final request parks on the paused engine, the gateway gave up on those sessions after 60 s and their trajectories were lost (13 / 512 at CC 512, 12 / 512 on the forced-subagent CC 256; 0 on global). 33fac10 defers the release instead. The TA session counts in the table are therefore lower bounds; engine throughput is unaffected.",
@@ -50,7 +51,7 @@ TXT = {
 def section(lang):
     t = TXT[lang]
     rows = []
-    for cc in (95, 128, 256, 384, 512):  # CC 64 is rendered once both arms have a clean 512-trajectory run (regime_points.json: excluded / awaiting_pair)
+    for cc in (64, 95, 128, 256, 384, 512):
         a, g = pt("ta-native", cc), pt("global", cc)
         sa, sg = (summ(a["run"]) if a else None), (summ(g["run"]) if g else None)
         def cell_rate(d): return f'{d["v"]:,} ({d["w"]:,}){"†" if d.get("pre_fix") else ""}' if d else t["running"]
@@ -63,7 +64,7 @@ def section(lang):
     head = "".join(f'<th{" class=num" if i else ""}>{c}</th>' for i, c in enumerate(t["cols"]))
     return ("<!-- sweep-section -->\n" + f'<h2>{t["h2"]}</h2>\n<p>{t["lead"]}</p>\n<!-- regime-chart --><!-- /regime-chart -->\n'
             f'<div class="scroller"><table><caption>{t["cap"]}</caption><thead><tr>{head}</tr></thead><tbody>{"".join(rows)}</tbody></table></div>\n'
-            f'<p style="font-size:13.5px;color:var(--ink-3)">{t["foot95"]}</p>\n<h3>{t["why_h3"]}</h3>\n<p>{t["why"]}</p>\n<!-- subagent-gain --><!-- /subagent-gain -->\n<!-- /sweep-section -->')
+            f'<p style="font-size:13.5px;color:var(--ink-3)">{t["foot95"]}</p>\n<h3>{t["why_h3"]}</h3>\n<p>{t["why"]}</p>\n<!-- sglang-table --><!-- /sglang-table -->\n<!-- subagent-gain --><!-- /subagent-gain -->\n<!-- /sweep-section -->')
 
 def put(html, sec):
     if "<!-- sweep-section -->" in html and "<!-- /sweep-section -->" in html:
