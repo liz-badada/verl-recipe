@@ -115,7 +115,14 @@
     "run": "ta-native-h20sgcc256-10160955"
    }
   ],
-  "global": []
+  "global": [
+   {
+    "cc": 256,
+    "v": 1640,
+    "w": 1622,
+    "run": "global-h20sgcc256-10160955"
+   }
+  ]
  },
  "pending": [],
  "pending_global": [],
@@ -204,6 +211,15 @@
    "run": "ta-native-h20cc512-10141340",
    "arm": "ta-native",
    "reason": "804b377 run replaced by the 33fac10 re-run ta-native-h20cc512-10160955 (1215 / 1242, 511 / 512 sessions, 0 release failures, 0 x 409, GPUs not shared); same code line as the other re-measured TA points"
+  },
+  {
+   "cc": 256,
+   "v": null,
+   "w": null,
+   "run": "global-h20sgcc256-10160955-nostats",
+   "arm": "global",
+   "engine": "sglang",
+   "reason": "first SGLang global run (508 / 512 sessions, 512 trajectories in 3925 s) started by verl's native sglang server with log_level=error, so the scheduler left no throughput stats; replaced by global-h20sgcc256-10160955 (re-run with engine_kwargs.sglang.log_level=info, 506 / 512, 1640 / 1622)"
   }
  ],
  "ablation": [
