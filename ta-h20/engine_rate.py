@@ -14,6 +14,7 @@ PAT = re.compile(r"Avg prompt throughput: ([\d.]+) tokens/s, Avg generation thro
 SG_DEC = re.compile(r"Decode batch, #running-req: (\d+), #token: \d+, token usage: ([\d.]+), .*?gen throughput \(token/s\): ([\d.]+), #queue-req: (\d+)")
 SG_PRE = re.compile(r"Prefill batch, #new-seq: \d+, #new-token: (\d+), #cached-token: (\d+),")
 G_TS = re.compile(r"\(vLLMHttpServer pid=(\d+)\).*?INFO (\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)")
+SG_TS = re.compile(r"\(SGLangHttpServer pid=(\d+)\).*?\[\d{4}-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d) TP0\]")  # verl-native sglang, via ray
 T_TS = re.compile(r"^\S*?(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)")
 
 PREFILL = {}  # run -> engine -> [new_tokens, cached_tokens] from SGLang prefill lines (vLLM reports rates instead)
@@ -40,12 +41,24 @@ def samples(run):
                 m = SG_PRE.search(line)
                 if m:
                     p = PREFILL.setdefault(run, {}).setdefault(eng, [0, 0]); p[0] += int(m.group(1)); p[1] += int(m.group(2))
-    else:
+    else:  # global arms: the engines are ray actors, their stats lines reach console.log with the actor prefix
         for line in open(f"{run}/console.log", errors="replace"):
             m = PAT.search(line); ts = G_TS.search(line)
             if m and ts:
                 pid, mo, d, hh, mm, ss = ts.groups()
                 out.setdefault(pid, []).append((datetime(2026, int(mo), int(d), int(hh), int(mm), int(ss)).timestamp(), *map(float, m.groups())))
+                continue
+            ts = SG_TS.search(line)
+            if not ts: continue
+            pid, mo, d, hh, mm, ss = ts.groups(); t = datetime(2026, int(mo), int(d), int(hh), int(mm), int(ss)).timestamp()
+            m = SG_DEC.search(line)
+            if m:
+                running, usage, gen, queue = map(float, m.groups())
+                out.setdefault(pid, []).append((t, 0.0, gen, running, queue, usage * 100, 0.0))
+                continue
+            m = SG_PRE.search(line)
+            if m:
+                p = PREFILL.setdefault(run, {}).setdefault(pid, [0, 0]); p[0] += int(m.group(1)); p[1] += int(m.group(2))
     return out
 
 def buckets(run, width=600):
