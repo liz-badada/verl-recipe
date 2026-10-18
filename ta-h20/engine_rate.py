@@ -1,4 +1,6 @@
-"""engine_rate.py <run>...: engine-side throughput from the vLLM scheduler stats each engine logs every ~10 s.
+"""engine_rate.py <run>...: engine-side throughput from the scheduler stats each engine logs: vLLM every ~10 s,
+SGLang every decode_log_interval steps (its "gen throughput" is likewise the mean over the interval since the
+previous line; prefill tokens and cache hits come from its "Prefill batch" lines).
 
 Counts every generated token (sessions that later timed out or were still running at the stop included),
 so it is independent of how many sessions finished. Window = sampled time between the first and last stats line
@@ -9,20 +11,35 @@ from datetime import datetime
 
 PAT = re.compile(r"Avg prompt throughput: ([\d.]+) tokens/s, Avg generation throughput: ([\d.]+) tokens/s, "
                  r"Running: (\d+) reqs, Waiting: (\d+) reqs, GPU KV cache usage: ([\d.]+)%, Prefix cache hit rate: ([\d.]+)%")
+SG_DEC = re.compile(r"Decode batch, #running-req: (\d+), #token: \d+, token usage: ([\d.]+), .*?gen throughput \(token/s\): ([\d.]+), #queue-req: (\d+)")
+SG_PRE = re.compile(r"Prefill batch, #new-seq: \d+, #new-token: (\d+), #cached-token: (\d+),")
 G_TS = re.compile(r"\(vLLMHttpServer pid=(\d+)\).*?INFO (\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)")
 T_TS = re.compile(r"^\S*?(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)")
 
+PREFILL = {}  # run -> engine -> [new_tokens, cached_tokens] from SGLang prefill lines (vLLM reports rates instead)
+
 def samples(run):
-    out = {}  # engine -> [(t, prompt, gen, running, kv, hit)]
+    out = {}  # engine -> [(t, prompt, gen, running, waiting, kv, hit)]
     files = glob.glob(f"{run}/dynamo/*/replica*_shard0.log")
     if files:
         for f in files:
             eng = os.path.basename(f).split("_")[0]
             for line in open(f, errors="replace"):
-                m = PAT.search(line); ts = T_TS.match(line)
-                if m and ts:
+                ts = T_TS.match(line)
+                if not ts: continue
+                m = PAT.search(line)
+                if m:
                     y, mo, d, hh, mm, ss = map(int, ts.groups())
                     out.setdefault(eng, []).append((datetime(y, mo, d, hh, mm, ss).timestamp(), *map(float, m.groups())))
+                    continue
+                m = SG_DEC.search(line)
+                if m:
+                    y, mo, d, hh, mm, ss = map(int, ts.groups()); running, usage, gen, queue = map(float, m.groups())
+                    out.setdefault(eng, []).append((datetime(y, mo, d, hh, mm, ss).timestamp(), 0.0, gen, running, queue, usage * 100, 0.0))
+                    continue
+                m = SG_PRE.search(line)
+                if m:
+                    p = PREFILL.setdefault(run, {}).setdefault(eng, [0, 0]); p[0] += int(m.group(1)); p[1] += int(m.group(2))
     else:
         for line in open(f"{run}/console.log", errors="replace"):
             m = PAT.search(line); ts = G_TS.search(line)
@@ -64,6 +81,9 @@ def main():
                 if act[0][0] <= s[i][0] <= act[-1][0]: span += dt
             spans.append(span)
             for x in act: kv += x[5]; hit += x[6]; runn += x[3]; n += 1
+            if e in PREFILL.get(run, {}):  # SGLang: computed prefill tokens and hit rate from its prefill lines
+                new_t, cached = PREFILL[run][e]; pre += new_t  # computed tokens only, as vLLM counts them
+                hit += 100.0 * cached / max(new_t + cached, 1) * len(act)
         # Window = sampled time between the first and last active stats line, each gap capped at 30 s
         # like the token sum above, so a stray stats line long after the run cannot stretch the denominator.
         w = max(spans)
