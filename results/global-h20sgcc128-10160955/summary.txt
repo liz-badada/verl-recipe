@@ -1,0 +1,23 @@
+{
+ "run": "global-h20sgcc128-10160955",
+ "peak_concurrent_sessions": 128,
+ "sessions_scored": 512,
+ "sessions_done": 507,
+ "expected": 512,
+ "trajectories": 507,
+ "subagent_trajectories": 0,
+ "sessions_with_subagents": 0,
+ "wall_s": 5454.0,
+ "model_tokens": 2270390,
+ "context_tokens": 16284881,
+ "model_tokens_per_s": 416.2797946461313,
+ "context_tokens_per_s": 2985.8601026769343,
+ "turns_mean": 55.455621301775146,
+ "response_len_mean": 32120.080867850098,
+ "finished_trajectories": 242,
+ "reward_mean": 0.3727810650887574,
+ "session_latency_mean_s": 773.2544378698225,
+ "notes": [
+  "ARM=global ENGINE=sglang RUN_NAME=global-h20sgcc128-10160955 BATCH=32 N=16 CONCURRENCY=128 MAX_PROMPT=8192 MAX_RESP=65536 GPU_MEM=0.78 MAX_NUM_SEQS=256 TP=4 KV_BYTES=64424509440 TA_PARAMS={scheduler_i"
+ ]
+}
