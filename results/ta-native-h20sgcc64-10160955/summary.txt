@@ -1,0 +1,23 @@
+{
+ "run": "ta-native-h20sgcc64-10160955",
+ "peak_concurrent_sessions": 64,
+ "sessions_scored": 512,
+ "sessions_done": 511,
+ "expected": 512,
+ "trajectories": 511,
+ "subagent_trajectories": 0,
+ "sessions_with_subagents": 0,
+ "wall_s": 4227.0,
+ "model_tokens": 2425674,
+ "context_tokens": 16906368,
+ "model_tokens_per_s": 573.8523775727466,
+ "context_tokens_per_s": 3999.6139105748757,
+ "turns_mean": 57.31506849315068,
+ "response_len_mean": 33084.86888454012,
+ "finished_trajectories": 268,
+ "reward_mean": 0.3972602739726027,
+ "session_latency_mean_s": 429.45988258317027,
+ "notes": [
+  "ARM=ta-native ENGINE=sglang RUN_NAME=ta-native-h20sgcc64-10160955 BATCH=32 N=16 CONCURRENCY=64 MAX_PROMPT=8192 MAX_RESP=65536 GPU_MEM=0.78 MAX_NUM_SEQS=256 TP=4 KV_BYTES=64424509440 TA_PARAMS={schedul"
+ ]
+}
