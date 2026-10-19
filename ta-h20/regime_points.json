@@ -115,7 +115,14 @@
     "run": "ta-native-h20sgcc64-10200020"
    }
   ],
-  "global": []
+  "global": [
+   {
+    "cc": 64,
+    "v": 1636,
+    "w": 1636,
+    "run": "global-h20sgcc64-10200020"
+   }
+  ]
  },
  "pending": [],
  "pending_global": [],
