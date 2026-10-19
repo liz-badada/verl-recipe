@@ -25,9 +25,11 @@ DATA=${DATA:-/h20/data/swe_bench_verified_32_task.parquet}
 TASK_CONFIG=${TASK_CONFIG:-/h20/task_config_claude_code_docker.yaml}
 BATCH=${BATCH:-32}; N=${N:-16}; CONCURRENCY=${CONCURRENCY:-512}
 MAX_PROMPT=${MAX_PROMPT:-8192}; MAX_RESP=${MAX_RESP:-65536}
-# sglang's --mem-fraction-static covers weights too: 0.78 of an H20 at TP4 leaves the same ~60 GiB of KV per GPU as
-# KV_BYTES does on vLLM (sglang has no byte cap, so KV_BYTES is ignored there).
+# sglang has no byte cap, so KV_BYTES is ignored there and the KV pool is pinned in tokens instead: vLLM's 60 GiB cap
+# gives 2,621,440 tokens per TP4 engine for this model, and both sglang arms get exactly that pool (--max-total-tokens;
+# mem_fraction_static 0.78 alone would leave ~3.76M tokens, ~87 GiB per GPU, which the 10160955 sglang runs had).
 GPU_MEM=${GPU_MEM:-$([ "$ENGINE" = sglang ] && echo 0.78 || echo 0.75)}; MAX_NUM_SEQS=${MAX_NUM_SEQS:-256}; TP=${TP:-4}
+SG_MAX_TOTAL_TOKENS=${SG_MAX_TOTAL_TOKENS:-2621440}
 # H100 80 GB: the FSDP trainer already holds ~12 GiB/GPU when the engines start, so 0.92 (72.9 GiB) never fits
 # (free 66.8-68.2 GiB). 0.80 = 63.4 GiB, with a 44 GiB KV cap shared by both arms (H20 uses 60 GiB of its 96).
 if [ "${SITE:-h20}" = h100 ]; then GPU_MEM=0.80; KV_BYTES=47244640256; fi
@@ -133,7 +135,7 @@ case $ENGINE in
           ENGINE_EXTRA_ARGS="[--seed,42,--block-size,16,--max-num-seqs,$MAX_NUM_SEQS${DISABLE_CUSTOM_AR:+,--disable-custom-all-reduce}${KV_BYTES:+,--kv-cache-memory-bytes,$KV_BYTES}]"
           OVERLAY=(-v "$H/overlay/handlers.py":/usr/local/lib/python3.12/dist-packages/dynamo/vllm/handlers.py:ro);;
   sglang) ENGINE_CFG_SUFFIX="_sglang"
-          ENGINE_EXTRA_ARGS="[--random-seed,42${DISABLE_CUSTOM_AR:+,--disable-custom-all-reduce}]"
+          ENGINE_EXTRA_ARGS="[--random-seed,42,--max-total-tokens,$SG_MAX_TOTAL_TOKENS${DISABLE_CUSTOM_AR:+,--disable-custom-all-reduce}]"
           OVERLAY=();;
 esac
 case $ARM in
@@ -145,6 +147,14 @@ case $ARM in
     # verl's native sglang server hardcodes log_level=error, which silences the scheduler's throughput lines that
     # engine_rate.py reads (the dynamo arms log them at info); engine_kwargs is merged last, so this wins.
     [ "$ENGINE" = sglang ] && arm+=("+actor_rollout_ref.rollout.engine_kwargs.sglang.log_level=info")
+    # Same KV pool and the same scheduler-facing args as the dynamo.sglang worker of the TA arm (which takes
+    # --context-length / --chunked-prefill-size / --page-size from max_model_len, max_num_batched_tokens and
+    # router_block_size); verl's native server would otherwise start with 8192-token chunks, page_size 1 and no
+    # context cap.
+    [ "$ENGINE" = sglang ] && arm+=("+actor_rollout_ref.rollout.engine_kwargs.sglang.max_total_tokens=$SG_MAX_TOTAL_TOKENS"
+                                     "+actor_rollout_ref.rollout.engine_kwargs.sglang.chunked_prefill_size=32768"
+                                     "+actor_rollout_ref.rollout.engine_kwargs.sglang.page_size=16"
+                                     "+actor_rollout_ref.rollout.engine_kwargs.sglang.context_length=$((MAX_PROMPT + MAX_RESP))")
     ;;
   kv|ta-native)
     env+=(-e VERL_USE_EXTERNAL_MODULES=recipe.dynamo.register)

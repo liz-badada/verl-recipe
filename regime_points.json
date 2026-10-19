@@ -1,5 +1,5 @@
 {
- "note": "v = steady-state engine-side generation tok/s (median of 10-min buckets, both engines, from vLLM scheduler stats); w = window average (sampled time between first and last active engine stats line, gaps capped at 30 s); default Claude Code prompt unless flagged; pre_fix = TA run measured before fix 9f32e49 (program leak at session close), re-measurement pending; finalize_pause = on TA arms, sessions closing after the step-end abort_all_requests lost their trajectories to the 60 s final-request timeout (native plugin final parks on the paused engine; 2-3% of sessions per run, fixed in 33fac10): TA session counts are lower bounds, engine rates unaffected; excluded = points removed from the pages (see reason), kept here for provenance; awaiting_pair = clean 512-trajectory re-measurements whose other arm has not landed yet (not rendered until both arms exist); superseded = points replaced by a re-measurement of the same arm and CC; ablation = subagent_programs arms (recipe 7c1a747, forced-subagent task); valid=false marks an arm whose engine rate is not a comparable throughput point (reason says why), rendered on the ladder without a bar sglang = the same arms on the SGLang bench image (sglang 0.5.19, image rust-ta-uniagent-sglang-20261018b), v/w from the SGLang scheduler's decode stats; rendered as a table inside section \u4e09/3, not on the chart.",
+ "note": "v = steady-state engine-side generation tok/s (median of 10-min buckets, both engines, from vLLM scheduler stats); w = window average (sampled time between first and last active engine stats line, gaps capped at 30 s); default Claude Code prompt unless flagged; pre_fix = TA run measured before fix 9f32e49 (program leak at session close), re-measurement pending; finalize_pause = on TA arms, sessions closing after the step-end abort_all_requests lost their trajectories to the 60 s final-request timeout (native plugin final parks on the paused engine; 2-3% of sessions per run, fixed in 33fac10): TA session counts are lower bounds, engine rates unaffected; excluded = points removed from the pages (see reason), kept here for provenance; awaiting_pair = clean 512-trajectory re-measurements whose other arm has not landed yet (not rendered until both arms exist); superseded = points replaced by a re-measurement of the same arm and CC; ablation = subagent_programs arms (recipe 7c1a747, forced-subagent task); valid=false marks an arm whose engine rate is not a comparable throughput point (reason says why), rendered on the ladder without a bar sglang = the same arms on the SGLang bench image (sglang 0.5.19, image rust-ta-uniagent-sglang-20261018b), v/w from the SGLang scheduler's decode stats; rendered as a table inside section 三/3, not on the chart.",
  "default": {
   "global": [
    {
@@ -13,7 +13,7 @@
     "v": 1282,
     "w": 1291,
     "run": "global-h20-10121643",
-    "label": "\u224895*"
+    "label": "≈95*"
    },
    {
     "cc": 128,
@@ -52,7 +52,7 @@
     "v": 1272,
     "w": 1280,
     "run": "ta-native-h20-10121643",
-    "label": "\u224895*"
+    "label": "≈95*"
    },
    {
     "cc": 128,
@@ -107,52 +107,8 @@
   ]
  },
  "sglang": {
-  "ta-native": [
-   {
-    "cc": 64,
-    "v": 1760,
-    "w": 1710,
-    "run": "ta-native-h20sgcc64-10160955"
-   },
-   {
-    "cc": 128,
-    "v": 1784,
-    "w": 1751,
-    "run": "ta-native-h20sgcc128-10160955"
-   },
-   {
-    "cc": 256,
-    "v": 1758,
-    "w": 1732,
-    "run": "ta-native-h20sgcc256-10160955"
-   },
-   {
-    "cc": 384,
-    "v": 1714,
-    "w": 1692,
-    "run": "ta-native-h20sgcc384-10160955"
-   }
-  ],
-  "global": [
-   {
-    "cc": 64,
-    "v": 1658,
-    "w": 1637,
-    "run": "global-h20sgcc64-10160955"
-   },
-   {
-    "cc": 128,
-    "v": 1792,
-    "w": 1754,
-    "run": "global-h20sgcc128-10160955"
-   },
-   {
-    "cc": 256,
-    "v": 1640,
-    "w": 1622,
-    "run": "global-h20sgcc256-10160955"
-   }
-  ]
+  "ta-native": [],
+  "global": []
  },
  "pending": [],
  "pending_global": [],
@@ -250,6 +206,69 @@
    "arm": "global",
    "engine": "sglang",
    "reason": "first SGLang global run (508 / 512 sessions, 512 trajectories in 3925 s) started by verl's native sglang server with log_level=error, so the scheduler left no throughput stats; replaced by global-h20sgcc256-10160955 (re-run with engine_kwargs.sglang.log_level=info, 506 / 512, 1640 / 1622)"
+  },
+  {
+   "cc": 64,
+   "v": 1760,
+   "w": 1710,
+   "run": "ta-native-h20sgcc64-10160955",
+   "arm": "ta-native",
+   "engine": "sglang",
+   "reason": "sglang KV pool not matched to vLLM: 3.76M tokens/engine (mem_fraction_static 0.78, ~87 GiB/GPU) vs vLLM's 2,621,440 (60 GiB cap); global arm also ran chunked_prefill_size 8192 / page_size 1 / no context cap vs the TA arm's 32768 / 16 / 73728. Re-run with max_total_tokens=2621440 on both arms and aligned args (sweep tag 10200020)."
+  },
+  {
+   "cc": 128,
+   "v": 1784,
+   "w": 1751,
+   "run": "ta-native-h20sgcc128-10160955",
+   "arm": "ta-native",
+   "engine": "sglang",
+   "reason": "sglang KV pool not matched to vLLM: 3.76M tokens/engine (mem_fraction_static 0.78, ~87 GiB/GPU) vs vLLM's 2,621,440 (60 GiB cap); global arm also ran chunked_prefill_size 8192 / page_size 1 / no context cap vs the TA arm's 32768 / 16 / 73728. Re-run with max_total_tokens=2621440 on both arms and aligned args (sweep tag 10200020)."
+  },
+  {
+   "cc": 256,
+   "v": 1758,
+   "w": 1732,
+   "run": "ta-native-h20sgcc256-10160955",
+   "arm": "ta-native",
+   "engine": "sglang",
+   "reason": "sglang KV pool not matched to vLLM: 3.76M tokens/engine (mem_fraction_static 0.78, ~87 GiB/GPU) vs vLLM's 2,621,440 (60 GiB cap); global arm also ran chunked_prefill_size 8192 / page_size 1 / no context cap vs the TA arm's 32768 / 16 / 73728. Re-run with max_total_tokens=2621440 on both arms and aligned args (sweep tag 10200020)."
+  },
+  {
+   "cc": 384,
+   "v": 1714,
+   "w": 1692,
+   "run": "ta-native-h20sgcc384-10160955",
+   "arm": "ta-native",
+   "engine": "sglang",
+   "reason": "sglang KV pool not matched to vLLM: 3.76M tokens/engine (mem_fraction_static 0.78, ~87 GiB/GPU) vs vLLM's 2,621,440 (60 GiB cap); global arm also ran chunked_prefill_size 8192 / page_size 1 / no context cap vs the TA arm's 32768 / 16 / 73728. Re-run with max_total_tokens=2621440 on both arms and aligned args (sweep tag 10200020)."
+  },
+  {
+   "cc": 64,
+   "v": 1658,
+   "w": 1637,
+   "run": "global-h20sgcc64-10160955",
+   "arm": "global",
+   "engine": "sglang",
+   "reason": "sglang KV pool not matched to vLLM: 3.76M tokens/engine (mem_fraction_static 0.78, ~87 GiB/GPU) vs vLLM's 2,621,440 (60 GiB cap); global arm also ran chunked_prefill_size 8192 / page_size 1 / no context cap vs the TA arm's 32768 / 16 / 73728. Re-run with max_total_tokens=2621440 on both arms and aligned args (sweep tag 10200020)."
+  },
+  {
+   "cc": 128,
+   "v": 1792,
+   "w": 1754,
+   "run": "global-h20sgcc128-10160955",
+   "arm": "global",
+   "engine": "sglang",
+   "reason": "sglang KV pool not matched to vLLM: 3.76M tokens/engine (mem_fraction_static 0.78, ~87 GiB/GPU) vs vLLM's 2,621,440 (60 GiB cap); global arm also ran chunked_prefill_size 8192 / page_size 1 / no context cap vs the TA arm's 32768 / 16 / 73728. Re-run with max_total_tokens=2621440 on both arms and aligned args (sweep tag 10200020)."
+  },
+  {
+   "cc": 256,
+   "v": 1640,
+   "w": 1622,
+   "run": "global-h20sgcc256-10160955",
+   "arm": "global",
+   "engine": "sglang",
+   "reason": "sglang KV pool not matched to vLLM: 3.76M tokens/engine (mem_fraction_static 0.78, ~87 GiB/GPU) vs vLLM's 2,621,440 (60 GiB cap); global arm also ran chunked_prefill_size 8192 / page_size 1 / no context cap vs the TA arm's 32768 / 16 / 73728. Re-run with max_total_tokens=2621440 on both arms and aligned args (sweep tag 10200020)."
   }
  ],
  "ablation": [

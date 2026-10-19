@@ -1,0 +1,7 @@
+Stopped 2026-10-20 ~00:00 by jinyanc after about 1 h 35 min; not data.
+Reason: the SGLang arms ran with max_total_num_tokens ~3.76-3.79M per engine (mem_fraction_static 0.78, about 87 GiB of
+KV per GPU) while the vLLM arms were capped at 2,621,440 tokens per engine (kv_cache_memory_bytes = 60 GiB), so the KV
+budgets of the two engines were not matched; the sglang global arm also differed from the TA arm in chunked_prefill_size
+(8192 vs 32768), page_size (1 vs 16) and context_length (unset vs 73728). The whole SGLang sweep is re-run with
+max_total_tokens=2621440 on both arms and the global arm's engine args aligned to the TA arm's (run_arm.sh,
+SG_MAX_TOTAL_TOKENS). The same applies to the finished 10160955 sglang runs, which stay as raw data only.

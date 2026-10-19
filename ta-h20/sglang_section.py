@@ -55,11 +55,12 @@ TXT = {
          "模型生成 tok/s（收齐 512 条口径）", "session 平均时长", "引擎 KV 占用 / prefix 命中 / 平均 running", "派生过 subagent 的 session · 派生次数",
          "完成率：有 subagent / 无", "路由器峰值 program"],
    cap="CC 256，默认 prompt，两种引擎各一对臂；vLLM 列即上表的 256 行",
-   setup=("同一套 harness、同一数据、模型、prompt 和每卡约 60 GiB 的 KV 预算，只换推理引擎：SGLang 镜像为 sglang 0.5.19 / torch 2.13 + cu130（vLLM 镜像为 vLLM 0.24.0 / torch 2.11），"
-          "两臂的 attention backend 都是 flashinfer，mem_fraction_static 0.78，max_running_requests 256，TP 4 × 2 引擎。TA 臂的引擎由 dynamo.sglang worker 托管，global 臂由 verl 原生 sglang server 托管，sglang 版本相同。"
+   setup=("同一套 harness、同一数据、模型、prompt，两种引擎的 KV 池都钉在每引擎 2,621,440 个 token（vLLM 由 60 GiB 的字节上限得出，SGLang 用 <code>--max-total-tokens</code> 钉到同一数字），只换推理引擎：SGLang 镜像为 sglang 0.5.19 / torch 2.13 + cu130（vLLM 镜像为 vLLM 0.24.0 / torch 2.11），"
+          "两臂的 attention backend 都是 flashinfer，max_running_requests 256，chunked_prefill_size 32768，page_size 16，context_length 73728，TP 4 × 2 引擎。TA 臂的引擎由 dynamo.sglang worker 托管，global 臂由 verl 原生 sglang server 托管，sglang 版本相同。"
           "SGLang 按同一档位扫描（64 / 128 / 256 / 384 / 512，每臂 512 条轨迹），已完成的档位画在下图和表里；CC 256 另与 vLLM 的同档并排对照。纵轴口径同上：引擎调度器统计里的生成 tok/s（SGLang 每 40 个 decode 步报一次区间均值），稳态取 10 分钟桶中位数。"),
-   pending=("global 臂复测中：首跑 10-18 11:18–13:22 完成 508 / 512 个 session（收齐 512 条轨迹 3925 s、完成 246 条，trainer 口径 319 tok/s），但 verl 原生 sglang server 以 <code>log_level=error</code> 启动，没有留下引擎统计，不能进表；"
-            "已改为 <code>engine_kwargs.sglang.log_level=info</code> 于 13:36 重跑，预计 15:45 出结果。首跑数据保留在 <code>runs/global-h20sgcc256-10160955-nostats</code>。"),
+   pending=("<strong>SGLang 全部档位重测中（10-20 00:06 起，64 → 512，每档先 TA 后 global）。</strong>10-18/19 跑完的 7 个 SGLang 臂在复查时发现与 vLLM 两臂的 KV 预算不对等：sglang 只按 mem_fraction_static 0.78 分配，实际 KV 池 376 万 token / 引擎（约 87 GiB / 卡），"
+            "而 vLLM 两臂被 60 GiB 字节上限钉在 262 万 token / 引擎，SGLang 的 global 臂因此比 vLLM 的晚一档才进入 KV 占满状态；global 臂的 chunked_prefill_size（8192 对 32768）、page_size（1 对 16）和上下文上限（无对 73728）也与 TA 臂不同。"
+            "这 7 个点已从图表撤下，只作为原始数据保留在 <code>runs/*h20sgcc*-10160955</code>（<code>regime_points.json</code> 的 superseded 段记有原因）。"),
    result=("CC 256 上，SGLang 的 TA 对 global 引擎稳态倍数是 <strong>{ratio:.2f}×</strong>（{ta_v:,} 对 {gl_v:,}），vLLM 上是 {vratio:.2f}×（{vta_v:,} 对 {vgl_v:,}）。差别全在 global 臂：vLLM 的 global 臂在 CC 256 跑在 KV {vgl_kv}%、prefix 命中 {vgl_hit}%、平均 running {vgl_run} 的状态，"
            "SGLang 的 global 臂为 KV {gl_kv}%、命中 {gl_hit}%、running {gl_run}；TA 在两种引擎上都把引擎维持在 KV {ta_kv}%、命中 {ta_hit}%、running {ta_run}。"
            "以 trainer 口径看，SGLang 上 TA 收齐 512 条轨迹用 {ta_w:.0f} s，global 用 {gl_w:.0f} s（{dw:+.0%}），其中完成的轨迹 {ta_f} 对 {gl_f}；派生过 subagent 的 session 完成率 {ta_fw:.0%} 对 {gl_fw:.0%}。"
@@ -71,11 +72,12 @@ TXT = {
          "Model tok/s (512-trajectory rule)", "Mean session duration", "Engine KV usage / prefix hit / mean running", "Sessions dispatching subagents · dispatches",
          "Finished rate: with subagents / without", "Router peak programs"],
    cap="CC 256, default prompt, one pair of arms per engine; the vLLM columns are the 256 row of the table above",
-   setup=("Same harness, data, model, prompt and roughly 60 GiB of KV per GPU; only the inference engine changes: the SGLang image is sglang 0.5.19 / torch 2.13 + cu130 (the vLLM image is vLLM 0.24.0 / torch 2.11), "
-          "both arms use the flashinfer attention backend, mem_fraction_static 0.78, max_running_requests 256, TP 4 × 2 engines. The TA arm's engines are hosted by the dynamo.sglang worker, the global arm's by verl's native sglang server, same sglang build. "
+   setup=("Same harness, data, model and prompt, with both engines' KV pools pinned to 2,621,440 tokens per engine (vLLM through its 60 GiB byte cap, SGLang through <code>--max-total-tokens</code> set to the same number); only the inference engine changes: the SGLang image is sglang 0.5.19 / torch 2.13 + cu130 (the vLLM image is vLLM 0.24.0 / torch 2.11), "
+          "both arms use the flashinfer attention backend, max_running_requests 256, chunked_prefill_size 32768, page_size 16, context_length 73728, TP 4 × 2 engines. The TA arm's engines are hosted by the dynamo.sglang worker, the global arm's by verl's native sglang server, same sglang build. "
           "SGLang is swept over the same CCs (64 / 128 / 256 / 384 / 512, 512 trajectories per arm); the finished CCs are in the chart and table below, and CC 256 is also set beside the vLLM pair. The y metric is the one used above: generation tok/s from the engine scheduler's stats (SGLang reports an interval mean every 40 decode steps), steady = median of 10-minute buckets."),
-   pending=("The global arm is being re-run: the first run (10-18 11:18–13:22) completed 508 / 512 sessions (512 trajectories in 3925 s, 246 finished, 319 tok/s by the trainer's rule) but verl's native sglang server starts with <code>log_level=error</code> and left no engine stats, so it cannot enter the table; "
-            "it restarted at 13:36 with <code>engine_kwargs.sglang.log_level=info</code>, result expected around 15:45. The first run is kept under <code>runs/global-h20sgcc256-10160955-nostats</code>."),
+   pending=("<strong>Every SGLang CC is being re-measured (from 10-20 00:06, 64 → 512, TA then global at each CC).</strong> A review of the 7 SGLang arms finished on 10-18/19 found their KV budget unmatched to the vLLM arms: sglang sized its pool from mem_fraction_static 0.78 alone, 3.76M tokens per engine (about 87 GiB per GPU), "
+            "while the vLLM arms were pinned at 2,621,440 tokens per engine by the 60 GiB byte cap, so SGLang's global arm reached the saturated-KV state one CC later than vLLM's; the global arm also differed from the TA arm in chunked_prefill_size (8192 vs 32768), page_size (1 vs 16) and context cap (none vs 73728). "
+            "Those 7 points are withdrawn from the chart and table and kept only as raw data under <code>runs/*h20sgcc*-10160955</code> (the superseded block of <code>regime_points.json</code> records the reason)."),
    result=("At CC 256 the TA / global ratio of engine steady state on SGLang is <strong>{ratio:.2f}×</strong> ({ta_v:,} vs {gl_v:,}); on vLLM it is {vratio:.2f}× ({vta_v:,} vs {vgl_v:,}). The whole difference sits in the global arm: on vLLM it runs CC 256 at KV {vgl_kv}%, prefix hit {vgl_hit}%, mean running {vgl_run}; "
            "on SGLang at KV {gl_kv}%, hit {gl_hit}%, running {gl_run}. TA keeps the engines at KV {ta_kv}%, hit {ta_hit}%, running {ta_run} on both. "
            "By the trainer's rule, TA on SGLang collects 512 trajectories in {ta_w:.0f} s against {gl_w:.0f} s for global ({dw:+.0%}), with {ta_f} vs {gl_f} finished among them; sessions that dispatched subagents finish at {ta_fw:.0%} vs {gl_fw:.0%}. "
@@ -120,12 +122,12 @@ def rng(a, b):
 
 CHART = {
  "zh": dict(title="同一 harness、同一负载换到 SGLang 0.5.19：引擎生成吞吐 vs 并发",
-            sub="Uni-Agent SWE-bench Verified ×32 · Claude Code 2.1.296（subagent 开启）· 8× H20 · Qwen3-Coder-30B-A3B · sglang 0.5.19 · rollout-only · mem_fraction_static 0.78",
+            sub="Uni-Agent SWE-bench Verified ×32 · Claude Code 2.1.296（subagent 开启）· 8× H20 · Qwen3-Coder-30B-A3B · sglang 0.5.19 · rollout-only · KV 池 2,621,440 token / 引擎（与 vLLM 相同）",
             y="引擎生成吞吐，稳态 (tokens s⁻¹)", x="agent 并发数 (CC，同时在跑的 Claude Code session)", regime="", pend="运行中", pendg="global 运行中", sub_note="",
             foot="纵轴为两台引擎 SGLang 调度器 decode 统计的生成 tok/s 的稳态中位数（10 分钟桶），计入每一个生成的 token，与 session 是否完成无关；每臂收 512 条轨迹。",
             cap="与上图同一构造，只换推理引擎。数据：<code>regime_points.json</code> 的 sglang 段，由 <code>engine_rate.py</code> 从各臂的 SGLang 调度器日志算出。"),
  "en": dict(title="Same harness and load on sglang 0.5.19: engine generation throughput vs concurrency",
-            sub="Uni-Agent SWE-bench Verified ×32 · Claude Code 2.1.296 (subagents on) · 8× H20 · Qwen3-Coder-30B-A3B · sglang 0.5.19 · rollout-only · mem_fraction_static 0.78",
+            sub="Uni-Agent SWE-bench Verified ×32 · Claude Code 2.1.296 (subagents on) · 8× H20 · Qwen3-Coder-30B-A3B · sglang 0.5.19 · rollout-only · KV pool 2,621,440 tokens per engine (same as vLLM)",
             y="Engine generation throughput, steady state (tokens s⁻¹)", x="Agent admission concurrency (CC, Claude Code sessions in flight)", regime="", pend="running", pendg="global running", sub_note="",
             foot="Y is the steady-state median (10-min buckets) of the generation tok/s both engines' SGLang schedulers report in their decode stats, counting every generated token regardless of whether its session finished; 512 trajectories per arm.",
             cap="Same construction as the chart above, only the inference engine differs. Data: the sglang block of <code>regime_points.json</code>, computed by <code>engine_rate.py</code> from each arm's SGLang scheduler logs."),

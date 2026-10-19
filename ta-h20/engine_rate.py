@@ -4,7 +4,10 @@ previous line; prefill tokens and cache hits come from its "Prefill batch" lines
 
 Counts every generated token (sessions that later timed out or were still running at the stop included),
 so it is independent of how many sessions finished. Window = sampled time between the first and last stats line
-with Running > 0, gaps capped at 30 s (a stray late stats line does not stretch it).
+with Running > 0. vLLM logs every ~10 s whether or not it decoded, so a gap longer than 30 s is a stall or a stray late
+line and is capped at 30 s. SGLang logs only on decode, and its "gen throughput" already divides the tokens of the last
+decode_log_interval steps by the wall time since the previous line (prefill-only stretches included), so its gaps are
+real and are credited in full, capped at SG_CAP so a stats line long after the run cannot stretch the window.
 """
 import glob, os, re, sys
 from datetime import datetime
@@ -16,6 +19,7 @@ SG_PRE = re.compile(r"Prefill batch, #new-seq: \d+, #new-token: (\d+), #cached-t
 G_TS = re.compile(r"\(vLLMHttpServer pid=(\d+)\).*?INFO (\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)")
 SG_TS = re.compile(r"\(SGLangHttpServer pid=(\d+)\).*?\[\d{4}-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d) TP0\]")  # verl-native sglang, via ray
 T_TS = re.compile(r"^\S*?(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)")
+V_CAP, SG_CAP = 30.0, 900.0  # per-sample gap cap (s); each sample carries its own as field 7
 
 PREFILL = {}  # run -> engine -> [new_tokens, cached_tokens] from SGLang prefill lines (vLLM reports rates instead)
 
@@ -31,12 +35,12 @@ def samples(run):
                 m = PAT.search(line)
                 if m:
                     y, mo, d, hh, mm, ss = map(int, ts.groups())
-                    out.setdefault(eng, []).append((datetime(y, mo, d, hh, mm, ss).timestamp(), *map(float, m.groups())))
+                    out.setdefault(eng, []).append((datetime(y, mo, d, hh, mm, ss).timestamp(), *map(float, m.groups()), V_CAP))
                     continue
                 m = SG_DEC.search(line)
                 if m:
                     y, mo, d, hh, mm, ss = map(int, ts.groups()); running, usage, gen, queue = map(float, m.groups())
-                    out.setdefault(eng, []).append((datetime(y, mo, d, hh, mm, ss).timestamp(), 0.0, gen, running, queue, usage * 100, 0.0))
+                    out.setdefault(eng, []).append((datetime(y, mo, d, hh, mm, ss).timestamp(), 0.0, gen, running, queue, usage * 100, 0.0, SG_CAP))
                     continue
                 m = SG_PRE.search(line)
                 if m:
@@ -46,7 +50,7 @@ def samples(run):
             m = PAT.search(line); ts = G_TS.search(line)
             if m and ts:
                 pid, mo, d, hh, mm, ss = ts.groups()
-                out.setdefault(pid, []).append((datetime(2026, int(mo), int(d), int(hh), int(mm), int(ss)).timestamp(), *map(float, m.groups())))
+                out.setdefault(pid, []).append((datetime(2026, int(mo), int(d), int(hh), int(mm), int(ss)).timestamp(), *map(float, m.groups()), V_CAP))
                 continue
             ts = SG_TS.search(line)
             if not ts: continue
@@ -54,7 +58,7 @@ def samples(run):
             m = SG_DEC.search(line)
             if m:
                 running, usage, gen, queue = map(float, m.groups())
-                out.setdefault(pid, []).append((t, 0.0, gen, running, queue, usage * 100, 0.0))
+                out.setdefault(pid, []).append((t, 0.0, gen, running, queue, usage * 100, 0.0, SG_CAP))
                 continue
             m = SG_PRE.search(line)
             if m:
@@ -68,8 +72,13 @@ def buckets(run, width=600):
     for s in eng.values():
         s.sort()
         for i in range(1, len(s)):
-            b = int((s[i][0] - t0) // width); dt = min(s[i][0] - s[i-1][0], 30)
-            a = acc.setdefault(b, [0.0, 0.0]); a[0] += s[i][2] * dt; a[1] += s[i][3]
+            dt = min(s[i][0] - s[i-1][0], s[i][7])
+            # credit the tokens of a long SGLang gap to the buckets it spans, not only to the bucket of the line
+            lo, hi = s[i][0] - dt, s[i][0]
+            while lo < hi:
+                b = int((lo - t0) // width); edge = min(hi, t0 + (b + 1) * width)
+                a = acc.setdefault(b, [0.0, 0.0]); a[0] += s[i][2] * (edge - lo); lo = edge
+            acc.setdefault(int((s[i][0] - t0) // width), [0.0, 0.0])[1] += s[i][3]
     return [(b * width, round(a[0] / width), ) for b, a in sorted(acc.items())]
 
 def main():
@@ -89,7 +98,7 @@ def main():
             starts.append(act[0][0]); ends.append(act[-1][0])
             span = 0.0
             for i in range(1, len(s)):
-                dt = min(s[i][0] - s[i-1][0], 30)
+                dt = min(s[i][0] - s[i-1][0], s[i][7])
                 gen += s[i][2] * dt; pre += s[i][1] * dt
                 if act[0][0] <= s[i][0] <= act[-1][0]: span += dt
             spans.append(span)
@@ -97,8 +106,8 @@ def main():
             if e in PREFILL.get(run, {}):  # SGLang: computed prefill tokens and hit rate from its prefill lines
                 new_t, cached = PREFILL[run][e]; pre += new_t  # computed tokens only, as vLLM counts them
                 hit += 100.0 * cached / max(new_t + cached, 1) * len(act)
-        # Window = sampled time between the first and last active stats line, each gap capped at 30 s
-        # like the token sum above, so a stray stats line long after the run cannot stretch the denominator.
+        # Window = sampled time between the first and last active stats line, each gap capped like the token sum
+        # above (30 s for vLLM, SG_CAP for SGLang), so a stray stats line long after the run cannot stretch the denominator.
         w = max(spans)
         b = [g for _, g in buckets(run) if g > 0][1:-1]; b.sort(); steady = b[len(b)//2] if b else 0
         print(f"{os.path.basename(run):40s} {len(eng):7d} {w:8.0f} {gen/w:9.1f} {steady:9d} {pre/w:13.0f} {kv/n:5.0f} {hit/n:5.0f} {runn/n:7.0f}")
