@@ -144,6 +144,15 @@ def pairs():
         if a and g: out.append((cc, a, g))
     return out
 
+def sweep_summary(lang, rows):
+    if not rows: return ""
+    ccs = " / ".join(str(cc) for cc, _, _ in rows)
+    ratios = " / ".join(f"{a['p']['v'] / g['p']['v']:.2f}×" for _, a, g in rows)
+    walls = " / ".join(f"{(a['t']['wall'] - g['t']['wall']) / g['t']['wall']:+.0%}" if a["t"] and g["t"] else "—" for _, a, g in rows)
+    if lang == "zh":
+        return f"扫描已跑完的档位 CC {ccs} 上，引擎稳态 TA / global 依次为 {ratios}，收齐 512 条轨迹的用时 TA 相对 global 依次为 {walls}（见上表）。"
+    return f"Across the finished CCs {ccs}, engine steady state TA / global is {ratios} and TA's time to 512 trajectories relative to global is {walls} (table above). "
+
 def sweep_table(lang, rows):
     t = SWEEP_TXT[lang]
     def w(a): return f'{a["t"]["wall"]:.0f} s' if a["t"] else t["none"]
@@ -175,6 +184,7 @@ def section(lang, A):
                                  ta_fw=sg_ta["sp"]["with_subagents"]["finished_rate"], gl_fw=sg_gl["sp"]["with_subagents"]["finished_rate"])
     else:
         txt = t["pending"]
+    txt = sweep_summary(lang, rows) + txt
     return f'<!-- sglang-table -->\n<h3>{t["h3"]}</h3>\n<p>{t["setup"]}</p>\n{sweep}{table(lang, A)}\n<p>{txt}</p>\n<!-- /sglang-table -->'
 
 def splice(html, blk):
