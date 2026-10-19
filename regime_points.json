@@ -107,7 +107,14 @@
   ]
  },
  "sglang": {
-  "ta-native": [],
+  "ta-native": [
+   {
+    "cc": 64,
+    "v": 1650,
+    "w": 1630,
+    "run": "ta-native-h20sgcc64-10200020"
+   }
+  ],
   "global": []
  },
  "pending": [],
