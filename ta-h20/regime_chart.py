@@ -36,19 +36,24 @@ def marker(kind, x, y, color, hollow=False, dashed=False):
     if kind == "square": return f'<rect x="{x-5.5:.1f}" y="{y-5.5:.1f}" width="11" height="11" fill="{fill}" stroke="{color}" stroke-width="2.2"{extra}/>'
     return f'<path d="M{x:.1f} {y-7.5:.1f} L{x+7.5:.1f} {y:.1f} L{x:.1f} {y+7.5:.1f} L{x-7.5:.1f} {y:.1f} Z" fill="{fill}" stroke="{color}" stroke-width="2.2"{extra}/>'
 
-def svg(p, t):
+def svg(p, t, ymax=None, band=True, approx95=True, legend=("global", "ta-native", "kv")):
+    ymax = ymax or YMAX
+    def Y(v): return B - (B - T) * v / ymax
     o = [f'<svg viewBox="0 0 {W} {HT}" width="100%" role="img" aria-label="throughput vs concurrency" style="font-family:var(--font-sans);display:block;max-width:100%">',
          f'<rect x="0" y="0" width="{W}" height="{HT}" fill="var(--surface)"/>',
-         f'<rect x="{X(320):.1f}" y="{T-40}" width="{R-X(320):.1f}" height="{B-T+40}" fill="var(--good-soft)"/>',
-         f'<text x="{(X(320)+R)/2:.1f}" y="{T-16}" text-anchor="middle" font-size="19" font-weight="600" fill="var(--good)">{t["regime"]}</text>']
-    for v in range(0, YMAX + 1, 300):
+         ]
+    if band:
+        o.append(f'<rect x="{X(320):.1f}" y="{T-40}" width="{R-X(320):.1f}" height="{B-T+40}" fill="var(--good-soft)"/>')
+        o.append(f'<text x="{(X(320)+R)/2:.1f}" y="{T-16}" text-anchor="middle" font-size="19" font-weight="600" fill="var(--good)">{t["regime"]}</text>')
+    for v in range(0, ymax + 1, 300):
         o.append(f'<line x1="{L}" y1="{Y(v):.1f}" x2="{R}" y2="{Y(v):.1f}" stroke="var(--line)" stroke-width="1"/>')
         o.append(f'<text x="{L-14}" y="{Y(v)+5:.1f}" text-anchor="end" font-size="16" fill="var(--ink-3)">{v:,}</text>')
     o.append(f'<text transform="translate(52 {(T+B)/2:.0f}) rotate(-90)" text-anchor="middle" font-size="17" font-weight="600" fill="var(--ink-2)">{t["y"]}</text>')
     o.append(f'<line x1="{L}" y1="{B}" x2="{R}" y2="{B}" stroke="var(--line-strong)" stroke-width="1.2"/>')
     for cc in (64, 128, 256, 384, 512):
         o.append(f'<text x="{X(cc):.1f}" y="{B+30}" text-anchor="middle" font-size="16" fill="var(--ink-2)">{cc}</text>')
-    o.append(f'<text x="{X(95):.1f}" y="{B+30}" text-anchor="middle" font-size="14" fill="var(--ink-3)">≈95*</text>')
+    if approx95:
+        o.append(f'<text x="{X(95):.1f}" y="{B+30}" text-anchor="middle" font-size="14" fill="var(--ink-3)">≈95*</text>')
     o.append(f'<text x="{(L+R)/2:.0f}" y="{B+70}" text-anchor="middle" font-size="17" font-weight="600" fill="var(--ink-2)">{t["x"]}</text>')
     for cc in p.get("pending", []) + p.get("pending_global", []):
         o.append(f'<line x1="{X(cc):.1f}" y1="{T}" x2="{X(cc):.1f}" y2="{B}" stroke="var(--line-strong)" stroke-width="1" stroke-dasharray="3 6"/>')
@@ -72,7 +77,7 @@ def svg(p, t):
             o.append(f'<text x="{x-13:.1f}" y="{y+5:.1f}" text-anchor="end" font-size="15" fill="{color}">{d["v"]:,.0f}</text>')
     o.append(f'<text x="{X(256)+14:.1f}" y="{Y(0)-12:.1f}" font-size="13.5" fill="var(--ink-3)">{t["sub_note"]}</text>')
     lx, ly = L, 92
-    for key in ("global", "ta-native", "kv"):
+    for key in legend:
         name, color, kind = SERIES[key]
         o.append(f'<line x1="{lx}" y1="{ly}" x2="{lx+34}" y2="{ly}" stroke="{color}" stroke-width="3"/>')
         o.append(marker(kind, lx + 17, ly, color, hollow=(kind != "circle")))
@@ -87,17 +92,17 @@ def svg(p, t):
     o.append('</svg>')
     return "\n".join(o)
 
-def block(p, lang):
-    t = TXT[lang]
+def block(p, lang, t=None, marker="regime-chart", **svg_kwargs):
+    t = t or TXT[lang]
     for d in p["default"]["ta-native"]:
         g = next((x for x in p["default"]["global"] if x["cc"] == d["cc"]), None)
         if g and d["cc"] >= 384: d["ann"] = f' (+{(d["v"]/g["v"]-1)*100:.0f}% vs global)'
         if d.get("pre_fix"): d["ann"] = "†" + d.get("ann", "")
-    return ('<!-- regime-chart -->\n<figure style="margin:28px 0 8px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--surface)">' + svg(p, t) +
-            f'<figcaption style="padding:10px 16px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line)">{t["cap"]}</figcaption></figure>\n<!-- /regime-chart -->')
+    return (f'<!-- {marker} -->\n<figure style="margin:28px 0 8px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--surface)">' + svg(p, t, **svg_kwargs) +
+            f'<figcaption style="padding:10px 16px;font-size:13px;color:var(--ink-3);border-top:1px solid var(--line)">{t["cap"]}</figcaption></figure>\n<!-- /{marker} -->')
 
-def splice(html, blk):
-    a, b = html.index('<!-- regime-chart -->'), html.index('<!-- /regime-chart -->') + len('<!-- /regime-chart -->')
+def splice(html, blk, marker="regime-chart"):
+    a, b = html.index(f'<!-- {marker} -->'), html.index(f'<!-- /{marker} -->') + len(f'<!-- /{marker} -->')
     return html[:a] + blk + html[b:]
 
 if __name__ == "__main__":
