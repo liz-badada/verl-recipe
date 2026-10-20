@@ -352,5 +352,27 @@
    "valid": true,
    "reason": "a program per agent, released on return, parent not announced to the router (recipe 7c1a747). 512/512 sessions, 0 x 409, 0 cleanup failures, 25 tool exec timeouts, GPUs not shared; KV 38%, running 40, prefix hit 95%; dispatching sessions 377/512 (1160 dispatches); trainer: 2.66M model tokens, turns 60.3, finished 292, reward 0.359. Tree run (1201/1193) differs by 20 tok/s steady, inside the spread of the two tree re-runs (1201/1203) and the 10-min bucket noise."
   }
- ]
+ ],
+ "pr16885": {
+  "note": "TA arms on the same images plus the Dynamo PR #16885 router plugin (reclaim idle Acting reservations on demand; wheel 1.6.0.dev20260924+pr16885); v/w as in note; compare with default / sglang ta-native and global at the same cc",
+  "vllm": {
+   "ta-native": [
+    {
+     "cc": 256,
+     "v": 1017,
+     "w": 977,
+     "run": "ta-native-h20fxcc256-10201700"
+    },
+    {
+     "cc": 512,
+     "v": 988,
+     "w": 1032,
+     "run": "ta-native-h20fxcc512-10201700"
+    }
+   ]
+  },
+  "sglang": {
+   "ta-native": []
+  }
+ }
 }

@@ -1,0 +1,24 @@
+{
+ "run": "ta-native-h20fxcc256-10201700",
+ "peak_concurrent_sessions": 256,
+ "sessions_scored": 512,
+ "sessions_done": 511,
+ "expected": 512,
+ "trajectories": 511,
+ "subagent_trajectories": 0,
+ "sessions_with_subagents": 0,
+ "wall_s": 8437.0,
+ "model_tokens": 1859514,
+ "context_tokens": 15868055,
+ "model_tokens_per_s": 220.3999051795662,
+ "context_tokens_per_s": 1880.769823396942,
+ "turns_mean": 49.923679060665364,
+ "response_len_mean": 31052.945205479453,
+ "finished_trajectories": 210,
+ "reward_mean": 0.3659491193737769,
+ "session_latency_mean_s": 2617.238747553816,
+ "notes": [
+  "ARM=ta-native ENGINE=vllm STACK=uniagent RUN_NAME=ta-native-h20fxcc256-10201700 BATCH=32 N=16 CONCURRENCY=256 MAX_PROMPT=8192 MAX_RESP=65536 GPU_MEM=0.75 MAX_NUM_SEQS=256 TP=4 KV_BYTES=64424509440 TA_",
+  "ROLLOUT_DONE_EPOCH=1792512277 sessions=511"
+ ]
+}
