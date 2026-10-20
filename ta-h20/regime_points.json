@@ -378,7 +378,14 @@
    ]
   },
   "sglang": {
-   "ta-native": []
+   "ta-native": [
+    {
+     "cc": 256,
+     "v": 1068,
+     "w": 999,
+     "run": "ta-native-h20sgfxcc256-10201700"
+    }
+   ]
   }
  }
 }
