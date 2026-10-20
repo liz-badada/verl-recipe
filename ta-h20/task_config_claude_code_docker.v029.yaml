@@ -1,0 +1,33 @@
+# Claude Code solving SWE-bench Verified in local Docker sandboxes, subagents enabled; variant for the vLLM 0.29 stack
+# (recipe b85e1b7 + Uni-Agent 4f3cd34): identical to task_config_claude_code_docker.yaml plus the SubagentStop lifecycle hook.
+# The dataset row supplies sandbox.image (canonical swebench image) and metadata; the
+# host's Claude Code binary is bind-mounted into every sandbox and exposed as /usr/bin/claude.
+- name: swe_bench
+  eval_timeout: 600
+  sandbox:
+    provider: docker
+    runtime_timeout: 7200
+    executable_paths:
+      claude: /opt/claude-code/claude
+    sandbox_kwargs:
+      pull_policy: never
+      start_timeout: 600
+      run_args: ["-v", "/lustre/raplab/client/jinyanc/.local/share/claude/versions/2.1.296:/opt/claude-code/claude:ro", "--memory", "16g", "--cpus", "4",
+                 "-v", "/lustre/raplab/client/jinyanc/workspace/jinyanc/ci/ta-h20/hooks/claude_lifecycle_hook.py:/opt/dynamo-hooks/claude_lifecycle_hook.py:ro"]
+  agent:
+    name: claude_code
+    max_turns: 30
+    run_timeout: 5400
+    enable_subagents: true
+    # recipe b85e1b7 gateway: a SubagentStop hook posts the subagent's identity to the rollout's /agent_events so its
+    # program is released when it stops; without it programs close only at session end.
+    extra_args: ['--settings', '{"hooks":{"SubagentStop":[{"hooks":[{"type":"command","command":"\"$(command -v python3 || command -v python)\" /opt/dynamo-hooks/claude_lifecycle_hook.py","timeout":600}]}]}}']
+  prompt_template:
+    - role: user
+      content: |-
+        Read the following task description and resolve the issue in the current directory.
+
+        Task description:
+        {problem_statement}
+
+        Inspect the relevant code, make the minimal correct changes, and verify the result with appropriate tests or checks. Do not modify tests or commit changes. When finished, briefly summarize what changed and how it was verified.

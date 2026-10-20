@@ -8,9 +8,26 @@
 set -euo pipefail
 ARM=${1:?ta-native|kv|global}; RUN_NAME=${2:?run name}; shift 2
 H=${TA_H20_ROOT:-/lustre/raplab/client/jinyanc/workspace/jinyanc/ci/ta-h20}
-UNIAGENT=${UNIAGENT:-/home/jinyanc/workspace/jinyanc/github/uni-agent}
-RECIPE=${RECIPE:-/home/jinyanc/workspace/jinyanc/github/verl-recipe}
 ENGINE=${ENGINE:-vllm}            # vllm | sglang: the inference engine behind every arm (image, trainer config and engine flags follow)
+# STACK selects the software stack around the engine. uniagent (default): Uni-Agent's verl submodule (1622670 / its verl),
+# recipe 33fac10, vLLM 0.24.0 or SGLang 0.5.19 images. verl010: the verlai/verl uv.cu130.dev4 image (verl 0.10.0.dev0,
+# vLLM 0.29.0, torch 2.13 + cu130) with recipe b85e1b7 and Uni-Agent 4f3cd34 (PR #270), the stack of
+# recipe/dynamo/THUNDERAGENT_VLLM.md; vLLM only. Engine flags, KV cap and the bench settings are the same in both.
+STACK=${STACK:-uniagent}
+case $STACK in
+  uniagent) UNIAGENT=${UNIAGENT:-/home/jinyanc/workspace/jinyanc/github/uni-agent}
+            RECIPE=${RECIPE:-/home/jinyanc/workspace/jinyanc/github/verl-recipe}
+            VERL_DIR=/workspace/uni-agent/verl; PYPATH=/workspace/recipe-root:/workspace/uni-agent/verl:/workspace/uni-agent
+            EXT_MODULES=recipe.dynamo.register;;
+  verl010)  [ "$ENGINE" = vllm ] || { echo "STACK=verl010 is vLLM only" >&2; exit 2; }
+            UNIAGENT=${UNIAGENT:-$H/uni-agent-4f3cd34}
+            RECIPE=${RECIPE:-$H/../recipe-v029}
+            IMAGE=${IMAGE:-verl-recipe-thunderagent:vllm029-uniagent-20261020}
+            TASK_CONFIG=${TASK_CONFIG:-/h20/task_config_claude_code_docker.v029.yaml}
+            VERL_DIR=/workspace/verl; PYPATH=/workspace/verl:/workspace/recipe-root:/workspace/uni-agent
+            EXT_MODULES=recipe.dynamo.register,recipe.dynamo.verl_logging_compat;;
+  *) echo "STACK must be uniagent or verl010, got $STACK" >&2; exit 2;;
+esac
 case $ENGINE in
   vllm)   IMAGE=${IMAGE:-verl-recipe-thunderagent:rust-ta-uniagent-20261012}; FSDP_RMPAD=true; SP=4;;
   # The SGLang image (torch 2.13 + cu130) has no flash-attn wheel, so the FSDP actor loads with SDPA, without
@@ -121,7 +138,6 @@ common=(
 # a 2048 MiB bucket of this MoE's 3 MiB expert tensors is HTTP 413; 256 MiB keeps every request under 0.5 MiB.
 [ "$ENGINE" = sglang ] && common+=(+actor_rollout_ref.model.override_config.attn_implementation=sdpa
                                    "actor_rollout_ref.rollout.checkpoint_engine.update_weights_bucket_megabytes=${WEIGHT_BUCKET_MB:-256}")
-PYPATH=/workspace/recipe-root:/workspace/uni-agent/verl:/workspace/uni-agent
 env=(-e HOME=/bench_run/home -e USER=$(id -un) -e LOGNAME=$(id -un) -e "PYTHONPATH=$PYPATH" -e TOKENIZERS_PARALLELISM=false -e OMP_NUM_THREADS=1 -e OPENBLAS_NUM_THREADS=1
      -e RAY_DEDUP_LOGS=0 -e HYDRA_FULL_ERROR=1 -e VERL_DYNAMO_LOG_DIR=/bench_run/dynamo -e VERL_DYNAMO_WORKER_METRICS_DIR=/bench_run/worker_metrics
      -e VERL_DYNAMO_FE_READY_TIMEOUT=1800 -e VLLM_LOGGING_LEVEL=INFO)
@@ -133,7 +149,8 @@ rt=("++ray_kwargs.ray_init.runtime_env.env_vars.PYTHONPATH='$PYPATH'" "++ray_kwa
 case $ENGINE in
   vllm)   ENGINE_CFG_SUFFIX=""
           ENGINE_EXTRA_ARGS="[--seed,42,--block-size,16,--max-num-seqs,$MAX_NUM_SEQS${DISABLE_CUSTOM_AR:+,--disable-custom-all-reduce}${KV_BYTES:+,--kv-cache-memory-bytes,$KV_BYTES}]"
-          OVERLAY=(-v "$H/overlay/handlers.py":/usr/local/lib/python3.12/dist-packages/dynamo/vllm/handlers.py:ro);;
+          # the verl010 image bakes the same overlay into its venv
+          OVERLAY=(-v "$H/overlay/handlers.py":/usr/local/lib/python3.12/dist-packages/dynamo/vllm/handlers.py:ro); [ "$STACK" = verl010 ] && OVERLAY=();;
   sglang) ENGINE_CFG_SUFFIX="_sglang"
           ENGINE_EXTRA_ARGS="[--random-seed,42,--max-total-tokens,$SG_MAX_TOTAL_TOKENS${DISABLE_CUSTOM_AR:+,--disable-custom-all-reduce}]"
           OVERLAY=();;
@@ -157,8 +174,8 @@ case $ARM in
                                      "+actor_rollout_ref.rollout.engine_kwargs.sglang.context_length=$((MAX_PROMPT + MAX_RESP))")
     ;;
   kv|ta-native)
-    env+=(-e VERL_USE_EXTERNAL_MODULES=recipe.dynamo.register)
-    rt+=("++ray_kwargs.ray_init.runtime_env.env_vars.VERL_USE_EXTERNAL_MODULES=recipe.dynamo.register")
+    env+=(-e "VERL_USE_EXTERNAL_MODULES=$EXT_MODULES")
+    rt+=("++ray_kwargs.ray_init.runtime_env.env_vars.VERL_USE_EXTERNAL_MODULES=$EXT_MODULES")
     arm=(--config-path /workspace/recipe-root/recipe/dynamo/config --config-name "dynamo_trainer_v1_colocate${ENGINE_CFG_SUFFIX:-}"
          actor_rollout_ref.rollout.name=dynamo
          "++actor_rollout_ref.rollout.engine_kwargs.dynamo.engine=$ENGINE"
@@ -194,11 +211,12 @@ esac
 
 {
   echo "SITE_ENV=${SITE_ENV[*]}"
-  echo "ARM=$ARM ENGINE=$ENGINE RUN_NAME=$RUN_NAME BATCH=$BATCH N=$N CONCURRENCY=$CONCURRENCY MAX_PROMPT=$MAX_PROMPT MAX_RESP=$MAX_RESP GPU_MEM=$GPU_MEM MAX_NUM_SEQS=$MAX_NUM_SEQS TP=$TP KV_BYTES=$KV_BYTES TA_PARAMS=$TA_PARAMS MODEL_DIR=$MODEL_DIR IMAGE=$IMAGE"
+  echo "ARM=$ARM ENGINE=$ENGINE STACK=$STACK RUN_NAME=$RUN_NAME BATCH=$BATCH N=$N CONCURRENCY=$CONCURRENCY MAX_PROMPT=$MAX_PROMPT MAX_RESP=$MAX_RESP GPU_MEM=$GPU_MEM MAX_NUM_SEQS=$MAX_NUM_SEQS TP=$TP KV_BYTES=$KV_BYTES TA_PARAMS=$TA_PARAMS MODEL_DIR=$MODEL_DIR IMAGE=$IMAGE"
   echo "SUBAGENT_PROGRAMS=${SUBAGENT_PROGRAMS:-tree}"
   echo "HOST=$(hostname) UNIAGENT_SHA=$(git -C $UNIAGENT rev-parse HEAD) RECIPE_SHA=$(git -C $RECIPE rev-parse HEAD) CLAUDE=$(readlink -f ~/.local/bin/claude) START_EPOCH=$(date +%s)"
   echo "python -m verl.trainer.main_ppo ${arm[*]} ${common[*]} ${rt[*]} $*"
 } > "$RUN/command.txt"
+[ -n "${DRY_RUN:-}" ] && { cat "$RUN/command.txt"; rm -rf "$RUN"; exit 0; }
 
 printf 'timestamp,index,utilization_gpu_pct,memory_used_mib,power_draw_w\n' > "$RUN/gpu.csv"
 ( while true; do ts=$(date +%s.%N); nvidia-smi --query-gpu=index,utilization.gpu,memory.used,power.draw --format=csv,noheader,nounits | while IFS= read -r row; do printf '%s,%s\n' "$ts" "${row//, /,}"; done; sleep 1; done ) >> "$RUN/gpu.csv" 2>/dev/null &
@@ -232,7 +250,7 @@ docker run --rm --name "$RUN_NAME" --network host --gpus all --ipc=host --shm-si
   -v "$UNIAGENT":/workspace/uni-agent:ro -v "$RECIPE":/workspace/recipe-root/recipe:ro \
   -v "$MODEL_DIR":/model:ro -v "$H":/h20:ro -v "$RUN":/bench_run -v "$RUN/ray":/tmp/ray \
   "${OVERLAY[@]}" \
-  "${env[@]}" "${SITE_ENV[@]}" -w /workspace/uni-agent/verl "$IMAGE" \
+  "${env[@]}" "${SITE_ENV[@]}" -w "$VERL_DIR" "$IMAGE" \
   python -m verl.trainer.main_ppo "${arm[@]}" "${common[@]}" "${rt[@]}" "$@" 2>&1 | tee "$RUN/console.log" || true
 echo "END_EPOCH=$(date +%s)" >> "$RUN/command.txt"
 python3 "$H/summarize_run.py" "$RUN" | tee "$RUN/summary.txt"
