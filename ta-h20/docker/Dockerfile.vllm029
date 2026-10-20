@@ -1,0 +1,38 @@
+# Bench image for the vLLM 0.29 stack of recipe/dynamo/THUNDERAGENT_VLLM.md: the pinned verlai/verl uv.cu130.dev4 image
+# (verl 0.10.0.dev0 @ 8b7892bd, vLLM 0.29.0, torch 2.13.0+cu130, transformers 5.12.1) with its vllm+fsdp environment
+# materialized, plus the same Dynamo wheels (1.6.0.dev20260924, which pin vLLM 0.29.0) and dynamo.vllm handlers overlay
+# as every other arm of this benchmark (no handlers overlay, see below), the Uni-Agent runtime dependencies, etcd / nats-server / docker CLI.
+# Uni-Agent (4f3cd34) and the recipe (b85e1b7) are bind-mounted at run time, as on the other stack.
+FROM dynamo-nightly-gpu:20261009 AS dynamo-bits
+FROM verl-recipe-thunderagent:rust-ta-uniagent-20261012 AS vllm-bench
+FROM verlai/verl@sha256:aaf5271484842d12a40de5e92ea0ce5beb3b478f6c7988e330baebb170d383c2
+USER root
+COPY --from=dynamo-bits /usr/local/lib/libavcodec_dynamo.so* /usr/local/lib/libavdevice_dynamo.so* \
+     /usr/local/lib/libavfilter_dynamo.so* /usr/local/lib/libavformat_dynamo.so* /usr/local/lib/libavutil_dynamo.so* \
+     /usr/local/lib/libswresample_dynamo.so* /usr/local/lib/libswscale_dynamo.so* /usr/local/lib/
+COPY --from=vllm-bench /usr/local/bin/etcd/etcd /usr/local/bin/etcd
+COPY --from=vllm-bench /usr/bin/nats-server /usr/bin/nats-server
+COPY --from=vllm-bench /usr/local/bin/docker /usr/local/bin/docker
+RUN ldconfig && apt-get update -qq && apt-get install -y -qq --no-install-recommends git > /dev/null && rm -rf /var/lib/apt/lists/*
+WORKDIR /workspace/verl
+RUN uv sync --offline --frozen --all-packages --extra vllm --extra fsdp
+ENV VIRTUAL_ENV=/workspace/verl/.venv PATH=/workspace/verl/.venv/bin:$PATH
+# Pins of the image's own stack, enforced on every later install and re-checked at the end.
+RUN python -m pip --version >/dev/null 2>&1 || uv pip install pip; \
+    uv pip freeze | grep -E '^(torch|torchvision|torchaudio|vllm|transformers|triton|flashinfer-python|flash-attn|flash_attn|xformers|ray|tensordict|numpy|cupy-cuda13x)==' | sort > /tmp/base-core.txt; cat /tmp/base-core.txt
+RUN uv pip install --no-deps --prerelease=allow "ai-dynamo==1.6.0.dev20260924" "ai-dynamo-runtime==1.6.0.dev20260924" \
+    && uv pip install -c /tmp/base-core.txt \
+        "aiohttp>=3.14.3,<4" "msgspec>=0.19.0" "prometheus-client>=0.23.1,<1" "pyzmq>=26" "redis>=6.2,<9" \
+        "zstandard>=0.23,<1" "kubernetes>=32.0.1,<33" "typing-extensions>=4.10" uvloop "pydantic>=2" \
+        "protobuf>=6.33.5,<7" "grpcio-tools==1.81.1" blake3 "nixl[cu13]>=1.3.2" "cupy-cuda13x>=13.6.0" \
+        "TransferQueue @ git+https://github.com/Ascend/TransferQueue.git@434f8c476b4be24bc087e6e95070e64efcc739f9" \
+        fastapi uvicorn cachetools loguru pytest pytest-asyncio \
+    && uv pip install -c /tmp/base-core.txt swe-rex==1.4.0 swebench==4.1.0 docker
+# No dynamo.vllm handlers overlay here: the 0.24 bench overlay only withheld session_id from an engine whose generate()
+# does not accept it (vLLM < 0.28); vLLM 0.29 does, so the stock handler of this wheel is used as is.
+RUN python -c "import dynamo._core, dynamo.frontend, dynamo.vllm.main, dynamo.vllm.handlers, transfer_queue, vllm, torch, transformers, flash_attn, ray, tensordict, swerex, swebench, docker; print('vllm', vllm.__version__, 'torch', torch.__version__, 'transformers', transformers.__version__, 'ray', ray.__version__)" \
+    && python -m dynamo.frontend --help | grep -q -- --router-policy-config && echo "router-policy-config OK" \
+    && docker --version && etcd --version | head -1 && nats-server --version \
+    && uv pip freeze | grep -E '^(torch|torchvision|torchaudio|vllm|transformers|triton|flashinfer-python|flash-attn|flash_attn|xformers|ray|tensordict|numpy|cupy-cuda13x)==' | sort > /tmp/after-core.txt \
+    && diff /tmp/base-core.txt /tmp/after-core.txt && echo "base pins intact"
+RUN groupadd -g 1015 jinyanc && useradd -u 1015 -g 1015 -m jinyanc && chmod -R a+rX /workspace/verl/.venv

@@ -149,7 +149,7 @@ rt=("++ray_kwargs.ray_init.runtime_env.env_vars.PYTHONPATH='$PYPATH'" "++ray_kwa
 case $ENGINE in
   vllm)   ENGINE_CFG_SUFFIX=""
           ENGINE_EXTRA_ARGS="[--seed,42,--block-size,16,--max-num-seqs,$MAX_NUM_SEQS${DISABLE_CUSTOM_AR:+,--disable-custom-all-reduce}${KV_BYTES:+,--kv-cache-memory-bytes,$KV_BYTES}]"
-          # the verl010 image bakes the same overlay into its venv
+          # the overlay withholds session_id from an engine generate() that lacks it (vLLM < 0.28); vLLM 0.29 takes it
           OVERLAY=(-v "$H/overlay/handlers.py":/usr/local/lib/python3.12/dist-packages/dynamo/vllm/handlers.py:ro); [ "$STACK" = verl010 ] && OVERLAY=();;
   sglang) ENGINE_CFG_SUFFIX="_sglang"
           ENGINE_EXTRA_ARGS="[--random-seed,42,--max-total-tokens,$SG_MAX_TOTAL_TOKENS${DISABLE_CUSTOM_AR:+,--disable-custom-all-reduce}]"
