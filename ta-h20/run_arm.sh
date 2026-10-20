@@ -175,7 +175,7 @@ case $ARM in
     ;;
   kv|ta-native)
     env+=(-e "VERL_USE_EXTERNAL_MODULES=$EXT_MODULES")
-    rt+=("++ray_kwargs.ray_init.runtime_env.env_vars.VERL_USE_EXTERNAL_MODULES=$EXT_MODULES")
+    rt+=("++ray_kwargs.ray_init.runtime_env.env_vars.VERL_USE_EXTERNAL_MODULES='$EXT_MODULES'")
     arm=(--config-path /workspace/recipe-root/recipe/dynamo/config --config-name "dynamo_trainer_v1_colocate${ENGINE_CFG_SUFFIX:-}"
          actor_rollout_ref.rollout.name=dynamo
          "++actor_rollout_ref.rollout.engine_kwargs.dynamo.engine=$ENGINE"
