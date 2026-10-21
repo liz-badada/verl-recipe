@@ -64,7 +64,7 @@ def section(lang):
     head = "".join(f'<th{" class=num" if i else ""}>{c}</th>' for i, c in enumerate(t["cols"]))
     return ("<!-- sweep-section -->\n" + f'<h2>{t["h2"]}</h2>\n<p>{t["lead"]}</p>\n<!-- regime-chart --><!-- /regime-chart -->\n'
             f'<div class="scroller"><table><caption>{t["cap"]}</caption><thead><tr>{head}</tr></thead><tbody>{"".join(rows)}</tbody></table></div>\n'
-            f'<p style="font-size:13.5px;color:var(--ink-3)">{t["foot95"]}</p>\n<h3>{t["why_h3"]}</h3>\n<p>{t["why"]}</p>\n<!-- sglang-table --><!-- /sglang-table -->\n<!-- pr16885 --><!-- /pr16885 -->\n<!-- subagent-gain --><!-- /subagent-gain -->\n<!-- /sweep-section -->')
+            f'<p style="font-size:13.5px;color:var(--ink-3)">{t["foot95"]}</p>\n<h3>{t["why_h3"]}</h3>\n<p>{t["why"]}</p>\n<!-- sglang-table --><!-- /sglang-table -->\n<!-- pr16885 --><!-- /pr16885 -->\n<!-- v029 --><!-- /v029 -->\n<!-- subagent-gain --><!-- /subagent-gain -->\n<!-- /sweep-section -->')
 
 def put(html, sec):
     if "<!-- sweep-section -->" in html and "<!-- /sweep-section -->" in html:
