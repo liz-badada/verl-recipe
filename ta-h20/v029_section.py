@@ -13,6 +13,12 @@ CHART_CCS = (64, 128, 256, 384, 512)   # regime_chart's x axis ends at 560
 # 180 s warm-up + 600 s sample window: TA / native vLLM generation tok/s, as pasted on 2026-10-21.
 H100 = {64: (931, 943), 128: (1231, 1509), 256: (1245, 884), 512: (1297, 715), 1024: (1331, 731), 2048: (1343, 1031)}
 
+# CCs that cannot be hosted on this one 192-core / 2 TB node: the 2048 TA arm (2026-10-21 21:54) created 585 sandboxes in its
+# first 10 minutes, the load average reached 1600 and RSS 1.1 TB, the engines fell from 779 to ~150 tok/s and all 64 ray
+# tasks died at 65 min; 1024 sandboxes would need ~1.9 TB at the same footprint. Both are shown as infeasible, not as data.
+INFEASIBLE = {"zh": {2048: "单机不可行（2048 个沙箱：10 分钟 585 个，负载 1600、内存 1.1 TB，65 分钟全部 ray task 死亡）", 1024: "单机不可行（同一沙箱占用下约需 1.9 TB 内存，未跑）"},
+              "en": {2048: "infeasible on one node (2048 sandboxes: 585 in 10 min, load 1600, 1.1 TB RSS, all 64 ray tasks dead at 65 min)", 1024: "infeasible on one node (about 1.9 TB for the sandboxes at the same footprint; not run)"}}
+
 H = os.path.dirname(os.path.abspath(__file__))
 P = json.load(open(f"{H}/regime_points.json"))
 
@@ -45,25 +51,25 @@ TXT = {
    cap="vLLM 0.29 栈，默认 prompt，每档两臂各收 512 条轨迹；0.24 列取自上表同档；最后一列是同事在 8× H100 上的 600 s 窗口比值（口径不同，只作形状参照）",
    setup=("同一套 harness、同一数据、模型、prompt、KV 池（每引擎 2,621,440 token），把软件栈整体换到同事 H100 测试用的那一套：vLLM 0.29.0、verl 0.10.0.dev、verl-recipe b85e1b7（PR #162 分支）、uni-agent main 7ea3874（含 10-21 合入的 PR #270），"
           "Claude Code 任务配置多挂一个 SubagentStop 钩子（<code>task_config_claude_code_docker.v029.yaml</code>），其余参数与 0.24 栈完全相同（TP 4 × 2 引擎、max_num_seqs 256、GPU_MEM 0.75、run_timeout 5400 s）。"
-          "两臂烟测（各 8 个 session）10-21 11:00 通过后，按 512 → 256 → 128 → 64 → 384 的顺序两臂扫并发，再补 1024 / 2048 两档对应同事的 H100 档位；1024 / 2048 只进表不进图（图的横轴到 560）。"),
+          "两臂烟测（各 8 个 session）10-21 11:00 通过后，按 512 → 256 → 128 → 64 → 384 的顺序两臂扫并发（global 256 第一次因沙箱 7200 s 寿命在 2 小时处丢了第二波 session，已排除并重跑；0.29 任务配置的 runtime_timeout 提到 12600），再补 1024 / 2048 两档对应同事的 H100 档位；1024 / 2048 只进表不进图（图的横轴到 560）。"),
    result_one=("CC {cc} 上，0.29 栈的 TA / global 引擎稳态倍数为 <strong>{ratio:.1f}×</strong>（{ta_v:,} 对 {gl_v:,}），0.24 栈同档为 {oratio:.1f}×（{ota_v:,} 对 {ogl_v:,}）；"
                "TA 臂两栈几乎重合（{ta_v:,} 对 {ota_v:,}，引擎 KV {ta_kv}%、命中 {ta_hit}%），global 臂两栈同样塌陷（KV {gl_kv}%、命中 {gl_hit}%、running {gl_run}，512 条轨迹里完成 {gl_f} 条）。"
                "同事在 8× H100 上同一档位测得 {h_ratio:.2f}×（{h_ta:,} 对 {h_gl:,}，600 s 窗口）：TA 臂两台机器接近（{ta_v:,} 对 {h_ta:,}），差别全在 native 臂塌多深——H100 的 KV 大一倍多，塌得浅，倍数就小。"),
    result_many=("已跑完的档位 CC {ccs} 上，0.29 栈的引擎稳态 TA / global 依次为 {ratios}，0.24 栈同档为 {oratios}；两套栈的曲线形状一致，换栈没有改变结论。"),
    pending="0.29 栈的第一对（CC 512）还在跑，出来后此处给出两栈并排的数字。",
-   foot_running="表中「运行中」的档位按上面的顺序排队，每出一臂登记一臂。"),
+   foot_running="表中「运行中」的档位按上面的顺序排队，每出一臂登记一臂。2048 在这台机器上起不来这件事本身就是对「H100 上 2048 时 native 回到与 TA 持平」的解释：单机的 CPU / 内存先于引擎到顶，引擎实际看到的并发远低于名义值。"),
  "en": dict(h3="The same measurement on the vLLM 0.29 stack (verl 0.10 + uni-agent main with PR #270 merged)", running="running", none="not reached",
    cols=["CC", "0.29 · TA steady (window)", "0.29 · global steady (window)", "0.29 · TA / global", "0.24 · TA / global (same CC)", "Time to 512 trajectories TA / global", "Finished among them TA / global", "KV / hit / running: TA ‖ global", "Colleague's H100 · TA / native"],
    cap="vLLM 0.29 stack, default prompt, 512 trajectories per arm at every CC; the 0.24 column is the same CC of the table above; the last column is the colleague's 600 s-window ratio on 8× H100 (different caliber, shape reference only)",
    setup=("Same harness, data, model, prompt and KV pool (2,621,440 tokens per engine), with the whole software stack switched to the one the colleague used on H100: vLLM 0.29.0, verl 0.10.0.dev, verl-recipe b85e1b7 (the PR #162 branch), uni-agent main 7ea3874 (with PR #270, merged on 10-21), "
           "plus a SubagentStop hook in the Claude Code task config (<code>task_config_claude_code_docker.v029.yaml</code>); every other parameter equals the 0.24 stack (TP 4 × 2 engines, max_num_seqs 256, GPU_MEM 0.75, run_timeout 5400 s). "
-          "After both smokes (8 sessions each) passed at 11:00 on 10-21, the sweep runs 512 → 256 → 128 → 64 → 384 on both arms, then 1024 / 2048 to match the colleague's H100 points; 1024 / 2048 appear in the table only (the chart's x axis ends at 560)."),
+          "After both smokes (8 sessions each) passed at 11:00 on 10-21, the sweep runs 512 → 256 → 128 → 64 → 384 on both arms (the first global 256 lost its wave-2 sessions at the 2 h mark to the 7200 s sandbox lifetime, is excluded and re-run; runtime_timeout in the 0.29 task config is now 12600), the colleague's 1024 / 2048 points cannot be hosted on this single node (see the table): at a nominal 2048 the machine is crushed by the 2048 sandboxes before the engines ever see a 2048-session load."),
    result_one=("At CC {cc} the TA / global ratio of engine steady state on the 0.29 stack is <strong>{ratio:.1f}×</strong> ({ta_v:,} vs {gl_v:,}); the 0.24 stack gives {oratio:.1f}× at the same CC ({ota_v:,} vs {ogl_v:,}). "
                "The TA arm is the same on both stacks ({ta_v:,} vs {ota_v:,}, engine KV {ta_kv}%, hit {ta_hit}%), and the global arm collapses the same way (KV {gl_kv}%, hit {gl_hit}%, running {gl_run}, {gl_f} of 512 trajectories finished). "
                "The colleague measured {h_ratio:.2f}× at this CC on 8× H100 ({h_ta:,} vs {h_gl:,}, 600 s window): the TA arm is close on both machines ({ta_v:,} vs {h_ta:,}); the whole difference is how far the native arm collapses, and H100's KV pool is more than twice as large, so it collapses less and the multiple is smaller."),
    result_many=("Across the finished CCs {ccs}, engine steady state TA / global on the 0.29 stack is {ratios}, against {oratios} on the 0.24 stack at the same CCs; the two stacks give the same curve shape, so the stack change does not alter the conclusion."),
    pending="The first 0.29 pair (CC 512) is still running; the side-by-side numbers appear here when it lands.",
-   foot_running="CCs marked running are queued in the order above and booked as each arm lands."),
+   foot_running="CCs marked running are queued in the order above and booked as each arm lands. That 2048 cannot even start on this node is itself the explanation of the H100 observation that native is back level with TA at 2048: the node's CPU and memory saturate before the engines do, so the engines see far less than the nominal concurrency."),
 }
 CHART = {
  "zh": dict(title="同一 harness、同一负载换到 vLLM 0.29 栈：引擎生成吞吐 vs 并发",
@@ -94,6 +100,9 @@ def table(lang):
     def e(a): return f'{a["e"]["kv"]}% / {a["e"]["hit"]}% / {a["e"]["running"]}' if a else R
     rows = []
     for cc in SWEEP:
+        if cc in INFEASIBLE[lang]:
+            h = f'{H100[cc][0] / H100[cc][1]:.2f}× ({H100[cc][0]:,} / {H100[cc][1]:,})'
+            rows.append(f'<tr><td>{cc}</td><td colspan="7">{INFEASIBLE[lang][cc]}</td><td class="num">{h}</td></tr>'); continue
         a, g = arm("v029", "ta-native", cc), arm("v029", "global", cc)
         oa, og = arm("default", "ta-native", cc), arm("default", "global", cc)
         ratio = f'<strong>{a["p"]["v"] / g["p"]["v"]:.2f}×</strong>' if a and g else R
