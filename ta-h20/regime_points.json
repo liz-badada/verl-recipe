@@ -407,6 +407,12 @@
   "note": "vLLM 0.29 stack: verl 0.10.0.dev + verl-recipe b85e1b7 + uni-agent main 7ea3874 (PR #270 merged), image verl-recipe-thunderagent:vllm029-uniagent-20261020, same 8xH20 / 2xTP4 / matched KV 2,621,440 tokens per engine, Claude Code task config v029 (SubagentStop hook); v/w as in note; the run_timeout 5400 s task cap still applies",
   "ta-native": [
    {
+    "cc": 128,
+    "v": 1272,
+    "w": 1271,
+    "run": "ta-native-h20v29cc128-10211100"
+   },
+   {
     "cc": 256,
     "v": 1283,
     "w": 1250,
