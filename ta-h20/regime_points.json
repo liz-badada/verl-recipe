@@ -222,6 +222,15 @@
    "run": "ta-native-h20cc512-10150700",
    "arm": "ta-native",
    "reason": "re-run of the CC 512 TA arm on 33fac10: from minute 27 to 48 another process on this box held ~23 GB on all 8 GPUs (10-min buckets 891 / 1088 vs 1219-1361 around them); the 804b377 point (1229) stays, a second re-run is queued as tag 10160955"
+  },
+  {
+   "regime": "v029",
+   "series": "global",
+   "cc": 256,
+   "v": 328,
+   "w": 355,
+   "run": "global-h20v29cc256-10211100-sandbox7200",
+   "reason": "stopped at 7206 s with 258 of 512 sessions done and 254 failed: uni-agent 7ea3874 pre-creates each session's docker sandbox as `sleep runtime_timeout` (7200 s in the task config) at rollout start, so every wave-2 session still running at the 2 h mark lost its sandbox (write_file ... container is not running). The vLLM 0.24 arms ran 3 h under the same 7200 setting with the older uni-agent. runtime_timeout raised to 12600 for the remaining 0.29 arms; this CC is re-run."
   }
  ],
  "awaiting_pair": [

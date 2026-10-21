@@ -6,7 +6,7 @@
   eval_timeout: 600
   sandbox:
     provider: docker
-    runtime_timeout: 7200
+    runtime_timeout: 12600  # sandbox lifetime (docker sandbox = sleep N, created at rollout start); 7200 killed every session still running at the 2 h mark of multi-wave global arms
     executable_paths:
       claude: /opt/claude-code/claude
     sandbox_kwargs:
