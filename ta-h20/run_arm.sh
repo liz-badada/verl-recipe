@@ -25,7 +25,10 @@ case $STACK in
             IMAGE=${IMAGE:-verl-recipe-thunderagent:vllm029-uniagent-20261020}
             TASK_CONFIG=${TASK_CONFIG:-/h20/task_config_claude_code_docker.v029.yaml}
             VERL_DIR=/workspace/verl; PYPATH=/workspace/verl:/workspace/recipe-root:/workspace/uni-agent
-            EXT_MODULES=recipe.dynamo.register,recipe.dynamo.verl_logging_compat;;
+            EXT_MODULES=recipe.dynamo.register,recipe.dynamo.verl_logging_compat
+            # verl 0.10's transfer_queue.yaml leaves total_storage_size null ("unlimited"), but the TransferQueue 0.1.11 it
+            # installs divides it by num_data_storage_units at init and dies on None; give it a capacity (samples, not bytes).
+            TQ_SIZE=65536;;
   *) echo "STACK must be uniagent or verl010, got $STACK" >&2; exit 2;;
 esac
 case $ENGINE in
@@ -66,7 +69,7 @@ EXPECTED=$((BATCH * N)); ARM_T0=$(date +%s)
 common=(
   trainer.use_v1=true trainer.v1.trainer_mode=colocate_async
   trainer.v1.colocate_async.num_warmup_batches=1
-  transfer_queue.enable=true
+  transfer_queue.enable=true ${TQ_SIZE:+"++transfer_queue.backend.SimpleStorage.total_storage_size=$TQ_SIZE"}
   algorithm.adv_estimator=grpo algorithm.use_kl_in_reward=false
   algorithm.rollout_correction.bypass_mode=true algorithm.rollout_correction.loss_type=ppo_clip
   "data.train_files='$DATA'" "data.val_files='$DATA'"
