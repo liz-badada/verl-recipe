@@ -90,9 +90,21 @@ def chart(lang):
     v = P.get("v029", {})
     ta = {d["cc"] for d in v.get("ta-native", [])}; gl = {d["cc"] for d in v.get("global", [])}
     if not ta: return ""
+    t = dict(CHART[lang]); t["regime"] = "高并发区 (CC ≥ 384)" if lang == "zh" else "High-concurrency regime (CC ≥ 384)"
+    tav = [d["v"] for d in v["ta-native"] if d["cc"] in CHART_CCS]
+    pairs = sorted((a["cc"], a["v"] / g["v"]) for a in v["ta-native"] for g in v.get("global", []) if g["cc"] == a["cc"] and a["cc"] >= 256)
+    done = len(ta & gl) >= len(CHART_CCS)
+    if pairs:
+        ccs = " / ".join(str(cc) for cc, _ in pairs); rs = [r for _, r in pairs]
+        tav_s = f"{min(tav):,}" if max(tav) - min(tav) < 20 else f"{min(tav):,}–{max(tav):,}"
+        rs_s = f"{round(sum(rs)/len(rs))}×" if round(min(rs)) == round(max(rs)) else f"{min(rs):.0f}–{max(rs):.0f}×"
+        if lang == "zh":
+            t["title"] = f"vLLM 0.29 · 同一负载：ThunderAgent {tav_s} tok/s 与 0.24 栈持平，global LB 在 CC {ccs} 跌到约 1/{round(sum(rs)/len(rs))}" + ("" if done else "（其余档位进行中）")
+        else:
+            t["title"] = f"vLLM 0.29 · same load: ThunderAgent {tav_s} tok/s as on 0.24, global LB drops {rs_s} at CC {ccs}" + ("" if done else " (other CCs running)")
     p = {"default": copy.deepcopy({"ta-native": [d for d in v.get("ta-native", []) if d["cc"] in CHART_CCS], "global": [d for d in v.get("global", []) if d["cc"] in CHART_CCS]}),
          "pending": [cc for cc in CHART_CCS if cc not in ta], "pending_global": [cc for cc in CHART_CCS if cc in ta and cc not in gl], "subagent_prompt": {}}
-    return regime_chart.block(p, lang, t=CHART[lang], marker="v029-chart", ymax=1500, band=False, approx95=False, legend=("global", "ta-native"))
+    return regime_chart.block(p, lang, t=t, marker="v029-chart", band=True, approx95=False, legend=("global", "ta-native"))
 
 def table(lang):
     t = TXT[lang]; R = t["running"]

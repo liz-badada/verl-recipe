@@ -7,19 +7,19 @@ import json, sys
 
 W, HT = 1440, 820
 L, R, T, B = 150, 1330, 150, 650
-XMAX, YMAX = 560, 1500
+XMAX, YMAX = 560, 2100  # one y scale for the vLLM 0.24, SGLang and vLLM 0.29 charts
 SERIES = {"global": ("VeRL Global LB", "#4b515e", "circle"),
           "ta-native": ("Dynamo native ThunderAgent", "#157f3d", "diamond"),
           "kv": ("Dynamo KV router", "#2d6ae0", "square")}
 TXT = {
- "zh": dict(title="Claude Code subagent RL rollout：原生 ThunderAgent 高并发下维持吞吐，global LB 在 CC ≥ 256 跌到约 1/4",
+ "zh": dict(title="vLLM 0.24 · Claude Code subagent RL rollout：ThunderAgent 维持吞吐，global LB 在 CC ≥ 256 跌到约 1/4",
             sub="Uni-Agent SWE-bench Verified ×32 · Claude Code（subagent 开启）· 8× H20 · Qwen3-Coder-30B-A3B · rollout-only · 每卡 KV 60 GiB",
             y="引擎生成吞吐，稳态 (tokens s⁻¹)", x="agent 并发数 (CC，同时在跑的 Claude Code session)", regime="高并发区 (CC ≥ 384)",
             stack="推理后端 vLLM 0.24.0（torch 2.11）· Dynamo 1.6.0.dev20260924 · verl 0.10.0.dev 3efe38c · verl-recipe 33fac10 · uni-agent 1622670 · Claude Code 2.1.296–300",
             pend="运行中", pendg="global 运行中", sub_note="虚线框点：第二轮，强制派 3 个 subagent 的 prompt",
             foot="* 第一轮名义 512 并发，但 Ray 默认 128 个 CPU 槽位只允许约 95 个 sandbox 同时运行，按实测并发标在 ≈95。纵轴为两台引擎 vLLM 调度器统计的生成 tok/s 的稳态中位数（10 分钟桶），计入每一个生成的 token，与 session 是否完成无关。",
             cap="参考 PyTorch blog 的 regime 图：横轴并发，纵轴引擎生成 tok/s。实线为默认 prompt。数据：<code>regime_points.json</code>，由 <code>engine_rate.py</code> 从各臂的 vLLM 统计日志算出。"),
- "en": dict(title="Claude Code subagent RL rollouts: native ThunderAgent holds throughput at high concurrency, global LB drops 4× past CC 256",
+ "en": dict(title="vLLM 0.24 · Claude Code subagent RL rollouts: ThunderAgent holds throughput, global LB drops 4× past CC 256",
             sub="Uni-Agent SWE-bench Verified ×32 · Claude Code (subagents on) · 8× H20 · Qwen3-Coder-30B-A3B · rollout-only · 60 GiB KV per GPU",
             y="Engine generation throughput, steady state (tokens s⁻¹)", x="Agent admission concurrency (CC, Claude Code sessions in flight)", regime="High-concurrency regime (CC ≥ 384)",
             stack="Backend vLLM 0.24.0 (torch 2.11) · Dynamo 1.6.0.dev20260924 · verl 0.10.0.dev 3efe38c · verl-recipe 33fac10 · uni-agent 1622670 · Claude Code 2.1.296–300",
@@ -38,7 +38,7 @@ def marker(kind, x, y, color, hollow=False, dashed=False):
     if kind == "square": return f'<rect x="{x-5.5:.1f}" y="{y-5.5:.1f}" width="11" height="11" fill="{fill}" stroke="{color}" stroke-width="2.2"{extra}/>'
     return f'<path d="M{x:.1f} {y-7.5:.1f} L{x+7.5:.1f} {y:.1f} L{x:.1f} {y+7.5:.1f} L{x-7.5:.1f} {y:.1f} Z" fill="{fill}" stroke="{color}" stroke-width="2.2"{extra}/>'
 
-def svg(p, t, ymax=None, band=True, approx95=True, legend=("global", "ta-native", "kv")):
+def svg(p, t, ymax=None, band=True, approx95=True, legend=("global", "ta-native")):  # the KV-router series is not drawn (one point, not a comparison we make)
     ymax = ymax or YMAX
     def Y(v): return B - (B - T) * v / ymax
     o = [f'<svg viewBox="0 0 {W} {HT}" width="100%" role="img" aria-label="throughput vs concurrency" style="font-family:var(--font-sans);display:block;max-width:100%">',
@@ -59,7 +59,7 @@ def svg(p, t, ymax=None, band=True, approx95=True, legend=("global", "ta-native"
     o.append(f'<text x="{(L+R)/2:.0f}" y="{B+70}" text-anchor="middle" font-size="17" font-weight="600" fill="var(--ink-2)">{t["x"]}</text>')
     for cc in p.get("pending", []) + p.get("pending_global", []):
         o.append(f'<line x1="{X(cc):.1f}" y1="{T}" x2="{X(cc):.1f}" y2="{B}" stroke="var(--line-strong)" stroke-width="1" stroke-dasharray="3 6"/>')
-        o.append(f'<text x="{X(cc):.1f}" y="{T+16}" text-anchor="middle" font-size="12.5" fill="var(--ink-3)">{t["pendg"] if cc in p.get("pending_global", []) else t["pend"]}</text>')
+        o.append(f'<text x="{X(cc):.1f}" y="{B-26}" text-anchor="middle" font-size="12.5" fill="var(--ink-3)">{t["pendg"] if cc in p.get("pending_global", []) else t["pend"]}</text>')
     for key, pts in p["default"].items():
         name, color, kind = SERIES[key]
         pts = sorted(pts, key=lambda d: d["cc"])
@@ -72,6 +72,7 @@ def svg(p, t, ymax=None, band=True, approx95=True, legend=("global", "ta-native"
             else:
                 o.append(f'<text x="{x+13:.1f}" y="{y+24:.1f}" text-anchor="start" font-size="16" font-weight="600" fill="{color}">{d["v"]:,.0f}</text>')
     for key, pts in p.get("subagent_prompt", {}).items():
+        if key == "kv": continue
         name, color, kind = SERIES[key]
         for d in pts:
             x, y = X(d["cc"]), Y(d["v"])

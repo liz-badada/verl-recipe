@@ -174,9 +174,14 @@ def chart(lang):
     sg = P.get("sglang", {})
     ta = {d["cc"] for d in sg.get("ta-native", [])}; gl = {d["cc"] for d in sg.get("global", [])}
     if len(ta) < 2: return ""
+    t = dict(CHART[lang]); t["regime"] = "高并发区 (CC ≥ 384)" if lang == "zh" else "High-concurrency regime (CC ≥ 384)"
+    tav = [d["v"] for d in sg["ta-native"]]; rat = [a["v"] / g["v"] for a in sg["ta-native"] for g in sg.get("global", []) if g["cc"] == a["cc"] and a["cc"] >= 256]
+    if rat:
+        t["title"] = (f"SGLang 0.5.19 · 同一负载：ThunderAgent 维持 {min(tav):,}–{max(tav):,} tok/s，global LB 在 CC ≥ 256 跌到约 1/{round(sum(rat)/len(rat))}" if lang == "zh" else
+                      f"SGLang 0.5.19 · same load: ThunderAgent holds {min(tav):,}–{max(tav):,} tok/s, global LB drops " + (f"{round(sum(rat)/len(rat))}×" if round(min(rat)) == round(max(rat)) else f"{min(rat):.0f}–{max(rat):.0f}×") + " past CC 256")
     p = {"default": copy.deepcopy({"ta-native": sg.get("ta-native", []), "global": sg.get("global", [])}),
          "pending": [cc for cc in SWEEP if cc not in ta], "pending_global": [cc for cc in SWEEP if cc in ta and cc not in gl], "subagent_prompt": {}}
-    return regime_chart.block(p, lang, t=CHART[lang], marker="sglang-chart", ymax=2100, band=False, approx95=False, legend=("global", "ta-native"))
+    return regime_chart.block(p, lang, t=t, marker="sglang-chart", band=True, approx95=False, legend=("global", "ta-native"))
 
 def section(lang, A):
     t = TXT[lang]; sg_ta, sg_gl, v_ta, v_gl = A["sg_ta"], A["sg_gl"], A["v_ta"], A["v_gl"]
