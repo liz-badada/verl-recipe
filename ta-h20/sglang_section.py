@@ -124,12 +124,14 @@ def rng(a, b):
 
 CHART = {
  "zh": dict(title="同一 harness、同一负载换到 SGLang 0.5.19：引擎生成吞吐 vs 并发",
-            sub="Uni-Agent SWE-bench Verified ×32 · Claude Code 2.1.296（subagent 开启）· 8× H20 · Qwen3-Coder-30B-A3B · sglang 0.5.19 · rollout-only · KV 池 2,621,440 token / 引擎（与 vLLM 相同）",
+            sub="Uni-Agent SWE-bench Verified ×32 · Claude Code（subagent 开启）· 8× H20 · Qwen3-Coder-30B-A3B · rollout-only · KV 2,621,440 token / 引擎（与 vLLM 相同）",
+            stack="推理后端 SGLang 0.5.19（torch 2.13 + cu130）· Dynamo 1.6.0.dev20260924 · verl 0.10.0.dev 3efe38c · verl-recipe 33fac10 · uni-agent 1622670 · Claude Code 2.1.300",
             y="引擎生成吞吐，稳态 (tokens s⁻¹)", x="agent 并发数 (CC，同时在跑的 Claude Code session)", regime="", pend="运行中", pendg="global 运行中", sub_note="",
             foot="纵轴为两台引擎 SGLang 调度器 decode 统计的生成 tok/s 的稳态中位数（10 分钟桶），计入每一个生成的 token，与 session 是否完成无关；每臂收 512 条轨迹。",
             cap="与上图同一构造，只换推理引擎。数据：<code>regime_points.json</code> 的 sglang 段，由 <code>engine_rate.py</code> 从各臂的 SGLang 调度器日志算出。"),
  "en": dict(title="Same harness and load on sglang 0.5.19: engine generation throughput vs concurrency",
-            sub="Uni-Agent SWE-bench Verified ×32 · Claude Code 2.1.296 (subagents on) · 8× H20 · Qwen3-Coder-30B-A3B · sglang 0.5.19 · rollout-only · KV pool 2,621,440 tokens per engine (same as vLLM)",
+            sub="Uni-Agent SWE-bench Verified ×32 · Claude Code (subagents on) · 8× H20 · Qwen3-Coder-30B-A3B · rollout-only · KV 2,621,440 tokens per engine (as vLLM)",
+            stack="Backend SGLang 0.5.19 (torch 2.13 + cu130) · Dynamo 1.6.0.dev20260924 · verl 0.10.0.dev 3efe38c · verl-recipe 33fac10 · uni-agent 1622670 · Claude Code 2.1.300",
             y="Engine generation throughput, steady state (tokens s⁻¹)", x="Agent admission concurrency (CC, Claude Code sessions in flight)", regime="", pend="running", pendg="global running", sub_note="",
             foot="Y is the steady-state median (10-min buckets) of the generation tok/s both engines' SGLang schedulers report in their decode stats, counting every generated token regardless of whether its session finished; 512 trajectories per arm.",
             cap="Same construction as the chart above, only the inference engine differs. Data: the sglang block of <code>regime_points.json</code>, computed by <code>engine_rate.py</code> from each arm's SGLang scheduler logs."),

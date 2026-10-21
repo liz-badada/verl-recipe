@@ -13,14 +13,16 @@ SERIES = {"global": ("VeRL Global LB", "#4b515e", "circle"),
           "kv": ("Dynamo KV router", "#2d6ae0", "square")}
 TXT = {
  "zh": dict(title="Claude Code subagent RL rollout：原生 ThunderAgent 高并发下维持吞吐，global LB 在 CC ≥ 256 跌到约 1/4",
-            sub="Uni-Agent SWE-bench Verified ×32 · Claude Code 2.1.296（subagent 开启）· 8× H20 · Qwen3-Coder-30B-A3B · rollout-only · 每卡 KV 60 GiB",
+            sub="Uni-Agent SWE-bench Verified ×32 · Claude Code（subagent 开启）· 8× H20 · Qwen3-Coder-30B-A3B · rollout-only · 每卡 KV 60 GiB",
             y="引擎生成吞吐，稳态 (tokens s⁻¹)", x="agent 并发数 (CC，同时在跑的 Claude Code session)", regime="高并发区 (CC ≥ 384)",
+            stack="推理后端 vLLM 0.24.0（torch 2.11）· Dynamo 1.6.0.dev20260924 · verl 0.10.0.dev 3efe38c · verl-recipe 33fac10 · uni-agent 1622670 · Claude Code 2.1.296–300",
             pend="运行中", pendg="global 运行中", sub_note="虚线框点：第二轮，强制派 3 个 subagent 的 prompt",
             foot="* 第一轮名义 512 并发，但 Ray 默认 128 个 CPU 槽位只允许约 95 个 sandbox 同时运行，按实测并发标在 ≈95。纵轴为两台引擎 vLLM 调度器统计的生成 tok/s 的稳态中位数（10 分钟桶），计入每一个生成的 token，与 session 是否完成无关。",
             cap="参考 PyTorch blog 的 regime 图：横轴并发，纵轴引擎生成 tok/s。实线为默认 prompt。数据：<code>regime_points.json</code>，由 <code>engine_rate.py</code> 从各臂的 vLLM 统计日志算出。"),
  "en": dict(title="Claude Code subagent RL rollouts: native ThunderAgent holds throughput at high concurrency, global LB drops 4× past CC 256",
-            sub="Uni-Agent SWE-bench Verified ×32 · Claude Code 2.1.296 (subagents on) · 8× H20 · Qwen3-Coder-30B-A3B · rollout-only · 60 GiB KV per GPU",
+            sub="Uni-Agent SWE-bench Verified ×32 · Claude Code (subagents on) · 8× H20 · Qwen3-Coder-30B-A3B · rollout-only · 60 GiB KV per GPU",
             y="Engine generation throughput, steady state (tokens s⁻¹)", x="Agent admission concurrency (CC, Claude Code sessions in flight)", regime="High-concurrency regime (CC ≥ 384)",
+            stack="Backend vLLM 0.24.0 (torch 2.11) · Dynamo 1.6.0.dev20260924 · verl 0.10.0.dev 3efe38c · verl-recipe 33fac10 · uni-agent 1622670 · Claude Code 2.1.296–300",
             pend="running", pendg="global running", sub_note="Dashed-outline points: sweep 2, prompt forcing 3 subagents",
             foot="* Sweep 1 was nominally CC 512, but Ray's default 128 CPU slots capped live sandboxes at about 95; plotted at the measured ≈95. Y is the steady-state median (10-min buckets) of the generation tok/s both engines' vLLM schedulers report, counting every generated token regardless of whether its session finished.",
             cap="Same construction as the PyTorch blog regime chart: concurrency on x, engine generation tok/s on y. Solid lines are the default prompt. Data: <code>regime_points.json</code>, computed by <code>engine_rate.py</code> from each arm's vLLM stats logs."),
@@ -44,7 +46,7 @@ def svg(p, t, ymax=None, band=True, approx95=True, legend=("global", "ta-native"
          ]
     if band:
         o.append(f'<rect x="{X(320):.1f}" y="{T-40}" width="{R-X(320):.1f}" height="{B-T+40}" fill="var(--good-soft)"/>')
-        o.append(f'<text x="{(X(320)+R)/2:.1f}" y="{T-16}" text-anchor="middle" font-size="19" font-weight="600" fill="var(--good)">{t["regime"]}</text>')
+        o.append(f'<text x="{(X(320)+R)/2:.1f}" y="{T+24}" text-anchor="middle" font-size="19" font-weight="600" fill="var(--good)">{t["regime"]}</text>')
     for v in range(0, ymax + 1, 300):
         o.append(f'<line x1="{L}" y1="{Y(v):.1f}" x2="{R}" y2="{Y(v):.1f}" stroke="var(--line)" stroke-width="1"/>')
         o.append(f'<text x="{L-14}" y="{Y(v)+5:.1f}" text-anchor="end" font-size="16" fill="var(--ink-3)">{v:,}</text>')
@@ -76,7 +78,12 @@ def svg(p, t, ymax=None, band=True, approx95=True, legend=("global", "ta-native"
             o.append(marker(kind, x, y, color, hollow=True, dashed=True))
             o.append(f'<text x="{x-13:.1f}" y="{y+5:.1f}" text-anchor="end" font-size="15" fill="{color}">{d["v"]:,.0f}</text>')
     o.append(f'<text x="{X(256)+14:.1f}" y="{Y(0)-12:.1f}" font-size="13.5" fill="var(--ink-3)">{t["sub_note"]}</text>')
-    lx, ly = L, 92
+    # Optional third header line naming the inference backend and every component version; the legend moves below it.
+    ly = 92
+    if t.get("stack"):
+        o.append(f'<text x="{W/2:.0f}" y="92" text-anchor="middle" font-size="14" fill="var(--ink-2)">{t["stack"]}</text>')
+        ly = 120
+    lx = L
     for key in legend:
         name, color, kind = SERIES[key]
         o.append(f'<line x1="{lx}" y1="{ly}" x2="{lx+34}" y2="{ly}" stroke="{color}" stroke-width="3"/>')
