@@ -1,5 +1,10 @@
-{"sessions": 835, "sessions_dispatching_subagents": 350, "subagent_dispatches": 508, "dispatches_per_dispatching_session": 1.4514285714285715, "tool_calls_total": 20375}
-ool_calls_total": 20375
+{
+ "summary": {
+  "sessions": 835,
+  "sessions_dispatching_subagents": 350,
+  "subagent_dispatches": 508,
+  "dispatches_per_dispatching_session": 1.4514285714285715,
+  "tool_calls_total": 20375
  },
  "sessions": [
   {
