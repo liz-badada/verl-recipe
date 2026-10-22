@@ -35,6 +35,10 @@ G = pt("subagent_prompt", "global", 256)
 T = pt("subagent_prompt", "ta-native", 256)
 OFF, ISO = ablation_run("off"), ablation_run("isolated")
 
+# Table E: trainer-side model tok/s per rung (time_to_512.py caliber: first 512 completed sessions; global: 301 sessions / 10127 s).
+TRAINER = {"global": 80, "off": 322, "isolated": 363, "tree": 370}
+HTTP409 = {"global": 0, "off": 411, "isolated": 0, "tree": 0}
+
 # Panel B: the same arm before and after the release/leak fix (9f32e49), same wall-clock budget.
 # idle = minutes the engines kept stats lines with Running > 0 but no generation after the budget (gaps > 30 s).
 FIX = [
@@ -50,10 +54,13 @@ TXT = {
         h3="subagent 这块优化到底换回多少：把 TA 本身的收益和 subagent 专项分开",
         lead=("上面 3.9–4.5× 是整套 ThunderAgent 对 global LB 的差距，里面既有 TA 本来就有的准入控制，也有这次为 Claude Code subagent 做的事。"
               "两者在同一份强制 subagent 流量（CC 256，512 个 session，约 67% 的 session 各派 3 个 subagent）上按阶梯拆：每一级只多开一样东西。"
-              "两端已经测过。第 ② 级 10-16 18:58 跑完，但它不是一个吞吐数据点：不认 subagent 的 TA 把兄弟 subagent 的并发请求撞上了 gateway 的串行保护，41% 的 session 收到 409（表 D）。第 ③ 级 10-17 20:02 跑完：1181，和第 ④ 级的 1201 差 20 tok/s（1.7%），在两次完整版复测之差（1201 / 1203）和 10 分钟桶的噪声之内。所以 TA 对 global 的 3.9× 里，subagent 专项换回的东西几乎全部落在 ③：每个 agent 一个 program、用完即释放——这也正是让兄弟 subagent 不撞 409 所必需的那一步；再往上告诉 router 父子关系、把兄弟放到一起，在 CC 256 的稳态吞吐上量不出来。"),
+              "两端已经测过。第 ② 级 10-16 18:58 跑完，引擎侧 1272 tok/s，图中画成灰条：这个数不能当吞吐比，因为不认 subagent 的 TA 把兄弟 subagent 的并发请求撞上了 gateway 的串行保护，41% 的 session 收到 409（表 D）；换成四级都能比的 trainer 口径（表 E），② 反而比 ④ 低 13%。第 ③ 级 10-17 20:02 跑完：1181，和第 ④ 级的 1201 差 20 tok/s（1.7%），在两次完整版复测之差（1201 / 1203）和 10 分钟桶的噪声之内。所以 TA 对 global 的 3.9× 里，subagent 专项换回的东西几乎全部落在 ③：每个 agent 一个 program、用完即释放——这也正是让兄弟 subagent 不撞 409 所必需的那一步；再往上告诉 router 父子关系、把兄弟放到一起，在 CC 256 的稳态吞吐上量不出来。"),
         capA="A · 阶梯：强制 subagent，CC 256，引擎稳态 tok/s",
-        rungs=["global LB（基线）", "TA · 不认 subagent（请求都算在父 session 的 program 上，上游 TA 的行为）", "TA · 每个 subagent 一个 program，用完即释放，不报父子", "TA · 完整（+ 兄弟同置 / 根绑定）"],
-        pending="待测", measured="已测", invalid="不可比：210 / 512 个 session 收到 409，见表 D",
+        rungs=["global LB（基线）", "TA · 不认 subagent（整棵 session 树算一个 program，上游 TA 的行为）", "TA · 每个 subagent 一个 program，用完即释放，不报父子", "TA · 完整（+ 兄弟同置 / 根绑定）"],
+        pending="待测", measured="已测", invalid="引擎数，不可比：210 / 512 个 session 收到 409，见表 D / E",
+        capE="E · 四级同一口径：交给 trainer 的 model token 速率（收齐 512 条轨迹的墙钟；global 未收齐，按其 3 h 窗口内的 301 条计）",
+        colsE=["级", "引擎稳态 tok/s", "交给 trainer 的 model tok/s", "gateway 409"],
+        noteE="引擎 tok/s 是引擎吐了多少；trainer 口径是这些 token 里有多少真的进了轨迹。② 的引擎数最高、trainer 数却比 ③ ④ 低 11–13%：被 409 打断的 session 提前结束，引擎多吐的 token 没有变成训练数据。③ 对 ④ 在两个口径上都在 2% 以内。",
         capD="D · ② 对 ④：TA 不认 subagent 时发生了什么（同一任务、CC 256、512 条轨迹、同一台机器）",
         colsD=["", "② TA 不认 subagent", "④ TA 完整"],
         rowsD=[["gateway 409（同一 program 内不允许并发）", "411 次 / 210 个 session", "0"],
@@ -82,10 +89,13 @@ TXT = {
         h3="How much of the gain is the subagent work: separating ThunderAgent itself from the subagent-specific part",
         lead=("The 3.9–4.5× above is the whole ThunderAgent stack against the global LB: the admission control TA always had, plus what was built here for Claude Code subagents. "
               "The two are separated on one forced-subagent traffic (CC 256, 512 sessions, about 67% of them dispatching 3 subagents each) as a ladder where each rung adds one thing. "
-              "Both ends are measured. Rung ② finished 10-16 18:58 but is not a throughput point: with TA blind to subagents, the concurrent requests of sibling subagents hit the gateway's serial-call guard and 41% of the sessions got HTTP 409 (table D). Rung ③ finished 10-17 20:02: 1181, 20 tok/s (1.7%) below rung ④'s 1201, inside the spread of the two full-version re-runs (1201 / 1203) and the 10-minute bucket noise. So within TA's 3.9× over global, what the subagent work buys lands almost entirely at ③: a program per agent, released on return, which is also exactly the step that keeps sibling subagents from hitting 409; announcing the parent to the router and co-locating siblings on top of that is not measurable in steady throughput at CC 256."),
+              "Both ends are measured. Rung ② finished 10-16 18:58 at 1272 engine tok/s and is drawn as a grey bar: that number cannot be read as throughput, because with TA blind to subagents the concurrent requests of sibling subagents hit the gateway's serial-call guard and 41% of the sessions got HTTP 409 (table D); on the trainer-side caliber that all four rungs share (table E), ② is 13% below ④. Rung ③ finished 10-17 20:02: 1181, 20 tok/s (1.7%) below rung ④'s 1201, inside the spread of the two full-version re-runs (1201 / 1203) and the 10-minute bucket noise. So within TA's 3.9× over global, what the subagent work buys lands almost entirely at ③: a program per agent, released on return, which is also exactly the step that keeps sibling subagents from hitting 409; announcing the parent to the router and co-locating siblings on top of that is not measurable in steady throughput at CC 256."),
         capA="A · Ladder: forced subagents, CC 256, steady engine tok/s",
-        rungs=["global LB (baseline)", "TA · subagents ignored (every turn charged to the parent session's program, as upstream TA behaves)", "TA · a program per subagent, released on return, no parent announced", "TA · full (+ sibling co-location / root pinning)"],
-        pending="pending", measured="measured", invalid="not comparable: 210 / 512 sessions got HTTP 409, see table D",
+        rungs=["global LB (baseline)", "TA · subagents ignored (whole session tree = one program, upstream behaviour)", "TA · a program per subagent, released on return, no parent announced", "TA · full (+ sibling co-location / root pinning)"],
+        pending="pending", measured="measured", invalid="engine number, not comparable: 210 / 512 sessions got HTTP 409, see tables D / E",
+        capE="E · One caliber for all four rungs: model tokens handed to the trainer per second (wall clock to collect 512 trajectories; global never got there and is counted on its 301 trajectories in the 3 h window)",
+        colsE=["Rung", "Steady engine tok/s", "Model tok/s to the trainer", "gateway 409"],
+        noteE="Engine tok/s is what the engines emitted; the trainer caliber is how much of it ended up in trajectories. ② has the highest engine number and a trainer number 11–13% below ③ and ④: sessions cut short by 409 ended early, and the extra engine tokens never became training data. ③ vs ④ is within 2% on both calibers.",
         capD="D · ② vs ④: what happens when TA is blind to subagents (same task, CC 256, 512 trajectories, same node)",
         colsD=["", "② TA blind to subagents", "④ TA full"],
         rowsD=[["gateway 409 (no concurrent calls within one program)", "411 / 210 sessions", "0"],
@@ -115,7 +125,7 @@ TXT = {
 
 def ladder_svg(t):
     rows = [(t["rungs"][0], G["v"] if G else None, "var(--ink-3)", G["run"] if G else ""),
-            (t["rungs"][1], OFF["v"] if OFF and OFF.get("valid", True) else ("invalid" if OFF else None), "var(--accent)", OFF["run"] if OFF else ""),
+            (t["rungs"][1], OFF["v"] if OFF else None, "var(--gap)" if OFF and not OFF.get("valid", True) else "var(--accent)", OFF["run"] if OFF else ""),
             (t["rungs"][2], ISO["v"] if ISO else None, "var(--accent)", ISO["run"] if ISO else ""),
             (t["rungs"][3], T["v"] if T else None, "var(--good)", T["run"] if T else "")]
     vmax = 1400
@@ -128,18 +138,30 @@ def ladder_svg(t):
     for i, (label, v, color, run) in enumerate(rows):
         y = 16 + 64 * i
         o.append(f'<text x="{x0}" y="{y + 10}" font-size="12.5" font-family="var(--font-sans)" fill="var(--ink-2)">{label}</text>')
+        if run:
+            o.append(f'<text x="{x1 + 54}" y="{y + 10}" text-anchor="end" font-size="10.5" font-family="var(--font-mono)" fill="var(--ink-3)">{run}</text>')
         if v is None or v == "invalid":
             o.append(f'<rect x="{x0}" y="{y + 18}" width="{X(600) - x0:.1f}" height="22" rx="2" fill="none" stroke="var(--line-strong)" stroke-dasharray="5 4"/>')
             col, lab = ("var(--gap)", t["invalid"]) if v else ("var(--ink-3)", t["pending"])
             o.append(f'<text x="{x0 + 10}" y="{y + 33}" font-size="12.5" font-family="var(--font-sans)" fill="{col}">{lab}</text>')
-            if run:
-                o.append(f'<text x="{x1 + 54}" y="{y + 33}" text-anchor="end" font-size="10.5" font-family="var(--font-mono)" fill="var(--ink-3)">{run}</text>')
         else:
-            o.append(f'<rect x="{x0}" y="{y + 18}" width="{X(v) - x0:.1f}" height="22" rx="2" fill="{color}"/>')
+            if color == "var(--gap)":
+                o.append(f'<rect x="{x0}" y="{y + 18}" width="{X(v) - x0:.1f}" height="22" rx="2" fill="var(--ink-3)" fill-opacity="0.18" stroke="var(--ink-3)" stroke-dasharray="5 4"/>')
+            else:
+                o.append(f'<rect x="{x0}" y="{y + 18}" width="{X(v) - x0:.1f}" height="22" rx="2" fill="{color}"/>')
             o.append(f'<text x="{X(v) + 8:.1f}" y="{y + 33}" font-size="13" font-family="var(--font-mono)" font-weight="500" fill="var(--ink)">{v:,}</text>')
-            o.append(f'<text x="{x1 + 54}" y="{y + 33}" text-anchor="end" font-size="10.5" font-family="var(--font-mono)" fill="var(--ink-3)">{run}</text>')
+            if color == "var(--gap)":
+                o.append(f'<text x="{x0 + 10}" y="{y + 33}" font-size="12" font-family="var(--font-sans)" fill="var(--ink-2)">{t["invalid"]}</text>')
     o.append("</svg>")
     return "\n".join(o)
+
+
+def trainer_table(t):
+    keys = ("global", "off", "isolated", "tree"); eng = (G, OFF, ISO, T)
+    rows = "".join(f'<tr><td>{"①②③④"[i]} {t["rungs"][i]}</td><td class="num">{e["v"]:,}</td><td class="num">{TRAINER[k]}</td><td class="num">{HTTP409[k]}</td></tr>'
+                   for i, (k, e) in enumerate(zip(keys, eng)) if e)
+    head = "".join(f"<th{' class=\"num\"' if i else ''}>{c}</th>" for i, c in enumerate(t["colsE"]))
+    return f'<div class="scroller"><table><caption>{t["capE"]}</caption><thead><tr>{head}</tr></thead><tbody>{rows}</tbody></table></div>'
 
 
 def fix_table(t, lang):
@@ -170,6 +192,7 @@ def section(lang):
     return ("<!-- subagent-gain -->\n"
             f'<h3>{t["h3"]}</h3>\n<p>{t["lead"]}</p>\n'
             f'<figure><figcaption style="margin:0 0 8px">{t["capA"]}</figcaption>{ladder_svg(t)}</figure>\n'
+            f'{trainer_table(t)}\n<p style="font-size:13.5px;color:var(--ink-3)">{t["noteE"]}</p>\n'
             f'{fix_table(t, lang)}\n<p style="font-size:13.5px;color:var(--ink-3)">{t["noteB"]}</p>\n'
             f'{dose_table(t)}\n<p style="font-size:13.5px;color:var(--ink-3)">{t["noteC"]}</p>\n'
             f'{blind_table(t)}\n<p style="font-size:13.5px;color:var(--ink-3)">{t["noteD"]}</p>\n'
