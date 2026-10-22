@@ -95,27 +95,28 @@ def summary(lang):
                 ramp_sg=rng([d["ramp"] for d in st], lambda x: f"{x:g}", m))
 
 def panel_row(reg, label, lang):
-    t = TXT[lang]; W, HT = 1440, 300; L0, PW, PH, TOP, GAP = 70, 258, 190, 58, 14
+    # 3 × 2 grid of panels (64 128 256 / 384 512), each 420 × 250, so a panel is about a third of the page wide
+    t = TXT[lang]; COLS, PW, PH, L0, TOP, GX, GY = 3, 420, 250, 80, 70, 40, 56; W, HT = 1440, TOP + 2 * PH + GY + 40
     ys_all = [y for (r, _, _), d in DATA.items() if r == reg for y in d["ys"] if y is not None]
     ymax = (max(ys_all) // 500 + 1) * 500 if ys_all else 2000
     o = [f'<svg viewBox="0 0 {W} {HT}" width="100%" role="img" aria-label="{label} throughput over time" style="font-family:var(--font-sans);display:block;max-width:100%">',
          f'<rect x="0" y="0" width="{W}" height="{HT}" fill="var(--surface)"/>',
-         f'<text x="{L0}" y="26" font-size="17" font-weight="600" fill="var(--ink)">{label}</text>',
-         f'<line x1="{L0+150}" y1="21" x2="{L0+178}" y2="21" stroke="{COL["ta-native"]}" stroke-width="2.4"/><text x="{L0+184}" y="26" font-size="14" fill="var(--ink-2)">{t["legend"][0]}</text>',
-         f'<line x1="{L0+320}" y1="21" x2="{L0+348}" y2="21" stroke="{COL["global"]}" stroke-width="2.4"/><text x="{L0+354}" y="26" font-size="14" fill="var(--ink-2)">{t["legend"][1]}</text>',
-         f'<text x="{W-24}" y="26" text-anchor="end" font-size="13" fill="var(--ink-3)">{t["x"]} · {t["y"]} 0–{ymax:,}</text>']
+         f'<text x="{L0}" y="30" font-size="19" font-weight="600" fill="var(--ink)">{label}</text>',
+         f'<line x1="{L0+150}" y1="25" x2="{L0+178}" y2="25" stroke="{COL["ta-native"]}" stroke-width="2.4"/><text x="{L0+184}" y="30" font-size="14" fill="var(--ink-2)">{t["legend"][0]}</text>',
+         f'<line x1="{L0+320}" y1="25" x2="{L0+348}" y2="25" stroke="{COL["global"]}" stroke-width="2.4"/><text x="{L0+354}" y="30" font-size="14" fill="var(--ink-2)">{t["legend"][1]}</text>',
+         f'<text x="{W-24}" y="30" text-anchor="end" font-size="13" fill="var(--ink-3)">{t["x"]} · {t["y"]} 0–{ymax:,}</text>']
     for i, cc in enumerate(CCS):
-        x0 = L0 + i * (PW + GAP); y0 = TOP; yb = y0 + PH
+        x0 = L0 + (i % COLS) * (PW + GX); y0 = TOP + (i // COLS) * (PH + GY); yb = y0 + PH
         def X(mn): return x0 + PW * min(mn, XMAX_MIN) / XMAX_MIN
         def Y(v): return yb - PH * min(v, ymax) / ymax
         o.append(f'<rect x="{x0}" y="{y0}" width="{PW}" height="{PH}" fill="none" stroke="var(--line)"/>')
         for v in range(0, ymax + 1, 500):
             o.append(f'<line x1="{x0}" y1="{Y(v):.1f}" x2="{x0+PW}" y2="{Y(v):.1f}" stroke="var(--line)" stroke-width="0.8"/>')
-            if i == 0: o.append(f'<text x="{x0-8}" y="{Y(v)+4:.1f}" text-anchor="end" font-size="12" fill="var(--ink-3)">{v:,}</text>')
+            if i % COLS == 0: o.append(f'<text x="{x0-8}" y="{Y(v)+4:.1f}" text-anchor="end" font-size="13" fill="var(--ink-3)">{v:,}</text>')
         for mn in (0, 60, 120, 180):
             anchor = "start" if mn == 0 else "end" if mn == XMAX_MIN else "middle"
-            o.append(f'<text x="{X(mn):.1f}" y="{yb+16}" text-anchor="{anchor}" font-size="12" fill="var(--ink-3)">{mn}</text>')
-        o.append(f'<text x="{x0+8}" y="{y0-8}" font-size="14" font-weight="600" fill="var(--ink)">CC {cc}</text>')
+            o.append(f'<text x="{X(mn):.1f}" y="{yb+18}" text-anchor="{anchor}" font-size="13" fill="var(--ink-3)">{mn}</text>')
+        o.append(f'<text x="{x0+8}" y="{y0-9}" font-size="16" font-weight="600" fill="var(--ink)">CC {cc}</text>')
         legend, have = [], False
         for ser in ("global", "ta-native"):
             d = DATA.get((reg, ser, cc))
@@ -125,14 +126,14 @@ def panel_row(reg, label, lang):
             seg = []
             for k, y in enumerate(d["ys"] + [None]):
                 if y is None or k * WIDTH / 60 > XMAX_MIN:
-                    if len(seg) > 1: o.append(f'<polyline points="{" ".join(seg)}" fill="none" stroke="{c}" stroke-width="1.5" stroke-linejoin="round" opacity="{0.95 if ser == "ta-native" else 0.85}"/>')
+                    if len(seg) > 1: o.append(f'<polyline points="{" ".join(seg)}" fill="none" stroke="{c}" stroke-width="1.7" stroke-linejoin="round" opacity="{0.95 if ser == "ta-native" else 0.85}"/>')
                     seg = []
                 else: seg.append(f"{X(k*WIDTH/60):.1f},{Y(y):.1f}")
             legend.append((c, d["w"]))
         for j, (c, w) in enumerate(reversed(legend)):  # ThunderAgent mean rightmost, global mean to its left
-            o.append(f'<text x="{x0+PW-6-j*58}" y="{y0-8}" text-anchor="end" font-size="13" fill="{c}">{w:,}</text>')
+            o.append(f'<text x="{x0+PW-6-j*64}" y="{y0-9}" text-anchor="end" font-size="15" fill="{c}">{w:,}</text>')
         if not have:
-            o.append(f'<text x="{x0+PW/2:.0f}" y="{y0+PH/2:.0f}" text-anchor="middle" font-size="13" fill="var(--ink-3)">{t["pend"]}</text>')
+            o.append(f'<text x="{x0+PW/2:.0f}" y="{y0+PH/2:.0f}" text-anchor="middle" font-size="15" fill="var(--ink-3)">{t["pend"]}</text>')
     o.append("</svg>")
     return "\n".join(o)
 
