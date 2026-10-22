@@ -1,0 +1,24 @@
+{
+ "run": "global-h20v29cc384-10211100",
+ "peak_concurrent_sessions": 384,
+ "sessions_scored": 512,
+ "sessions_done": 439,
+ "expected": 512,
+ "trajectories": 439,
+ "subagent_trajectories": 0,
+ "sessions_with_subagents": 0,
+ "wall_s": 10057.0,
+ "model_tokens": 904499,
+ "context_tokens": 11876256,
+ "model_tokens_per_s": 89.93725763150044,
+ "context_tokens_per_s": 1180.8945013423486,
+ "turns_mean": 39.59681093394077,
+ "response_len_mean": 27052.97494305239,
+ "finished_trajectories": 38,
+ "reward_mean": 0.3120728929384966,
+ "session_latency_mean_s": 5128.523917995444,
+ "notes": [
+  "ARM=global ENGINE=vllm STACK=verl010 RUN_NAME=global-h20v29cc384-10211100 BATCH=32 N=16 CONCURRENCY=384 MAX_PROMPT=8192 MAX_RESP=65536 GPU_MEM=0.75 MAX_NUM_SEQS=256 TP=4 KV_BYTES=64424509440 TA_PARAMS",
+  "ROLLOUT_DONE_EPOCH=1792679470 sessions=438"
+ ]
+}
